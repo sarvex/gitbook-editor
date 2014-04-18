@@ -117,13 +117,13 @@ module.exports = function (grunt) {
                 stderr: true
             },
             build_linux32_release: {
-                command: "./scripts/build_linux32_tar.sh",
+                command: "./scripts/build_linux32.sh",
                 cwd: './',
                 stdout: true,
                 stderr: true
             },
             build_linux64_release: {
-                command: "./scripts/build_linux64_tar.sh",
+                command: "./scripts/build_linux64.sh",
                 cwd: './',
                 stdout: true,
                 stderr: true
