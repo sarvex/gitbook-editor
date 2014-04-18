@@ -6,8 +6,6 @@ This application is a simple editor for writing books. It's available for Window
 
 ### How to install it?
 
-This version is available for Windows, Mac and Linux.
-
 #### How to install it on Mac:
 
 1. Download *gitbook-mac.dmg*
