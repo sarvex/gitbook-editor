@@ -7,7 +7,9 @@ module.exports = function (grunt) {
 
     // Load grunt modules
     grunt.loadNpmTasks('hr.js');
+    grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-node-webkit-builder');
 
     var NW_VERSION = "0.9.2";
@@ -81,8 +83,8 @@ module.exports = function (grunt) {
                 build_dir: './appbuilds',
                 mac: true,
                 win: true,
-                linux32: false,
-                linux64: false,
+                linux32: true,
+                linux64: true,
                 mac_icns: "./build/static/images/icons/512.icns",
                 credits: "./src/credits.html",
                 version: NW_VERSION,
@@ -100,8 +102,78 @@ module.exports = function (grunt) {
         clean: {
             build: ['build/'],
             releases: ['appbuilds/releases']
+        },
+        exec: {
+            build_mac_release: {
+                command: "./scripts/build_mac.sh",
+                cwd: './',
+                stdout: true,
+                stderr: true
+            },
+            build_win_release: {
+                command: "./scripts/build_win.sh",
+                cwd: './',
+                stdout: true,
+                stderr: true
+            },
+            build_linux32_release: {
+                command: "./scripts/build_linux32_tar.sh",
+                cwd: './',
+                stdout: true,
+                stderr: true
+            },
+            build_linux64_release: {
+                command: "./scripts/build_linux64_tar.sh",
+                cwd: './',
+                stdout: true,
+                stderr: true
+            }
+        },
+        copy: {
+            // Installer for linux
+            linux32Installer: {
+                cwd: './',
+                src: 'scripts/install_linux.sh',
+                dest: './appbuilds/releases/GitBook/linux32/GitBook/install.sh'
+            },
+            // Entry point for linux
+            linux32Start: {
+                cwd: './',
+                src: 'scripts/linux_start.sh',
+                dest: './appbuilds/releases/GitBook/linux32/GitBook/start.sh'
+            },
+            // Icon for linux
+            linux32Icon: {
+                cwd: './',
+                src: './build/static/images/icons/128.png',
+                dest: './appbuilds/releases/GitBook/linux32/GitBook/icon.png'
+            },
+            // Installer for linux
+            linux64Installer: {
+                cwd: './',
+                src: 'scripts/install_linux.sh',
+                dest: './appbuilds/releases/GitBook/linux64/GitBook/install.sh'
+            },
+            // Entry point for linux
+            linux64Start: {
+                cwd: './',
+                src: 'scripts/linux_start.sh',
+                dest: './appbuilds/releases/GitBook/linux64/GitBook/start.sh'
+            },
+            // Icon for linux
+            linux64Icon: {
+                cwd: './',
+                src: './build/static/images/icons/128.png',
+                dest: './appbuilds/releases/GitBook/linux64/GitBook/icon.png'
+            },
         }
     });
+
+    // Clean
+    grunt.registerTask('clean', [
+        'clean:build',
+        'clean:releases'
+    ]);
 
     // Build
     grunt.registerTask('build', [
@@ -109,15 +181,32 @@ module.exports = function (grunt) {
     ]);
 
     // Release
-    grunt.registerTask('build-apps', [
-        'build',
-        'nodewebkit'
+    grunt.registerTask('build-mac', [
+        'exec:build_mac_release'
     ]);
-
-    // Clean
-    grunt.registerTask('clean', [
-        'clean:build',
-        'clean:releases'
+    grunt.registerTask('build-win', [
+        'exec:build_win_release'
+    ]);
+    grunt.registerTask('build-linux32', [
+        'copy:linux32Installer',
+        'copy:linux32Start',
+        'copy:linux32Icon',
+        'exec:build_linux32_release'
+    ]);
+    grunt.registerTask('build-linux64', [
+        'copy:linux64Installer',
+        'copy:linux64Start',
+        'copy:linux64Icon',
+        'exec:build_linux64_release'
+    ]);
+    grunt.registerTask('build-apps', [
+        'clean',
+        'build',
+        'nodewebkit',
+        'build-linux32',
+        'build-linux64',
+        'build-mac',
+        'build-win'
     ]);
 
     grunt.registerTask('default', [
