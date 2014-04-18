@@ -23,7 +23,9 @@
         "gitbook": "0.2.2",
         "send": "0.2.0",
         "mixpanel": "0.0.19",
-        "wrench": "1.5.8"
+        "wrench": "1.5.8",
+        "semver": "2.2.1",
+        "request": "2.27.0"
     },
     "devDependencies": {
         "lodash": "2.4.1",

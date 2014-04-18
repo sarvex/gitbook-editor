@@ -6,9 +6,10 @@ require([
     "hr/args",
     "utils/dialogs",
     "utils/analytic",
+    "core/update",
     "core/fs",
     "views/book"
-], function(_, $, Q, hr, args, dialogs, analytic, Fs, Book) {
+], function(_, $, Q, hr, args, dialogs, analytic, update, Fs, Book) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -58,6 +59,12 @@ require([
             }));
             fileMenu.append(new gui.MenuItem({
                 type: 'separator'
+            }));
+            fileMenu.append(new gui.MenuItem({
+                label: 'Check for Updates...',
+                click: function () {
+                    that.checkUpdate(true);
+                }
             }));
             fileMenu.append(new gui.MenuItem({
                 label: 'Close',
@@ -157,6 +164,7 @@ require([
                 gui.Window.get().menu = menu;
             }
 
+            this.checkUpdate(false);
         },
 
         render: function() {
@@ -212,6 +220,16 @@ require([
                         that.openPath(_path);
                     });
                 }
+            });
+        },
+
+        // Check update
+        checkUpdate: function(signalNo) {
+            update.isAvailable()
+            .then(function(version) {
+                alert("An update is available ("+version+"), download it at http://www.gitbook.io");
+            }, function() {
+                if (signalNo) alert("No update available. Check back soon!");
             });
         }
     });
