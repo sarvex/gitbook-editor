@@ -169,12 +169,6 @@ module.exports = function (grunt) {
         }
     });
 
-    // Clean
-    grunt.registerTask('clean', [
-        'clean:build',
-        'clean:releases'
-    ]);
-
     // Build
     grunt.registerTask('build', [
         'hr:app'
@@ -200,7 +194,8 @@ module.exports = function (grunt) {
         'exec:build_linux64_release'
     ]);
     grunt.registerTask('build-apps', [
-        'clean',
+        'clean:build',
+        'clean:releases',
         'build',
         'nodewebkit',
         'build-linux32',
