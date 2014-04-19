@@ -194,7 +194,7 @@ define([
 
             this.ignoreChange = true;
             this.editor.setValue(content, 1);
-            this.editor.moveCursorTo(y, p);
+            this.editor.moveCursorTo(y, x);
             this.ignoreChange = false;
         },
 
