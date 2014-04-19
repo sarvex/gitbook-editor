@@ -1,6 +1,7 @@
 define([
     "hr/hr",
     "hr/promise",
+    "utils/normalize",
     "utils/dialogs",
     "models/article",
     "core/server",
@@ -8,7 +9,7 @@ define([
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, dialogs, Article, server, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, dialogs, Article, server, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate;
 
     var Book = hr.View.extend({
@@ -193,10 +194,18 @@ define([
             var path = article.get("path");
             if (!this.articles[path]) return Q.reject(new Error("No content to save for this article"));
 
-            return this.fs.write(article.get("path"), this.articles[path].content)
+            // Normalize content before saving
+            var content = normalize.whitespace(
+                this.articles[path].content
+            );
+
+            return this.fs.write(article.get("path"), content)
             .then(function() {
                 that.articles[path].saved = true;
                 that.triggerArticleState(article);
+
+                // Update code views
+                that.trigger("article:save", article, content);
 
                 if (server.isRunning()) {
                     dialogs.confirm("Restart Preview Server", "Do you want to restart the preview server to access your last changes?")
@@ -209,7 +218,7 @@ define([
         triggerArticleState: function(article) {
             var path = article.get("path");
             var st = this.articles[path]? this.articles[path].saved : true;
-            
+
             this.trigger("article:state", article, st);
             this.toggleArticleClass(article, "modified", !st);
         },
