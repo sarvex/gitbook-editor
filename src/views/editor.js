@@ -73,7 +73,7 @@ define([
 
                     for (var x = 0; x < info.columns; x++) {
                         line = line + (y == 1 ? " -- |": " "+x+":"+y+" |");
-                    } 
+                    }
 
                     before = before+line+"\n";
                 }
@@ -137,7 +137,7 @@ define([
                     mac: 'Command-S'
                 },
                 exec: function(editor) {
-                    this.doSave(); 
+                    this.doSave();
                 }.bind(this),
                 readOnly: false
             });
@@ -149,6 +149,7 @@ define([
 
             this.listenTo(this.book, "article:open", this.onArticleChange);
             this.listenTo(this.book, "article:state", this.onArticleState);
+            this.listenTo(this.book, "article:save", this.onArticleSave);
         },
 
         finish: function() {
@@ -177,6 +178,24 @@ define([
             if (article.get("path") != this.book.currentArticle.get("path")) return;
             this.$(".action-save").toggleClass("disabled", state);
             this.$(".action-save").toggleClass("btn-warning", !state);
+        },
+
+        // Update editor if article has been normalized
+        onArticleSave: function(article, content) {
+            var pos = this.editor.getCursorPosition();
+
+            // We need to have line to calculate new positions
+            // and ensure they don't "overflow"
+            var lines = content.split('\n');
+
+            // Next positions
+            var y = Math.min(pos.row, lines.length-1);
+            var x = Math.min(pos.column, Math.max(lines[y].length, 0));
+
+            this.ignoreChange = true;
+            this.editor.setValue(content, 1);
+            this.editor.moveCursorTo(y, p);
+            this.ignoreChange = false;
         },
 
         // Save the article
