@@ -36,7 +36,7 @@ require([
 
             this.book = new Book({
                 fs: new Fs({
-                    base: path.join(__dirname, "../intro")
+                    base: this.getLatestBook()
                 })
             });
             this.book.update();
@@ -181,6 +181,14 @@ require([
             this.book.appendTo(this);
         },
 
+        getLatestBook: function() {
+            return localStorage.latestBook || path.join(__dirname, "../intro");
+        },
+
+        setLatestBook: function(_path) {
+            localStorage.latestBook = _path;
+        },
+
         // Open a book at a specific path
         openPath: function(_path) {
             analytic.track("open");
@@ -192,9 +200,13 @@ require([
 
             Book.valid(_fs)
             .then(function() {
+                // Change current book
                 that.setBook(new Book({
                     fs: _fs
                 }));
+
+                // Use as latest book
+                that.setLatestBook(_path);
             }, dialogs.error);
         },
 
