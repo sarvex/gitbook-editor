@@ -195,9 +195,10 @@ define([
             if (!this.articles[path]) return Q.reject(new Error("No content to save for this article"));
 
             // Normalize content before saving
-            var content = normalize.whitespace(
+            var content = normalize.eof(
+            normalize.whitespace(
                 this.articles[path].content
-            );
+            ));
 
             return this.fs.write(article.get("path"), content)
             .then(function() {
