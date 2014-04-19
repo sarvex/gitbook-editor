@@ -182,11 +182,11 @@ require([
         },
 
         getLatestBook: function() {
-            return localStorage.latestBook || path.join(__dirname, "../intro");
+            return hr.Storage.get('latestBook') || path.join(__dirname, "../intro");
         },
 
         setLatestBook: function(_path) {
-            localStorage.latestBook = _path;
+            hr.Storage.set('latestBook', _path);
         },
 
         // Open a book at a specific path
