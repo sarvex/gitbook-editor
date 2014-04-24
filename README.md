@@ -27,7 +27,7 @@ Download are available on the [Releases page](https://github.com/GitbookIO/edito
 
 1. Download *gitbook-win.zip*
 2. Extract it using a ZIP tool
-3. Copy the `GitBook` folder toyour desktop
+3. Copy the `GitBook` folder to your desktop
 4. Open `GitBook.exe` and start working
 
 
