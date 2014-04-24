@@ -164,6 +164,13 @@ require([
                 gui.Window.get().menu = menu;
             }
 
+            // Save before quitting
+            gui.Window.get().on("close", function() {
+                if (that.book.getUnsavedArticle().length == 0 || confirm("There is unsaved changes, do you really want to quit without saving?")) {
+                    this.close(true);
+                }
+            });
+
             this.checkUpdate(false);
         },
 

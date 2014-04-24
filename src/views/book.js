@@ -161,6 +161,19 @@ define([
             }));
         },
 
+        // Get unsaved article
+        getUnsavedArticle: function() {
+            return _.chain(this.articles)
+            .map(function(article, _path) {
+                article.path = _path;
+                return article;
+            })
+            .filter(function(article) {
+                return !article.saved;
+            })
+            .value();
+        },
+
         // Read/Write article in this fs
         readArticle: function(article) {
             var that = this;
