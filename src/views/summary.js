@@ -1,10 +1,11 @@
 define([
     "hr/hr",
+    "models/article",
     "utils/dragdrop",
     "utils/dialogs",
     "views/articles",
     "text!resources/templates/summary.html"
-], function(hr, dnd, dialogs, ArticlesView, templateFile) {
+], function(hr, Article, dnd, dialogs, ArticlesView, templateFile) {
     var SummaryTrash = hr.View.extend({
         className: "trash",
         initialize: function() {
@@ -49,7 +50,6 @@ define([
 
             // Trash
             this.trash = new SummaryTrash({}, this);
-            
 
             this.articles = new ArticlesView({}, this);
 
@@ -108,7 +108,37 @@ define([
         openReadme: function(e) {
             if (e) e.preventDefault();
             this.parent.openReadme();
-        }
+        },
+
+        /*
+         * Get article by its path
+         */
+        getArticle: function(_path, collection) {
+            var that = this;
+            collection = collection || this.articles.collection;
+
+            if (_path == "README.md") {
+                return new Article({}, {
+                    title: "Introduction",
+                    path: "README.md"
+                });
+            }
+
+            // Search in this collection
+            var article = collection.find(function(_article) {
+                console.log("->", _article.get("path"), _path)
+                return _article.get("path") == _path;
+            });
+            if (article) return article;
+
+            // Search in sub collection
+            collection.each(function(_article) {
+                article = article || that.getArticle(_path, _article.articles);
+                if (article) return false;
+            });
+
+            return article;
+        },
     });
 
     return Summary;

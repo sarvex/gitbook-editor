@@ -162,7 +162,7 @@ define([
         },
 
         // Get unsaved article
-        getUnsavedArticle: function() {
+        getUnsavedArticles: function() {
             return _.chain(this.articles)
             .map(function(article, _path) {
                 article.path = _path;
@@ -172,6 +172,15 @@ define([
                 return !article.saved;
             })
             .value();
+        },
+
+        // Save all unsaved
+        saveAll: function() {
+            _.each(this.getUnsavedArticles(), function(_article) {
+                var article = this.summary.getArticle(_article.path);
+                console.log(_article.path, article);
+                if (article) this.saveArticle(article);
+            }, this);
         },
 
         // Read/Write article in this fs

@@ -75,6 +75,15 @@ require([
 
             var bookMenu = new node.gui.Menu();
             bookMenu.append(new gui.MenuItem({
+                label: 'Save all',
+                click: function () {
+                    that.book.saveAll();
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            bookMenu.append(new gui.MenuItem({
                 label: 'Preview Website',
                 click: function () {
                     that.book.refreshPreviewServer();
@@ -166,7 +175,7 @@ require([
 
             // Save before quitting
             gui.Window.get().on("close", function() {
-                if (that.book.getUnsavedArticle().length == 0 || confirm("There is unsaved changes, do you really want to quit without saving?")) {
+                if (that.book.getUnsavedArticles().length == 0 || confirm("There is unsaved changes, do you really want to quit without saving?")) {
                     this.close(true);
                 }
             });
