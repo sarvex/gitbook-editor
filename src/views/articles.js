@@ -10,7 +10,8 @@ define([
         className: "article",
         template: templateFile,
         events: {
-            "click > .chapter-actions .action-add": "addChapter"
+            "click > .chapter-actions .action-add": "addChapter",
+            "click > .chapter-actions .action-remove": "removeChapter"
         },
 
         initialize: function() {
@@ -98,7 +99,23 @@ define([
                 that.model.articles.add({'title': title});
                 that.summary.save();
             });
+        },
+
+        removeChapter: function(e) {
+            var that = this;
+
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            dialogs.confirm("Remove entry", "Really want to delete this entry?<br><br>This will not delete the file itself, but only the link from the books summary.")
+                .then(function() {
+                    that.collection.remove(that.model);
+                    that.summary.save();
+                });
         }
+
     });
 
     var ArticlesView = hr.List.extend({
@@ -111,7 +128,7 @@ define([
             ArticlesView.__super__.initialize.apply(this, arguments);
 
             this.summary = this.parent;
-        },
+        }
     });
 
     return ArticlesView;
