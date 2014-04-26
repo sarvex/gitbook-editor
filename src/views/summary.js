@@ -6,27 +6,6 @@ define([
     "views/articles",
     "text!resources/templates/summary.html"
 ], function(hr, Article, dnd, dialogs, ArticlesView, templateFile) {
-    var SummaryTrash = hr.View.extend({
-        className: "trash",
-        initialize: function() {
-            var that = this;
-            SummaryTrash.__super__.initialize.apply(this, arguments);
-
-            this.summary = this.parent;
-
-            this.$el.html('<i class="fa fa-trash-o"></i> Remove');
-
-            // Drop tabs to order
-            this.dropArea = new dnd.DropArea({
-                view: this,
-                dragType: this.summary.drag,
-                handler: function(article) {
-                    article.destroy();
-                    that.summary.save();
-                }
-            });
-        },
-    })
 
     var Summary = hr.View.extend({
         className: "summary",
@@ -41,15 +20,6 @@ define([
 
             // Drag and drop of tabs
             this.drag = new dnd.DraggableType();
-            this.listenTo(this.drag, "drag:start", function() {
-                this.$el.toggleClass("with-trash", true);
-            });
-            this.listenTo(this.drag, "drag:end", function() {
-                this.$el.toggleClass("with-trash", false);
-            });
-
-            // Trash
-            this.trash = new SummaryTrash({}, this);
 
             this.articles = new ArticlesView({}, this);
 
@@ -58,7 +28,6 @@ define([
 
         finish: function() {
             this.articles.$el.appendTo(this.$(".inner"));
-            this.trash.$el.appendTo(this.$el);
             return Summary.__super__.finish.apply(this, arguments);
         },
 
@@ -138,7 +107,7 @@ define([
             });
 
             return article;
-        },
+        }
     });
 
     return Summary;

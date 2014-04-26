@@ -11,6 +11,7 @@ define([
         template: templateFile,
         events: {
             "click > .chapter-actions .action-add": "addChapter",
+            "click > .chapter-actions .action-rename": "changeTitle",
             "click > .chapter-actions .action-remove": "removeChapter"
         },
 
@@ -60,7 +61,7 @@ define([
             this.articles.appendTo(this.$(".chapter-articles"));
 
             this.$("> .chapter-title").css("paddingLeft", (4+(this.model.get("level").length)*8)+"px");
-            this.$("> .chapter-title").singleDblClick(this.open.bind(this), this.changeTitle.bind(this));
+            this.$("> .chapter-title").click(this.open.bind(this));
 
             return ArticleItem.__super__.finish.apply(this, arguments);
         },
