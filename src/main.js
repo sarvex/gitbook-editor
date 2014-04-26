@@ -255,9 +255,9 @@ require([
         checkUpdate: function(signalNo) {
             update.isAvailable()
             .then(function(version) {
-                alert("An update is available ("+version+"), download it at http://www.gitbook.io");
+                dialogs.alert('Update', "An update is available ("+version+"), download it at http://www.gitbook.io");
             }, function() {
-                if (signalNo) alert("No update available. Check back soon!");
+                if (signalNo) dialogs.alert('Update', "No update available. Check back soon!");
             });
         }
     });
