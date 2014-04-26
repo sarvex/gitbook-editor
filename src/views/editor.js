@@ -142,6 +142,11 @@ define([
                 readOnly: false
             });
 
+            this.editor.renderer.scrollBarV.element.addEventListener("scroll",  _.throttle(function(e) {
+                var h = $(this.editor.renderer.scrollBarV.element).scrollTop();
+                this.parent.preview.scrollTop(h);
+            }, 50).bind(this));
+
             this.on("grid:layout", function() {
                 this.editor.resize();
                 this.editor.renderer.updateFull();

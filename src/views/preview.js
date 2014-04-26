@@ -96,6 +96,10 @@ define([
             if (e) e.preventDefault();
 
             server.stop();
+        },
+
+        scrollTop: function(x) {
+            this.$(".content").scrollTop(x);
         }
     });
 
