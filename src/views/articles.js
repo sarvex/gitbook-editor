@@ -10,7 +10,9 @@ define([
         className: "article",
         template: templateFile,
         events: {
-            "click > .chapter-actions .action-add": "addChapter"
+            "click > .chapter-actions .action-add": "addChapter",
+            "click > .chapter-actions .action-rename": "changeTitle",
+            "click > .chapter-actions .action-remove": "removeChapter"
         },
 
         initialize: function() {
@@ -59,7 +61,7 @@ define([
             this.articles.appendTo(this.$(".chapter-articles"));
 
             this.$("> .chapter-title").css("paddingLeft", (4+(this.model.get("level").length)*8)+"px");
-            this.$("> .chapter-title").singleDblClick(this.open.bind(this), this.changeTitle.bind(this));
+            this.$("> .chapter-title").click(this.open.bind(this));
 
             return ArticleItem.__super__.finish.apply(this, arguments);
         },
@@ -98,7 +100,23 @@ define([
                 that.model.articles.add({'title': title});
                 that.summary.save();
             });
+        },
+
+        removeChapter: function(e) {
+            var that = this;
+
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            dialogs.confirm("Remove entry", "Really want to delete this entry?<br><br>This will not delete the file itself, but only the link from the books summary.")
+                .then(function() {
+                    that.collection.remove(that.model);
+                    that.summary.save();
+                });
         }
+
     });
 
     var ArticlesView = hr.List.extend({
@@ -111,7 +129,7 @@ define([
             ArticlesView.__super__.initialize.apply(this, arguments);
 
             this.summary = this.parent;
-        },
+        }
     });
 
     return ArticlesView;
