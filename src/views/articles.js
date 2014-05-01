@@ -49,6 +49,7 @@ define([
                     return !that.$el.hasClass("mode-edit");
                 }
             });
+
         },
 
         render: function() {
@@ -94,10 +95,18 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
             }
-
             dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
-            .then(function(title) {
-                that.model.articles.add({'title': title});
+            .then(function(givenTitle) {
+                var dir = that.model.get('path').split('/')[0];
+                var format = function(str){
+                    str = str.split(' ').join('_');
+                    return str.toLowerCase();
+                };
+                var newArticle = {
+                    title: givenTitle, 
+                    path: [dir,"/",format(givenTitle),".md"].join('')
+                };
+                that.model.articles.add(newArticle);
                 that.summary.save();
             });
         },

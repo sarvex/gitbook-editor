@@ -10,7 +10,9 @@ define([
     "views/editor",
     "views/preview"
 ], function(hr, Q, normalize, dialogs, Article, server, Grid, Summary, Editor, Preview) {
-    var generate = node.require("gitbook").generate;
+    var generate = node.require("gitbook").generate,
+        normalizeFilename = node.require("normall").filename,
+        dirname = node.require("path").dirname;
 
     var Book = hr.View.extend({
         className: "book",
@@ -111,6 +113,19 @@ define([
         openArticle: function(article) {
             var that = this;
 
+            var path = article.get("path");
+            
+            var normalize = function(path){
+                path = path.replace(".md","").split("/");
+                for (var i = 0; i < path.length; i++) {
+                    path[i] = normalizeFilename(path[i]);
+                };
+                if (path[path.length -1] === "readme"){
+                    path[path.length -1] = "README";
+                }   
+                return path.join("/") + ".md";
+            }
+
             var doOpen = function() {
                 that.currentArticle = article;
                 that.trigger("article:open", article);
@@ -122,12 +137,19 @@ define([
             };
 
             var doSaveAndOpen = function() {
-                return dialogs.saveAs(article.get("title")+".md", that.fs.options.base)
-                .then(function(path) {
-                    if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
-                    path = that.fs.virtualPath(path);
-                    article.set("path", path);
-                })
+                return function(){
+                    if (path){
+                        article.set("path",normalize(path));
+                        return Q();
+                    }else{   
+                        return dialogs.saveAs(article.get("title")+".md", that.fs.options.base)
+                        .then(function(path) {
+                            if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
+                            path = that.fs.virtualPath(path);
+                            article.set("path",normalize(path));
+                        });
+                    }
+                }()
                 // Write article
                 .then(function() {
                     return that.writeArticle(article, "# "+article.get("title")+"\n")
@@ -148,10 +170,10 @@ define([
                 });
             };
 
-            if (!article.get("path")) {
+            if (!path) {
                 return doSaveAndOpen();
             } else {
-                return that.fs.exists(article.get("path"))
+                return that.fs.exists(path)
                 .then(function(exists) {
                     if (exists) {
                         return doOpen();
@@ -232,8 +254,12 @@ define([
             normalize.whitespace(
                 this.articles[path].content
             ));
-
-            return this.fs.write(article.get("path"), content)
+            
+            // Try to create the directory
+            return that.fs.mkdir(dirname(path))
+            .then( function(){
+                return that.fs.write(path, content)
+            })
             .then(function() {
                 that.articles[path].saved = true;
                 that.triggerArticleState(article);

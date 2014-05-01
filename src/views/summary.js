@@ -64,10 +64,19 @@ define([
             var that = this;
             if (e) e.preventDefault();
 
+            var format = function(str){
+                str = str.split(' ').join('_');
+                return str.toLowerCase();
+            };
+
             dialogs.prompt("Add New Chapter", "Enter a title for the new chapter", "Chapter")
-            .then(function(title) {
-                that.articles.collection.add({'title': title});
-                that.save();
+            .then(function(givenTitle) {
+                var newArticle = {
+                    title: givenTitle,
+                    path: format(givenTitle)+'/README.md'
+                };
+                that.articles.collection.add(newArticle);
+                that.save();                
             });
         },
 

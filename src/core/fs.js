@@ -58,11 +58,15 @@ define([
          */
         mkdir: function(_path){
             var that = this;
-            if (! that.exists(_path)){
-                _path = this.realPath(_path);
-                return Q.nfcall(fs.mkdir, _path);
-            }
-            return Q();
+            return that.exists(_path)
+            .then(function(exists){
+                if (! exists){   
+                    _path = that.realPath(_path);
+                    return Q.nfcall(fs.mkdir, _path);
+                }else{
+                    return Q();
+                }
+            });
         },
 
         /*
