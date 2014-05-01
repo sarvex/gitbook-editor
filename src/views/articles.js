@@ -97,15 +97,16 @@ define([
             }
             dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
             .then(function(givenTitle) {
-                var dir = that.model.get('path').split('/')[0];
-                var format = function(str){
-                    str = str.split(' ').join('_');
-                    return str.toLowerCase();
-                };
-                var newArticle = {
-                    title: givenTitle, 
-                    path: [dir,"/",format(givenTitle),".md"].join('')
-                };
+                var dir = that.model.get('path').split('/')[0],
+                    latenize = node.require("latenize"),
+                    filename = latenize(givenTitle)
+                                    .replace(/[^\x00-\x7F]/g, '')
+                                    .split(' ').join('_')
+                                    .toLowerCase(),
+                    newArticle = {
+                        title: givenTitle, 
+                        path: [dir,"/",filename,".md"].join('')
+                    };
                 that.model.articles.add(newArticle);
                 that.summary.save();
             });

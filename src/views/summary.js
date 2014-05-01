@@ -64,17 +64,18 @@ define([
             var that = this;
             if (e) e.preventDefault();
 
-            var format = function(str){
-                str = str.split(' ').join('_');
-                return str.toLowerCase();
-            };
 
             dialogs.prompt("Add New Chapter", "Enter a title for the new chapter", "Chapter")
             .then(function(givenTitle) {
-                var newArticle = {
-                    title: givenTitle,
-                    path: format(givenTitle)+'/README.md'
-                };
+                var latenize = node.require("latenize"),
+                    dirname = latenize(givenTitle)
+                                .replace(/[^\x00-\x7F]/g, '')
+                                .split(' ').join('_')
+                                .toLowerCase(),
+                    newArticle = {
+                        title: givenTitle,
+                        path: dirname+'/README.md'
+                    };
                 that.articles.collection.add(newArticle);
                 that.save();                
             });
