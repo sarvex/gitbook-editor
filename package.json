@@ -26,7 +26,7 @@
         "wrench": "1.5.8",
         "semver": "2.2.1",
         "request": "2.27.0",
-        "normall": "0.0.1"
+        "normall": "0.0.2"
     },
     "devDependencies": {
         "lodash": "2.4.1",
