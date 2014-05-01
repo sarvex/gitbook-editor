@@ -52,6 +52,20 @@ define([
         },
 
         /*
+         * Try to make a directory by its path
+         *
+         * @return Promise()
+         */
+        mkdir: function(_path){
+            var that = this;
+            if (! that.exists(_path)){
+                _path = this.realPath(_path);
+                return Q.nfcall(fs.mkdir, _path);
+            }
+            return Q();
+        },
+
+        /*
          * Read a file by its path
          *
          * @return Promise(String)
