@@ -67,10 +67,8 @@ define([
 
             dialogs.prompt("Add New Chapter", "Enter a title for the new chapter", "Chapter")
             .then(function(givenTitle) {
-                var latenize = node.require("latenize"),
-                    dirname = latenize(givenTitle)
-                                .replace(/[^\x00-\x7F]/g, '')
-                                .split(' ').join('_')
+                var normall = node.require("normall"),
+                    dirname = normall.filename(givenTitle)
                                 .toLowerCase(),
                     newArticle = {
                         title: givenTitle,

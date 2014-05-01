@@ -98,10 +98,8 @@ define([
             dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
             .then(function(givenTitle) {
                 var dir = that.model.get('path').split('/')[0],
-                    latenize = node.require("latenize"),
-                    filename = latenize(givenTitle)
-                                    .replace(/[^\x00-\x7F]/g, '')
-                                    .split(' ').join('_')
+                    normall = node.require("normall"),
+                    filename = normall.filename(givenTitle)
                                     .toLowerCase(),
                     newArticle = {
                         title: givenTitle, 
