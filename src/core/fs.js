@@ -87,7 +87,11 @@ define([
             var that = this;
             _path = this.realPath(_path);
 
-            return fs.existsSync(_path);
+            var deferred = Q.defer();
+            fs.exists(_path, function(exists) {
+                deferred.resolve(exists);
+            });
+            return deferred.promise;
         },
 
         /*

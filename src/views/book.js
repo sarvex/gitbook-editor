@@ -121,7 +121,7 @@ define([
                 return Q();
             };
 
-            if (!article.get("path") || !that.fs.exists(article.get("path"))) {
+            var doSaveAndOpen = function() {
                 return dialogs.saveAs(article.get("title")+".md", that.fs.options.base)
                 .then(function(path) {
                     if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
@@ -146,9 +146,20 @@ define([
                 .fail(function(err) {
                     dialogs.alert("Error", err.message || err);
                 });
-            }
+            };
 
-            return doOpen();
+            if (!article.get("path")) {
+                return doSaveAndOpen();
+            } else {
+                return that.fs.exists(article.get("path"))
+                .then(function(exists) {
+                    if (exists) {
+                        return doOpen();
+                    } else {
+                        return doSaveAndOpen();
+                    }
+                });
+            }
         },
 
         /*
@@ -263,11 +274,18 @@ define([
          *  Valid that a fs is a gitbook
          */
         valid: function(fs) {
-            if (fs.exists("README.md") && fs.exists("SUMMARY.md")) {
-                return Q();
-            } else {
-                return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
-            }
+            return fs.exists("README.md")
+            .then(function(exists) {
+                if (!exists) {
+                    return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
+                }
+                return fs.exists("SUMMARY.md")
+                .then(function(exists) {
+                    if (!exists) {
+                        return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
+                    }
+                });
+            });
         }
     });
 
