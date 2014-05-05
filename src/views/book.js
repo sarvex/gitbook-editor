@@ -149,6 +149,7 @@ define([
                             article.set("path",normalize(path));
                         });
                     }
+
                 }()
                 // Write article
                 .then(function() {

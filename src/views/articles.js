@@ -6,7 +6,9 @@ define([
     "text!resources/templates/article.html",
     "utils/dblclick"
 ], function(hr, dnd, dialogs, Articles, templateFile) {
-    var ArticleItem = hr.List.Item.extend({
+    var normalizePath = node.require("normall").filename,
+        dirname = node.require("path").dirname,
+        ArticleItem = hr.List.Item.extend({
         className: "article",
         template: templateFile,
         events: {
@@ -96,16 +98,14 @@ define([
                 e.stopPropagation();
             }
             dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
-            .then(function(givenTitle) {
-                var dir = that.model.get('path').split('/')[0],
-                    normall = node.require("normall"),
-                    filename = normall.filename(givenTitle)
-                                    .toLowerCase(),
-                    newArticle = {
-                        title: givenTitle, 
-                        path: [dir,"/",filename,".md"].join('')
+            .then(function(title) {
+                var dir = dirname(that.model.get('path')),
+                    _title = normalizePath(title),
+                    article = {
+                        title: title, 
+                        path: dir+"/"+_title
                     };
-                that.model.articles.add(newArticle);
+                that.model.articles.add(article);
                 that.summary.save();
             });
         },

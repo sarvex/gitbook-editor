@@ -6,7 +6,7 @@ define([
     "views/articles",
     "text!resources/templates/summary.html"
 ], function(hr, Article, dnd, dialogs, ArticlesView, templateFile) {
-
+    var normalizePath = node.require("normall").filename;
     var Summary = hr.View.extend({
         className: "summary",
         template: templateFile,
@@ -66,15 +66,13 @@ define([
 
 
             dialogs.prompt("Add New Chapter", "Enter a title for the new chapter", "Chapter")
-            .then(function(givenTitle) {
-                var normall = node.require("normall"),
-                    dirname = normall.filename(givenTitle)
-                                .toLowerCase(),
-                    newArticle = {
-                        title: givenTitle,
-                        path: dirname+'/README.md'
+            .then(function(title) {
+                var _title = normalizePath(title),
+                    article = {
+                        title: title,
+                        path: _title +'/README'
                     };
-                that.articles.collection.add(newArticle);
+                that.articles.collection.add(article);
                 that.save();                
             });
         },
