@@ -151,6 +151,23 @@ define([
                     }
 
                 }()
+                // Check if it's going to overwrite anything
+                .then(function overwriteDetection(){
+                    return that.fs.exists(article.get("path"))
+                    .then(function(exists){
+                        if (exists){  
+                            return dialogs.saveAs("File name should be unique.", that.fs.options.base)
+                            .then(function(path) {
+                                if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
+                                path = that.fs.virtualPath(path);
+                                article.set("path",normalize(path));
+                                return overwriteDetection();
+                            });
+                        }else{
+                            return Q();
+                        }
+                    })
+                })
                 // Write article
                 .then(function() {
                     return that.writeArticle(article, "# "+article.get("title")+"\n")
