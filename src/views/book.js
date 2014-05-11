@@ -123,7 +123,8 @@ define([
                 if (path[path.length -1] === "readme"){
                     path[path.length -1] = "README";
                 }   
-                return path.join("/") + ".md";
+                path = path.join("/") + ".md";
+                return path;
             }
 
             var doOpen = function() {
@@ -147,6 +148,7 @@ define([
                             if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
                             path = that.fs.virtualPath(path);
                             article.set("path",normalize(path));
+                            return Q();
                         });
                     }
 

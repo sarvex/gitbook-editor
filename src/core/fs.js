@@ -30,7 +30,7 @@ define([
             .then(function(files) {
                 return Q.all(
                     _.chain(files)
-                    .filter(function() {
+                    .filter(function(file) {
                         if (file == "." || file == "..") return false;
                         return true;
                     })
@@ -42,11 +42,10 @@ define([
                             return {
                                 'path': that.virtualPath(f_path),
                                 'name': file,
-                                'type': _stat.isDirectory() ? File.TYPE.DIRECTORY : File.TYPE.FILE
+                                'isDirectory': _stat.isDirectory()
                             };
                         });
-                    })
-                    .value()
+                    }).__wrapped__
                 );
             });
         },
@@ -56,7 +55,7 @@ define([
          *
          * @return Promise()
          */
-        mkdir: function(_path){
+        mkdir: function(_path) {
             var that = this;
             return that.exists(_path)
             .then(function(exists){
@@ -68,7 +67,29 @@ define([
                 }
             });
         },
-
+        /*
+         * Remove a directory by its path
+         *
+         * @return Promise()
+         */
+        rmdir: function(_path) {
+            var that = this;
+            return that.readdir(_path)
+            .then(function(files){
+                return Q.all(
+                    _.map(files, function(file){
+                        if (file.isDirectory){
+                            return that.rmdir(file.path);
+                        }else{
+                            return that.unlink(file.path);
+                        }
+                    })
+                );
+            })
+            .then(function() {
+                return Q.nfcall(fs.rmdir, that.realPath(_path));
+            });
+        },
         /*
          * Read a file by its path
          *
@@ -94,6 +115,22 @@ define([
             _path = this.realPath(_path);
 
             return Q.nfcall(fs.writeFile, _path, content);
+        },
+        /*
+         * Unlink a file by its path
+         *
+         * @return Promise()
+         */
+        unlink: function(_path) {
+            var that = this;
+            return that.exists(_path)
+            .then(function(exists){
+                if (exists){
+                    _path = that.realPath(_path);
+                    return Q.nfcall(fs.unlink, _path);
+                }
+                return Q();
+            })
         },
 
         /*

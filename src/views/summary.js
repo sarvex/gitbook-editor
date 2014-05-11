@@ -50,7 +50,7 @@ define([
          */
         save: function() {
             var that = this;
-            
+            console.log("pre markdown",this.articles.collection);
             return this.parent.fs.write("SUMMARY.md", this.articles.collection.toMarkdown())
             .then(function() {
                 return that.load();
@@ -73,7 +73,7 @@ define([
                         path: _title +'/README'
                     };
                 that.articles.collection.add(article);
-                that.save();                
+                that.save();              
             });
         },
 
