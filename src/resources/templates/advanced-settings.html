@@ -1,0 +1,8 @@
+<form class="list-group" id="advanced-settings-form">
+	<li class="list-group-item">Auto file management: <input type="checkbox" name="autoFileManagement" 
+	<%= settings.get("autoFileManagement") ? "checked" : "" %> /></li>
+</form>
+<div class="btn-group btn-block setting-actions">
+	<button class="btn btn-default action-cancel">Cancel</button>
+	<button class="btn action-save">Save</button>
+</div>

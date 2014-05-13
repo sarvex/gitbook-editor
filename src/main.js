@@ -8,8 +8,9 @@ require([
     "utils/analytic",
     "core/update",
     "core/fs",
-    "views/book"
-], function(_, $, Q, hr, args, dialogs, analytic, update, Fs, Book) {
+    "views/book",
+    "views/advanced-settings"
+], function(_, $, Q, hr, args, dialogs, analytic, update, Fs, Book, AdvancedSettings) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -34,13 +35,19 @@ require([
 
             var that = this;
 
+            this.advancedSettings = new AdvancedSettings({});
+            this.advancedSettings.update();
+            this.advancedSettings.appendTo(this);
+
             this.book = new Book({
                 fs: new Fs({
                     base: this.getLatestBook()
-                })
+                }),
+                editorSettings: this.advancedSettings.model
             });
             this.book.update();
             this.book.appendTo(this);
+
 
             var menu = new gui.Menu({ type: 'menubar' });
 
@@ -144,6 +151,13 @@ require([
                 }
             }));
 
+            var preferencesMenu = new node.gui.Menu();
+            preferencesMenu.append(new gui.MenuItem({
+                label: 'Advanced Settings',
+                click: function () {
+                    that.advancedSettings.toggle();
+                }
+            }));
 
             // Get reference to App's menubar
             // if we set this later menu entries are out of order
@@ -167,7 +181,10 @@ require([
                 label: 'Help',
                 submenu: helpMenu
             }));
-
+            menu.append(new gui.MenuItem({
+                label: 'Preferences',
+                submenu: preferencesMenu
+            }));
             // Set the window's menu
             if(process.platform !== 'darwin') {
                 gui.Window.get().menu = menu;
