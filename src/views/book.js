@@ -24,6 +24,7 @@ define([
             Book.__super__.initialize.apply(this, arguments);
 
             this.fs = this.options.fs;
+            this.editorSettings = this.options.editorSettings;
 
             // Map article path -> content
             this.articles = {};
@@ -114,7 +115,7 @@ define([
             var that = this;
 
             var path = article.get("path");
-            
+
             var normalize = function(path){
                 path = path.replace(".md","").split("/");
                 for (var i = 0; i < path.length; i++) {
@@ -139,7 +140,7 @@ define([
 
             var doSaveAndOpen = function() {
                 return function(){
-                    if (path){
+                    if (path && that.editorSettings.get("autoFileManagement")){
                         article.set("path",normalize(path));
                         return Q();
                     }else{   
