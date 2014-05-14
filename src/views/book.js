@@ -5,11 +5,12 @@ define([
     "utils/dialogs",
     "models/article",
     "core/server",
+    "core/settings",
     "views/grid",
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, dialogs, Article, server, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, dialogs, Article, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -24,7 +25,7 @@ define([
             Book.__super__.initialize.apply(this, arguments);
 
             this.fs = this.options.fs;
-            this.editorSettings = this.options.editorSettings;
+            this.editorSettings = settings;
 
             // Map article path -> content
             this.articles = {};
@@ -123,7 +124,7 @@ define([
                 };
                 if (path[path.length -1] === "readme"){
                     path[path.length -1] = "README";
-                }   
+                }
                 path = path.join("/") + ".md";
                 return path;
             }
@@ -143,7 +144,7 @@ define([
                     if (path && that.editorSettings.get("autoFileManagement")){
                         article.set("path",normalize(path));
                         return Q();
-                    }else{   
+                    }else{
                         return dialogs.saveAs(article.get("title")+".md", that.fs.options.base)
                         .then(function(path) {
                             if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
@@ -158,7 +159,7 @@ define([
                 .then(function overwriteDetection(){
                     return that.fs.exists(article.get("path"))
                     .then(function(exists){
-                        if (exists){  
+                        if (exists){
                             return dialogs.saveAs("File name should be unique.", that.fs.options.base)
                             .then(function(path) {
                                 if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
@@ -275,7 +276,7 @@ define([
             normalize.whitespace(
                 this.articles[path].content
             ));
-            
+
             // Try to create the directory
             return that.fs.mkdir(dirname(path))
             .then( function(){

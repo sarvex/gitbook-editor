@@ -8,9 +8,8 @@ require([
     "utils/analytic",
     "core/update",
     "core/fs",
-    "views/book",
-    "views/advanced-settings"
-], function(_, $, Q, hr, args, dialogs, analytic, update, Fs, Book, AdvancedSettings) {
+    "views/book"
+], function(_, $, Q, hr, args, dialogs, analytic, update, Fs, Book) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -35,15 +34,10 @@ require([
 
             var that = this;
 
-            this.advancedSettings = new AdvancedSettings({});
-            this.advancedSettings.update();
-            this.advancedSettings.appendTo(this);
-
             this.book = new Book({
                 fs: new Fs({
                     base: this.getLatestBook()
-                }),
-                editorSettings: this.advancedSettings.model
+                })
             });
             this.book.update();
             this.book.appendTo(this);
@@ -155,7 +149,7 @@ require([
             preferencesMenu.append(new gui.MenuItem({
                 label: 'Advanced Settings',
                 click: function () {
-                    that.advancedSettings.toggle();
+                    dialogs.settings();
                 }
             }));
 

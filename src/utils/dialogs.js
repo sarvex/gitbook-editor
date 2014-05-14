@@ -128,7 +128,7 @@ define([
                 "dialog": "confirm"
             });
         },
-        
+
         /**
          * Open an alert modal dialog
          *
@@ -145,7 +145,7 @@ define([
 
         /**
          * File dialog
-         *  
+         *
          * @param {string} base name
          */
         file: function(props) {
@@ -183,7 +183,7 @@ define([
 
         /**
          * Save as
-         *  
+         *
          * @param {string} base name
          */
         saveAs: function(path, basePath) {
@@ -205,6 +205,24 @@ define([
         error: function(err) {
             Dialogs.alert("Error:", err.message || err);
             return Q.reject(err);
+        },
+
+        /*
+         *  Settings dialog
+         */
+        settings: function() {
+            var settings = require("core/settings");
+
+            return Dialogs.fields("Settings", {
+                autoFileManagement: {
+                    label: "Auto file management",
+                    type: "checkbox"
+                }
+            }, settings.toJSON())
+            .then(function(values) {
+                settings.set(values);
+                settings.setStateToStorage();
+            });
         }
     };
 
