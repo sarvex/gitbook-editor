@@ -1,5 +1,5 @@
 node_modules
 .grunt
 /build
-/appBuilds
+/appbuilds
 intro/_book

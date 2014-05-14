@@ -6,7 +6,7 @@ define([
     "views/articles",
     "text!resources/templates/summary.html"
 ], function(hr, Article, dnd, dialogs, ArticlesView, templateFile) {
-
+    var normalizePath = node.require("normall").filename;
     var Summary = hr.View.extend({
         className: "summary",
         template: templateFile,
@@ -50,7 +50,6 @@ define([
          */
         save: function() {
             var that = this;
-            
             return this.parent.fs.write("SUMMARY.md", this.articles.collection.toMarkdown())
             .then(function() {
                 return that.load();
@@ -64,10 +63,16 @@ define([
             var that = this;
             if (e) e.preventDefault();
 
+
             dialogs.prompt("Add New Chapter", "Enter a title for the new chapter", "Chapter")
             .then(function(title) {
-                that.articles.collection.add({'title': title});
-                that.save();
+                var _title = normalizePath(title),
+                    article = {
+                        title: title,
+                        path: _title +'/README'
+                    };
+                that.articles.collection.add(article);
+                that.save();              
             });
         },
 

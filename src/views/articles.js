@@ -6,7 +6,9 @@ define([
     "text!resources/templates/article.html",
     "utils/dblclick"
 ], function(hr, dnd, dialogs, Articles, templateFile) {
-    var ArticleItem = hr.List.Item.extend({
+    var normalizePath = node.require("normall").filename,
+        dirname = node.require("path").dirname,
+        ArticleItem = hr.List.Item.extend({
         className: "article",
         template: templateFile,
         events: {
@@ -49,6 +51,7 @@ define([
                     return !that.$el.hasClass("mode-edit");
                 }
             });
+
         },
 
         render: function() {
@@ -94,26 +97,38 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
             }
-
             dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
             .then(function(title) {
-                that.model.articles.add({'title': title});
+                var dir = dirname(that.model.get('path')),
+                    _title = normalizePath(title),
+                    article = {
+                        title: title, 
+                        path: dir+"/"+_title
+                    };
+                that.model.articles.add(article);
                 that.summary.save();
             });
         },
 
-        removeChapter: function(e) {
+        removeChapter: function() {
             var that = this;
 
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            dialogs.confirm("Remove entry", "Really want to delete this entry?<br><br>This will not delete the file itself, but only the link from the books summary.")
+            var removeArticle = function () {
+                var path = that.model.get("path"),
+                names = path.split("/");
+                // to do change to path.filename
+                if (names[names.length - 1] === "README.md"){
+                    return that.editor.fs.rmdir(dirname(path));
+                }
+                return that.editor.fs.unlink(path);
+            };
+            var hasChildren = that.model.articles.models.length !== 0; 
+            dialogs.confirm("Remove entry", "Do you really want to remove this" + 
+                (hasChildren ? " and all the sub-articles?":"?") )
                 .then(function() {
                     that.collection.remove(that.model);
                     that.summary.save();
+                    removeArticle();
                 });
         }
 
