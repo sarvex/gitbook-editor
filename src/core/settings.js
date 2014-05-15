@@ -15,5 +15,7 @@ define([
     });
 
     var settings = new SettingsModel({}, {});
+    settings.getStateFromStorage();
+
     return settings;
 });

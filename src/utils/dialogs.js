@@ -2,8 +2,10 @@ define([
     "hr/promise",
     "hr/dom",
     "hr/hr",
-    "views/dialogs/base"
-], function (Q, $, hr, DialogView) {
+    "views/dialogs/base",
+    "core/gitbookio",
+    "core/settings"
+], function (Q, $, hr, DialogView, gitbookIo, settings) {
     /**
      * Utils for managing modal dialogs
      *
@@ -211,8 +213,6 @@ define([
          *  Settings dialog
          */
         settings: function() {
-            var settings = require("core/settings");
-
             return Dialogs.fields("Advanced Settings", {
                 autoFileManagement: {
                     label: "Auto file management",
@@ -223,6 +223,31 @@ define([
                 settings.set(values);
                 settings.setStateToStorage();
             });
+        },
+
+        /*
+         *  Auth dialog
+         */
+        connectAccount: function() {
+            return Dialogs.fields("Connect your GitBook.io account", {
+                username: {
+                    label: "Username or Email",
+                    type: "text"
+                },
+                password: {
+                    label: "Password",
+                    type: "password"
+                }
+            }, {})
+            .then(function(auth) {
+                return gitbookIo.login(auth.username, auth.password);
+            })
+            .then(function() {
+                settings.set("username", gitbookIo.config.auth.username);
+                settings.set("token", gitbookIo.config.auth.password);
+                settings.setStateToStorage();
+            })
+            .fail(Dialogs.error)
         }
     };
 

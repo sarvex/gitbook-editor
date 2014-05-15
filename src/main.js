@@ -152,6 +152,12 @@ require([
                     dialogs.settings();
                 }
             }));
+            preferencesMenu.append(new gui.MenuItem({
+                label: 'Connect Account',
+                click: function () {
+                    dialogs.connectAccount();
+                }
+            }));
 
             // Get reference to App's menubar
             // if we set this later menu entries are out of order
