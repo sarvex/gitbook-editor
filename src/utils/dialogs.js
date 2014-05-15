@@ -217,6 +217,14 @@ define([
                 autoFileManagement: {
                     label: "Auto file management",
                     type: "checkbox"
+                },
+                username: {
+                    label: "Username",
+                    type: "text"
+                },
+                token: {
+                    label: "Token",
+                    type: "text"
                 }
             }, settings.toJSON())
             .then(function(values) {
@@ -247,7 +255,9 @@ define([
                 settings.set("token", gitbookIo.config.auth.password);
                 settings.setStateToStorage();
             })
-            .fail(Dialogs.error)
+            .then(function() {
+                Dialogs.alert("Account connected", "You're account is now connected to this computer.");
+            }, Dialogs.error)
         }
     };
 
