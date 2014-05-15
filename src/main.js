@@ -168,6 +168,10 @@ require([
                 submenu: bookMenu
             }));
             menu.append(new gui.MenuItem({
+                label: 'Preferences',
+                submenu: preferencesMenu
+            }));
+            menu.append(new gui.MenuItem({
                 label: 'Develop',
                 submenu: devMenu
             }));
@@ -175,10 +179,7 @@ require([
                 label: 'Help',
                 submenu: helpMenu
             }));
-            menu.append(new gui.MenuItem({
-                label: 'Preferences',
-                submenu: preferencesMenu
-            }));
+
             // Set the window's menu
             if(process.platform !== 'darwin') {
                 gui.Window.get().menu = menu;

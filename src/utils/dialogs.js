@@ -213,7 +213,7 @@ define([
         settings: function() {
             var settings = require("core/settings");
 
-            return Dialogs.fields("Settings", {
+            return Dialogs.fields("Advanced Settings", {
                 autoFileManagement: {
                     label: "Auto file management",
                     type: "checkbox"
