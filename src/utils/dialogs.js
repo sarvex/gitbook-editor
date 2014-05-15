@@ -225,6 +225,10 @@ define([
                 token: {
                     label: "Token",
                     type: "text"
+                },
+                host: {
+                    label: "Host",
+                    type: "text"
                 }
             }, settings.toJSON())
             .then(function(values) {
