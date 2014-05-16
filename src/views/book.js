@@ -57,9 +57,7 @@ define([
             this.openReadme();
         },
 
-        /*
-         *  Build the book
-         */
+        // Build the book (website)
         buildBook: function(params, options) {
             var that = this;
 
@@ -68,9 +66,7 @@ define([
             }));
         },
 
-        /*
-         *  Generate a file (pdf or ebook)
-         */
+        // Generate a file (pdf or ebook)
         buildBookFile: function(format, params) {
             var that = this;
 
@@ -91,9 +87,7 @@ define([
             }, dialogs.error);
         },
 
-        /*
-         * Refresh preview
-         */
+        // Refresh preview
         refreshPreviewServer: function() {
             var that = this;
             console.log("start server on ", this.model.root());
@@ -112,9 +106,7 @@ define([
             });
         },
 
-        /*
-         * Show an article
-         */
+        // Open a specific article
         openArticle: function(article) {
             var that = this;
 
@@ -210,9 +202,7 @@ define([
             }
         },
 
-        /*
-         * Show introduction
-         */
+        // Open readme
         openReadme: function() {
             return this.openArticle(new Article({}, {
                 title: "Introduction",
@@ -242,6 +232,47 @@ define([
             }, this);
         },
 
+        // Open edit book.json dialog
+        editConfig: function() {
+            var that = this, content = "{}";
+
+            var normalizeContent = function(_content) {
+                return JSON.stringify(JSON.parse(_content), null, 4);
+            };
+
+            var showDialog = function() {
+                return dialogs.fields("Edit Book Configuration (book.json)", {
+                    content: {
+                        type: "textarea",
+                        rows: 8
+                    }
+                }, {
+                    content: content
+                }, {keyboardEnter: false})
+                .then(function(values) {
+                    content = values.content;
+                    content = normalizeContent(content);
+                })
+                .fail(function(err) {
+                    return dialogs.confirm("Do you can to correct your error?", "Your book.json is not a valid json file: "+err.message)
+                    .then(showDialog);
+                });
+            };
+
+            return this.model.read("book.json")
+            .fail(function() {
+                return "{}";
+            })
+            .then(function(_content) {
+                content = _content;
+                content = normalizeContent(content);
+            })
+            .then(showDialog, showDialog)
+            .then(function() {
+                return that.model.write("book.json", content).fail(dialogs.error);
+            });
+        },
+
         // Read/Write article in this fs
         readArticle: function(article) {
             var that = this;
@@ -258,6 +289,8 @@ define([
                 return content;
             });
         },
+
+        // Update article buffer
         writeArticle: function(article, content) {
             var path = article.get("path");
 
@@ -270,6 +303,8 @@ define([
 
             return Q();
         },
+
+        // Save an article
         saveArticle: function(article) {
             var that = this;
             var path = article.get("path");
@@ -301,6 +336,8 @@ define([
                 }
             });
         },
+
+        // Update article state
         triggerArticleState: function(article) {
             var path = article.get("path");
             var st = this.articles[path]? this.articles[path].saved : true;
@@ -308,6 +345,8 @@ define([
             this.trigger("article:state", article, st);
             this.toggleArticleClass(article, "modified", !st);
         },
+
+        // return article state
         getArticleState: function(article) {
             article = article || this.currentArticle;
             var path = article.get("path");

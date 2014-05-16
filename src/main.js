@@ -76,18 +76,24 @@ require([
 
             var bookMenu = new node.gui.Menu();
             bookMenu.append(new gui.MenuItem({
-                label: 'Save all',
+                label: 'Publish',
                 click: function () {
-                    that.book.saveAll();
+                    gitbookIo.publishBook(that.book.model);
                 }
             }));
             bookMenu.append(new gui.MenuItem({
                 type: 'separator'
             }));
             bookMenu.append(new gui.MenuItem({
-                label: 'Publish',
+                label: 'Save all',
                 click: function () {
-                    gitbookIo.publishBook(that.book.model);
+                    that.book.saveAll();
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                label: 'Edit Configuration',
+                click: function () {
+                    that.book.editConfig();
                 }
             }));
             bookMenu.append(new gui.MenuItem({

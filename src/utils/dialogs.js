@@ -4,11 +4,6 @@ define([
     "hr/hr",
     "views/dialog"
 ], function (Q, $, hr, DialogView) {
-    /**
-     * Utils for managing modal dialogs
-     *
-     * @class
-     */
     var Dialogs = {
         /**
          * Open a dialog from a specific view class with some configuration
@@ -43,8 +38,8 @@ define([
          *
          * @param {object} fields map of fields (standard with settings fields)
          */
-        fields: function(title, fields, values) {
-            return Dialogs.open(null, {
+        fields: function(title, fields, values, options) {
+            return Dialogs.open(null, _.defaults(options || {}, {
                 "title": title,
                 "fields": fields,
                 "values": values || {},
@@ -69,7 +64,7 @@ define([
                     });
                     return data;
                 }
-            });
+            }));
         },
 
         /**
@@ -202,6 +197,9 @@ define([
             });
         },
 
+        /**
+         * Show an error message
+         */
         error: function(err) {
             Dialogs.alert("Error:", err.message || err);
             return Q.reject(err);
