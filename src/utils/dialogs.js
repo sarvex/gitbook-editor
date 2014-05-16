@@ -2,7 +2,7 @@ define([
     "hr/promise",
     "hr/dom",
     "hr/hr",
-    "views/dialogs/base"
+    "views/dialog"
 ], function (Q, $, hr, DialogView) {
     /**
      * Utils for managing modal dialogs
