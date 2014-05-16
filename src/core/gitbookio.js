@@ -77,7 +77,7 @@ define([
         .then(function(version) {
             if (!version) throw "Need a version";
 
-            return book.publishFolder(version, toPublish.fs.realPath("/"));
+            return book.publishFolder(version, toPublish.root());
         })
         .fail(dialogs.error);
     };

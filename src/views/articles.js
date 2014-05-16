@@ -102,7 +102,7 @@ define([
                 var dir = dirname(that.model.get('path')),
                     _title = normalizePath(title),
                     article = {
-                        title: title, 
+                        title: title,
                         path: dir+"/"+_title
                     };
                 that.model.articles.add(article);
@@ -118,12 +118,12 @@ define([
                 names = path.split("/");
                 // to do change to path.filename
                 if (names[names.length - 1] === "README.md"){
-                    return that.editor.fs.rmdir(dirname(path));
+                    return that.editor.model.rmdir(dirname(path));
                 }
-                return that.editor.fs.unlink(path);
+                return that.editor.model.unlink(path);
             };
-            var hasChildren = that.model.articles.models.length !== 0; 
-            dialogs.confirm("Remove entry", "Do you really want to remove this" + 
+            var hasChildren = that.model.articles.models.length !== 0;
+            dialogs.confirm("Remove entry", "Do you really want to remove this" +
                 (hasChildren ? " and all the sub-articles?":"?") )
                 .then(function() {
                     that.collection.remove(that.model);

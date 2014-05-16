@@ -6,15 +6,23 @@ define([
     var fs = node.require("fs");
     var path = node.require("path");
 
-    var LocalFs = hr.Class.extend({
+    var Book = hr.Model.extend({
+        defaults: {
+            base: ""
+        },
+
         isValidPath: function(_path) {
-            return _path.indexOf(this.options.base) === 0;
+            return _path.indexOf(this.get("base")) === 0;
         },
         virtualPath: function(_path) {
-            return path.relative(this.options.base, _path);
+            return path.relative(this.get("base"), _path);
         },
         realPath: function(_path) {
-            return path.join(this.options.base, _path);
+            return path.join(this.get("base"), _path);
+        },
+
+        root: function() {
+            return this.realPath("/");
         },
 
         /*
@@ -59,7 +67,7 @@ define([
             var that = this;
             return that.exists(_path)
             .then(function(exists){
-                if (! exists){   
+                if (! exists){
                     _path = that.realPath(_path);
                     return Q.nfcall(fs.mkdir, _path);
                 }else{
@@ -150,14 +158,25 @@ define([
         },
 
         /*
-         * Commit all changes
-         *
-         * @return Promise()
+         *  Valid that is a gitbook
          */
-        commit: function(message) {
-            return Q();
+        valid: function() {
+            var that = this;
+
+            return that.exists("README.md")
+            .then(function(exists) {
+                if (!exists) {
+                    return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
+                }
+                return that.exists("SUMMARY.md")
+                .then(function(exists) {
+                    if (!exists) {
+                        return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
+                    }
+                });
+            });
         }
     });
 
-    return LocalFs;
+    return Book;
 });
