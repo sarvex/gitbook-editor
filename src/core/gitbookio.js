@@ -46,8 +46,8 @@ define([
     };
 
     /* Publish a book */
-    var publishBook = function(book) {
-        var books;
+    var publishBook = function(toPublish) {
+        var books, book;
 
         return client.books()
         .then(function(_books) {
@@ -67,7 +67,18 @@ define([
                 .value()
             );
         })
+        .then(function(bookId) {
+            book =_.find(books, function(_book) {
+                return _book.id == bookId;
+            });
 
+            return dialogs.prompt("Version", "Tag this book version", "0.0.1");
+        })
+        .then(function(version) {
+            if (!version) throw "Need a version";
+
+            return book.publishFolder(version, toPublish.fs.realPath("/"));
+        })
         .fail(dialogs.error);
     };
 
