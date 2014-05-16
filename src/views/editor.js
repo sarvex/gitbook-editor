@@ -144,7 +144,8 @@ define([
 
             this.editor.renderer.scrollBarV.element.addEventListener("scroll",  _.throttle(function(e) {
                 var h = $(this.editor.renderer.scrollBarV.element).scrollTop();
-                if (this.parent.preview.autoScroll) this.parent.preview.scrollTop(h);
+                var th = this.$(".content").height();
+                if (this.parent.preview.autoScroll) this.parent.preview.scrollTop((h*100)/th);
             }, 50).bind(this));
 
             this.on("grid:layout", function() {

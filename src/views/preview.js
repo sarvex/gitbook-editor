@@ -101,8 +101,11 @@ define([
             server.stop();
         },
 
+        // Scroll in percent
         scrollTop: function(x) {
-            this.$(".content").scrollTop(x);
+            var th = this.$(".content").height();
+
+            this.$(".content").scrollTop((x*th)/100);
         },
 
         toggleScroll: function() {
