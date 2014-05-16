@@ -37,7 +37,7 @@ define([
         load: function() {
             var that = this;
 
-            this.parent.fs.read("SUMMARY.md")
+            this.parent.model.read("SUMMARY.md")
             .then(function(content) {
                 that.articles.collection.parseSummary(content);
             }, function(err) {
@@ -50,7 +50,7 @@ define([
          */
         save: function() {
             var that = this;
-            return this.parent.fs.write("SUMMARY.md", this.articles.collection.toMarkdown())
+            return this.parent.model.write("SUMMARY.md", this.articles.collection.toMarkdown())
             .then(function() {
                 return that.load();
             });
@@ -72,7 +72,7 @@ define([
                         path: _title +'/README'
                     };
                 that.articles.collection.add(article);
-                that.save();              
+                that.save();
             });
         },
 

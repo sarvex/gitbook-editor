@@ -4,27 +4,30 @@ define([
     "utils/normalize",
     "utils/dialogs",
     "models/article",
+    "models/book",
     "core/server",
     "core/settings",
     "views/grid",
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, dialogs, Article, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, dialogs, Article, Book, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
 
-    var Book = hr.View.extend({
+    var BookView = hr.View.extend({
         className: "book",
         defaults: {
-            fs: null
+            base: null
         },
 
         initialize: function() {
-            Book.__super__.initialize.apply(this, arguments);
+            BookView.__super__.initialize.apply(this, arguments);
 
-            this.fs = this.options.fs;
+            this.model = this.model || new Book({}, {
+                base: this.options.base
+            });
             this.editorSettings = settings;
 
             // Map article path -> content
@@ -54,20 +57,16 @@ define([
             this.openReadme();
         },
 
-        /*
-         *  Build the book
-         */
+        // Build the book (website)
         buildBook: function(params, options) {
             var that = this;
 
             return generate.folder(_.extend(params || {}, {
-                input: this.fs.options.base
+                input: this.model.root()
             }));
         },
 
-        /*
-         *  Generate a file (pdf or ebook)
-         */
+        // Generate a file (pdf or ebook)
         buildBookFile: function(format, params) {
             var that = this;
 
@@ -77,7 +76,7 @@ define([
             .then(function(_path) {
                 return generate.file(_.extend(params || {}, {
                     extension: "pdf",
-                    input: that.fs.options.base,
+                    input: that.model.root(),
                     output: _path,
                     generator: format
                 }))
@@ -88,12 +87,10 @@ define([
             }, dialogs.error);
         },
 
-        /*
-         * Refresh preview
-         */
+        // Refresh preview
         refreshPreviewServer: function() {
             var that = this;
-            console.log("start server on ", this.fs.options.base);
+            console.log("start server on ", this.model.root());
 
             return server.stop()
             .then(function() {
@@ -109,9 +106,7 @@ define([
             });
         },
 
-        /*
-         * Show an article
-         */
+        // Open a specific article
         openArticle: function(article) {
             var that = this;
 
@@ -140,30 +135,31 @@ define([
             };
 
             var doSaveAndOpen = function() {
-                return function(){
+                return Q()
+                .then(function(){
                     if (path && that.editorSettings.get("autoFileManagement")){
-                        article.set("path",normalize(path));
+                        article.set("path", normalize(path));
                         return Q();
                     }else{
-                        return dialogs.saveAs(article.get("title")+".md", that.fs.options.base)
+                        return dialogs.saveAs(article.get("title")+".md", that.model.root())
                         .then(function(path) {
-                            if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
-                            path = that.fs.virtualPath(path);
-                            article.set("path",normalize(path));
+                            if (!that.model.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
+                            path = that.model.virtualPath(path);
+                            article.set("path", normalize(path));
                             return Q();
                         });
                     }
 
-                }()
+                })
                 // Check if it's going to overwrite anything
                 .then(function overwriteDetection(){
-                    return that.fs.exists(article.get("path"))
+                    return that.model.exists(article.get("path"))
                     .then(function(exists){
                         if (exists){
-                            return dialogs.saveAs("File name should be unique.", that.fs.options.base)
+                            return dialogs.saveAs("File name should be unique.", that.model.root())
                             .then(function(path) {
-                                if (!that.fs.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
-                                path = that.fs.virtualPath(path);
+                                if (!that.model.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
+                                path = that.model.virtualPath(path);
                                 article.set("path",normalize(path));
                                 return overwriteDetection();
                             });
@@ -195,7 +191,7 @@ define([
             if (!path) {
                 return doSaveAndOpen();
             } else {
-                return that.fs.exists(path)
+                return that.model.exists(path)
                 .then(function(exists) {
                     if (exists) {
                         return doOpen();
@@ -206,9 +202,7 @@ define([
             }
         },
 
-        /*
-         * Show introduction
-         */
+        // Open readme
         openReadme: function() {
             return this.openArticle(new Article({}, {
                 title: "Introduction",
@@ -238,6 +232,47 @@ define([
             }, this);
         },
 
+        // Open edit book.json dialog
+        editConfig: function() {
+            var that = this, content = "{}";
+
+            var normalizeContent = function(_content) {
+                return JSON.stringify(JSON.parse(_content), null, 4);
+            };
+
+            var showDialog = function() {
+                return dialogs.fields("Edit Book Configuration (book.json)", {
+                    content: {
+                        type: "textarea",
+                        rows: 8
+                    }
+                }, {
+                    content: content
+                }, {keyboardEnter: false})
+                .then(function(values) {
+                    content = values.content;
+                    content = normalizeContent(content);
+                })
+                .fail(function(err) {
+                    return dialogs.confirm("Do you can to correct your error?", "Your book.json is not a valid json file: "+err.message)
+                    .then(showDialog);
+                });
+            };
+
+            return this.model.read("book.json")
+            .fail(function() {
+                return "{}";
+            })
+            .then(function(_content) {
+                content = _content;
+                content = normalizeContent(content);
+            })
+            .then(showDialog, showDialog)
+            .then(function() {
+                return that.model.write("book.json", content).fail(dialogs.error);
+            });
+        },
+
         // Read/Write article in this fs
         readArticle: function(article) {
             var that = this;
@@ -245,7 +280,7 @@ define([
 
             if (this.articles[path]) return Q(this.articles[path].content);
 
-            return this.fs.read(path)
+            return this.model.read(path)
             .then(function(content) {
                 that.articles[path] = {
                     content: content,
@@ -254,6 +289,8 @@ define([
                 return content;
             });
         },
+
+        // Update article buffer
         writeArticle: function(article, content) {
             var path = article.get("path");
 
@@ -266,6 +303,8 @@ define([
 
             return Q();
         },
+
+        // Save an article
         saveArticle: function(article) {
             var that = this;
             var path = article.get("path");
@@ -278,9 +317,9 @@ define([
             ));
 
             // Try to create the directory
-            return that.fs.mkdir(dirname(path))
+            return that.model.mkdir(dirname(path))
             .then( function(){
-                return that.fs.write(path, content)
+                return that.model.write(path, content)
             })
             .then(function() {
                 that.articles[path].saved = true;
@@ -297,6 +336,8 @@ define([
                 }
             });
         },
+
+        // Update article state
         triggerArticleState: function(article) {
             var path = article.get("path");
             var st = this.articles[path]? this.articles[path].saved : true;
@@ -304,6 +345,8 @@ define([
             this.trigger("article:state", article, st);
             this.toggleArticleClass(article, "modified", !st);
         },
+
+        // return article state
         getArticleState: function(article) {
             article = article || this.currentArticle;
             var path = article.get("path");
@@ -317,25 +360,7 @@ define([
                 $(this).toggleClass(className, $(this).data("article") == article.get("path"));
             });
         }
-    }, {
-        /*
-         *  Valid that a fs is a gitbook
-         */
-        valid: function(fs) {
-            return fs.exists("README.md")
-            .then(function(exists) {
-                if (!exists) {
-                    return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
-                }
-                return fs.exists("SUMMARY.md")
-                .then(function(exists) {
-                    if (!exists) {
-                        return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
-                    }
-                });
-            });
-        }
     });
 
-    return Book;
+    return BookView;
 });

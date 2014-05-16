@@ -6,10 +6,12 @@ require([
     "hr/args",
     "utils/dialogs",
     "utils/analytic",
+    "core/settings",
+    "core/gitbookio",
     "core/update",
-    "core/fs",
+    "models/book",
     "views/book"
-], function(_, $, Q, hr, args, dialogs, analytic, update, Fs, Book) {
+], function(_, $, Q, hr, args, dialogs, analytic, settings, gitbookIo, update, Book, BookView) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -34,10 +36,8 @@ require([
 
             var that = this;
 
-            this.book = new Book({
-                fs: new Fs({
-                    base: this.getLatestBook()
-                })
+            this.book = new BookView({
+                base: this.getLatestBook()
             });
             this.book.update();
             this.book.appendTo(this);
@@ -76,9 +76,24 @@ require([
 
             var bookMenu = new node.gui.Menu();
             bookMenu.append(new gui.MenuItem({
+                label: 'Publish',
+                click: function () {
+                    gitbookIo.publishBook(that.book.model);
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            bookMenu.append(new gui.MenuItem({
                 label: 'Save all',
                 click: function () {
                     that.book.saveAll();
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                label: 'Edit Configuration',
+                click: function () {
+                    that.book.editConfig();
                 }
             }));
             bookMenu.append(new gui.MenuItem({
@@ -149,7 +164,13 @@ require([
             preferencesMenu.append(new gui.MenuItem({
                 label: 'Advanced Settings',
                 click: function () {
-                    dialogs.settings();
+                    settings.dialog();
+                }
+            }));
+            preferencesMenu.append(new gui.MenuItem({
+                label: 'Connect Account',
+                click: function () {
+                    gitbookIo.connectAccount();
                 }
             }));
 
@@ -222,15 +243,15 @@ require([
             analytic.track("open");
 
             var that = this;
-            var _fs = new Fs({
+            var book = new Book({
                 base: _path
             });
 
-            Book.valid(_fs)
+            book.valid()
             .then(function() {
                 // Change current book
-                that.setBook(new Book({
-                    fs: _fs
+                that.setBook(new BookView({
+                    model: book
                 }));
 
                 // Use as latest book
