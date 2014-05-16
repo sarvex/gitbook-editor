@@ -5,7 +5,8 @@ define([
     var key = "GitBookEditorSettings";
     var SettingsModel = hr.Model.extend({
         defaults: {
-            autoFileManagement: true
+            autoFileManagement: true,
+            host: "https://www.gitbook.io"
         },
         getStateFromStorage: function (){
             this.set(hr.Storage.get(key));
