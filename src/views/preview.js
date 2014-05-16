@@ -15,7 +15,8 @@ define([
         events: {
             "click .content a": "onClickLink",
             "click .server-start": "startServer",
-            "click .server-stop": "stopServer"
+            "click .server-stop": "stopServer",
+            "click .toggle-autoscroll": "toggleScroll"
         },
 
         initialize: function() {
@@ -23,6 +24,7 @@ define([
 
             this.book = this.parent;
             this.sections = [];
+            this.autoScroll = true;
 
             this.listenTo(this.book, "article:open", this.onArticleChange);
             this.listenTo(this.book, "article:write", _.debounce(this.onArticleChange, 150));
@@ -32,6 +34,7 @@ define([
 
         templateContext: function() {
             return {
+                autoScroll: this.autoScroll,
                 sections: this.sections
             };
         },
@@ -100,6 +103,11 @@ define([
 
         scrollTop: function(x) {
             this.$(".content").scrollTop(x);
+        },
+
+        toggleScroll: function() {
+            this.autoScroll = !this.autoScroll;
+            this.$(".toggle-autoscroll").toggleClass("btn-success", this.autoScroll);
         }
     });
 
