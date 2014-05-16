@@ -6,10 +6,12 @@ require([
     "hr/args",
     "utils/dialogs",
     "utils/analytic",
+    "core/settings",
+    "core/gitbookio",
     "core/update",
     "core/fs",
     "views/book"
-], function(_, $, Q, hr, args, dialogs, analytic, update, Fs, Book) {
+], function(_, $, Q, hr, args, dialogs, analytic, settings, gitbookIo, update, Fs, Book) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -85,6 +87,15 @@ require([
                 type: 'separator'
             }));
             bookMenu.append(new gui.MenuItem({
+                label: 'Publish',
+                click: function () {
+                    gitbookIo.publishBook(that.book);
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            bookMenu.append(new gui.MenuItem({
                 label: 'Preview Website',
                 click: function () {
                     that.book.refreshPreviewServer();
@@ -149,13 +160,13 @@ require([
             preferencesMenu.append(new gui.MenuItem({
                 label: 'Advanced Settings',
                 click: function () {
-                    dialogs.settings();
+                    settings.dialog();
                 }
             }));
             preferencesMenu.append(new gui.MenuItem({
                 label: 'Connect Account',
                 click: function () {
-                    dialogs.connectAccount();
+                    gitbookIo.connectAccount();
                 }
             }));
 
