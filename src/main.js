@@ -61,6 +61,12 @@ require([
                 }
             }));
             fileMenu.append(new gui.MenuItem({
+                label: 'Open Introduction Book',
+                click: function () {
+                    that.openPath(defaultBook);
+                }
+            }));
+            fileMenu.append(new gui.MenuItem({
                 type: 'separator'
             }));
             fileMenu.append(new gui.MenuItem({
