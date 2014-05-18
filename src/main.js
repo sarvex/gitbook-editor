@@ -16,6 +16,7 @@ require([
     var wrench = node.require("wrench");
     var gui = node.gui;
     var __dirname = node.require("../src/dirname");
+    var defaultBook = path.join(__dirname, "../intro");
 
     // Configure hr
     hr.configure(args);
@@ -37,11 +38,12 @@ require([
             var that = this;
 
             this.book = new BookView({
-                base: this.getLatestBook()
+                base: defaultBook
             });
             this.book.update();
             this.book.appendTo(this);
 
+            this.openPath(this.getLatestBook(), { failDialog: false });
 
             var menu = new gui.Menu({ type: 'menubar' });
 
@@ -231,7 +233,7 @@ require([
         },
 
         getLatestBook: function() {
-            return hr.Storage.get('latestBook') || path.join(__dirname, "../intro");
+            return hr.Storage.get('latestBook') || defaultBook;
         },
 
         setLatestBook: function(_path) {
@@ -239,15 +241,20 @@ require([
         },
 
         // Open a book at a specific path
-        openPath: function(_path) {
+        openPath: function(_path, options) {
             analytic.track("open");
 
+            options = _.defaults(options || {}, {
+                failDialog: true,
+                setLatest: true
+            });
+
             var that = this;
-            var book = new Book({
+            var book = new Book({}, {
                 base: _path
             });
 
-            book.valid()
+            return book.valid()
             .then(function() {
                 // Change current book
                 that.setBook(new BookView({
@@ -255,8 +262,11 @@ require([
                 }));
 
                 // Use as latest book
-                that.setLatestBook(_path);
-            }, dialogs.error);
+                if (options.setLatest) that.setLatestBook(_path);
+            }, function(err) {
+                if (!options.failDialog) return Q.reject(err);
+                return dialogs.error(err);
+            });
         },
 
         // Click to select a new local folder

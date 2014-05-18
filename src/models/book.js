@@ -166,12 +166,12 @@ define([
             return that.exists("README.md")
             .then(function(exists) {
                 if (!exists) {
-                    return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
+                    return Q.reject(new Error("Invalid GitBook: need README.md"));
                 }
                 return that.exists("SUMMARY.md")
                 .then(function(exists) {
                     if (!exists) {
-                        return Q.reject(new Error("Invalid GitBook: need README.md and SUMMARY.md"));
+                        return Q.reject(new Error("Invalid GitBook: need SUMMARY.md"));
                     }
                 });
             });
