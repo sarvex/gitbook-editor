@@ -47,37 +47,39 @@ define([
 
     /* Publish a book */
     var publishBook = function(toPublish) {
-        var books, book;
+        var books;
 
         return client.books()
         .then(function(_books) {
             books = _books;
 
-            return dialogs.select(
-                "Book to publish on",
-                "Select the book to publish on",
-                _.chain(books)
-                .map(function(book) {
-                    return [
-                        book.id,
-                        book.id
-                    ]
-                })
-                .object()
-                .value()
-            );
+            return dialogs.fields("Publish this book", {
+                book: {
+                    label: "Book",
+                    type: "select",
+                    options: _.chain(books)
+                        .map(function(book) {
+                            return [
+                                book.id,
+                                book.id
+                            ]
+                        })
+                        .object()
+                        .value()
+                },
+                version: {
+                    label: "Version",
+                    type: "text"
+                },
+            }, {});
         })
-        .then(function(bookId) {
+        .then(function(build) {
             book =_.find(books, function(_book) {
-                return _book.id == bookId;
+                return _book.id == build.book;
             });
+            if (!build.version) throw "Need a version";
 
-            return dialogs.prompt("Version", "Tag this book version", "0.0.1");
-        })
-        .then(function(version) {
-            if (!version) throw "Need a version";
-
-            return book.publishFolder(version, toPublish.root());
+            return book.publishFolder(build.version, toPublish.root());
         })
         .fail(dialogs.error);
     };
