@@ -20,14 +20,14 @@
     "author": "Samy Pesse <samypesse@gmail.com>",
     "license": "Apache 2",
     "dependencies": {
-        "gitbook": "0.4.2",
+        "gitbook": "0.4.3",
         "send": "0.2.0",
         "mixpanel": "0.0.19",
         "wrench": "1.5.8",
         "semver": "2.2.1",
         "request": "2.27.0",
         "normall": "0.0.2",
-        "gitbook-api": "0.0.3"
+        "gitbook-api": "0.0.4"
     },
     "devDependencies": {
         "lodash": "2.4.1",
