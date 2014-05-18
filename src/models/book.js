@@ -175,6 +175,13 @@ define([
                     }
                 });
             });
+        },
+
+        /*
+         *  Return a title for this book
+         */
+        title: function() {
+            return path.basename(this.root());
         }
     });
 

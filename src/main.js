@@ -37,11 +37,9 @@ require([
 
             var that = this;
 
-            this.book = new BookView({
+            this.setBook(new BookView({
                 base: defaultBook
-            });
-            this.book.update();
-            this.book.appendTo(this);
+            }));
 
             this.openPath(this.getLatestBook(), { failDialog: false });
 
@@ -236,6 +234,7 @@ require([
             this.book = book;
             this.book.update();
             this.book.appendTo(this);
+            this.title(this.book.model.title());
         },
 
         getLatestBook: function() {
