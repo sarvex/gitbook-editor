@@ -202,6 +202,7 @@ define([
          */
         error: function(err) {
             Dialogs.alert("Error:", err.message || err);
+            console.error(err.stack || err.message || err);
             return Q.reject(err);
         }
     };
