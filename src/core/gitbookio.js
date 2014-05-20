@@ -33,11 +33,11 @@ define([
             }
         }, {})
         .then(function(auth) {
-            return gitbookIo.login(auth.username, auth.password);
+            return client.login(auth.username, auth.password);
         })
         .then(function() {
-            settings.set("username", gitbookIo.config.auth.username);
-            settings.set("token", gitbookIo.config.auth.password);
+            settings.set("username", client.config.auth.username);
+            settings.set("token", client.config.auth.password);
             settings.setStateToStorage();
         })
         .then(function() {
