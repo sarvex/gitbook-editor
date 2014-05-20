@@ -23,5 +23,5 @@ Here is what you need to know.
 
 10. Here is where you can get more help with this application
 
-   * The [GitBook docs](https://github.com/GitbookIO/gitbook) contain Guides on how to write books usign GitBook.
+   * The [GitBook docs](https://github.com/GitbookIO/gitbook) contain Guides on how to write books using GitBook.
    * Post issues on [GitHub](https://github.com/FriendCode/codebox/issues).
