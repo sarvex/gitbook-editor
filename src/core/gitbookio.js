@@ -5,6 +5,7 @@ define([
 ], function(_, settings, dialogs) {
     var GitBook = node.require("gitbook-api");
     var client = new GitBook();
+    var gui = node.gui;
 
     var setConfig = function() {
         client.config = {
@@ -47,7 +48,7 @@ define([
 
     /* Publish a book */
     var publishBook = function(toPublish) {
-        var books;
+        var books, book;
 
         return client.books()
         .then(function(_books) {
@@ -81,7 +82,13 @@ define([
 
             return book.publishFolder(build.version, toPublish.root());
         })
-        .fail(dialogs.error);
+        .then(function() {
+            var link = client.config.host+"/book/"+book.id+"/activity";
+            return dialogs.confirm("Do you want to see your build status?", "Your build just started, you can follow the process on the activity tab on your book.")
+            .then(function() {
+                gui.Shell.openExternal(link);
+            });
+        }, dialogs.error);
     };
 
     return {
