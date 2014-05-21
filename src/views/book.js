@@ -254,7 +254,7 @@ define([
                     content = normalizeContent(content);
                 })
                 .fail(function(err) {
-                    return dialogs.confirm("Do you can to correct your error?", "Your book.json is not a valid json file: "+err.message)
+                    return dialogs.confirm("Would you like to correct the error?", "Your book.json is not a valid json file: "+err.message)
                     .then(showDialog);
                 });
             };
