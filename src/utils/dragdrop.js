@@ -3,7 +3,7 @@ define([
     'hr/hr',
     'hr/dom'
 ], function (_, hr, $) {
-    // Evnts for tablet and desktop
+    // Events for tablet and desktop
     var events = {
         'start': "mousedown",
         'stop': "mouseup",
@@ -48,7 +48,7 @@ define([
             // Handler for drop
             handler: null,
 
-            // Contrain elastic
+            // Constrain elastic
             constrain: null
         },
 
@@ -172,7 +172,7 @@ define([
                 ew = $el.width();
                 eh = $el.height();
 
-                // Contrain element
+                // Constrain element
                 var cw, ch, cx, cy;
 
                 if (options.start && options.start() === false) return;

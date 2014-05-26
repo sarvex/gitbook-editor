@@ -9,7 +9,7 @@ define([
          * Open a dialog from a specific view class with some configuration
          *
          * @param {DialogView} cls dialog view class
-         * @param {options} options dialog view contructor options
+         * @param {options} options dialog view constructor options
          * @return {promise}
          */
         open: function(cls, options) {
@@ -68,11 +68,11 @@ define([
         },
 
         /**
-         * Open a promt modal dialog
+         * Open a prompt modal dialog
          *
          * @param {string} title
          * @param {string} message
-         * @param {string} defaultmessage
+         * @param {string} defaultmsg
          */
         prompt: function(title, message, defaultmsg) {
             return Dialogs.open(null, {
@@ -90,7 +90,7 @@ define([
          *
          * @param {string} title
          * @param {string} message
-         * @param {boject} choices
+         * @param {object} choices
          * @param {string} defaultChoice
          */
         select: function(title, message, choices, defaultChoice) {
@@ -141,7 +141,7 @@ define([
         /**
          * File dialog
          *
-         * @param {string} base name
+         * @param {string} props base name
          */
         file: function(props) {
             var that = this;
