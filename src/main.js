@@ -119,7 +119,9 @@ require([
                 click: function () {
                     dialogs.folder()
                     .then(function(_path) {
-                        if (confirm("Do you really want to erase "+_path+" content and build the book website in it?")) {
+                        _path = path.join(_path, "book");
+
+                        if (confirm("Book website will be build into "+_path+"?")) {
                             that.book.buildBook({
                                 output: _path
                             })
