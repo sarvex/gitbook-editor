@@ -50,6 +50,14 @@ define([
     var publishBook = function(toPublish) {
         var books, book;
 
+        console.log(client.config.auth)
+        if (!client.config.auth || !client.config.auth.username || !client.config.auth.password) {
+            return connectAccount()
+            .then(function() {
+                return publishBook(toPublish);
+            });
+        }
+
         return client.books()
         .then(function(_books) {
             books = _books;
