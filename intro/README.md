@@ -16,7 +16,7 @@ Here is what you need to know.
 
 7. When you're ready, publish it using your [gitbook.io](https://www.gitbook.io) account.
 
-8. Or you can build as a website, pdf or ebook; and uplaod this to your own server.
+8. Or you can build as a website, pdf or ebook; and upload this to your own server.
 
 9. We want your feedback! If you have anything positive or negative to say click
    on the `Send Feedback` button on the `Help` menu.

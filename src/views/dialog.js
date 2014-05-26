@@ -79,7 +79,7 @@ define([
                 e.preventDefault();
             }
 
-            // Unbind dowument keydown
+            // Unbind document keydown
             $(document).unbind("keydown", this.keydownHandler);
             
             // Hide modal

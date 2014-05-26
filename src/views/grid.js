@@ -137,7 +137,7 @@ define([
 
                 // Resize bar
                 if (x < (layout.columns - 1)) {
-                    // Horrizontal
+                    // Horizontal
                     var hBar = $("<div>", {
                         'class': "grid-resize-bar-h",
                         'mousedown': this.resizerHandler(x, y, "h")
