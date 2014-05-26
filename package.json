@@ -1,10 +1,10 @@
 {
-    "name": "gitbook-editor",
+    "name": "editor",
     "version": "0.2.0",
     "description": "Editor for writing GitBook",
     "main": "build/index.html",
     "window": {
-        "title": "Codebox",
+        "title": "GitBook",
         "width": 1200,
         "height": 600,
         "icon": "build/static/images/icons/128.png",

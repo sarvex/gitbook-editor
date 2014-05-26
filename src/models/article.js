@@ -23,6 +23,10 @@ define([
             this.listenTo(this.articles, "add change remove reset", function() {
                 this.set("articles", this.articles.toJSON(), {silent: true});
             });
+        },
+
+        level: function() {
+            return this.get("level").split(".").length;
         }
     });
 
