@@ -88,7 +88,10 @@ define([
             .then(function() {
                 gui.Shell.openExternal(link);
             });
-        }, dialogs.error);
+        }, function(err) {
+            if (err.error) err = new Error(err.error);
+            return dialogs.error(err);
+        });
     };
 
     return {
