@@ -13,13 +13,13 @@ define([
          */
         parseSummary: function(content) {
             var summary = parseSummary(content);
-            
+
             try {
                 this.reset(summary.chapters);
             } catch (e) {
                 console.error(e.stack);
             }
-            
+
         },
 
         /*
@@ -38,16 +38,15 @@ define([
                 }
             }
 
-            this.each(function(chapter) {
-                content = content + _base(chapter)+bl;
+            var convertArticle = function(article, d) {
+                content = content + Array(4*d).join(" ") + _base(article)+bl;
+                article.articles.each(function(_article) {
+                    convertArticle(_article, d + 1);
+                });
+            };
 
-                // Articles
-                if (chapter.articles.size() > 0) {
-                    
-                    chapter.articles.each(function(article) {
-                        content = content+"    "+_base(article)+bl;
-                    });
-                }
+            this.each(function(chapter) {
+                convertArticle(chapter, 0);
             });
 
             content = content+bl;

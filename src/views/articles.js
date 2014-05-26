@@ -54,15 +54,13 @@ define([
 
 
             this.menu = new gui.Menu();
-            if (this.model.level() == 1) {
-                this.menu.append(new gui.MenuItem({
-                    label: 'Add Article',
-                    click: this.addChapter.bind(this)
-                }));
-                this.menu.append(new gui.MenuItem({
-                    type: 'separator'
-                }));
-            }
+            this.menu.append(new gui.MenuItem({
+                label: 'Add Article',
+                click: this.addChapter.bind(this)
+            }));
+            this.menu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
             this.menu.append(new gui.MenuItem({
                 label: 'Rename',
                 click: this.changeTitle.bind(this)
@@ -154,7 +152,6 @@ define([
         contextMenu: function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log(e);
             this.menu.popup(e.originalEvent.x, e.originalEvent.y);
         }
     });
