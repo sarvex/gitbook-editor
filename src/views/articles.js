@@ -6,15 +6,15 @@ define([
     "text!resources/templates/article.html",
     "utils/dblclick"
 ], function(hr, dnd, dialogs, Articles, templateFile) {
-    var normalizePath = node.require("normall").filename,
-        dirname = node.require("path").dirname,
-        ArticleItem = hr.List.Item.extend({
+    var normalizePath = node.require("normall").filename;
+    var dirname = node.require("path").dirname;
+    var gui = node.require('nw.gui');
+
+    var ArticleItem = hr.List.Item.extend({
         className: "article",
         template: templateFile,
         events: {
-            "click > .chapter-actions .action-add": "addChapter",
-            "click > .chapter-actions .action-rename": "changeTitle",
-            "click > .chapter-actions .action-remove": "removeChapter"
+            "contextmenu": "contextMenu"
         },
 
         initialize: function() {
@@ -52,6 +52,25 @@ define([
                 }
             });
 
+
+            this.menu = new gui.Menu();
+            if (this.model.level() == 1) {
+                this.menu.append(new gui.MenuItem({
+                    label: 'Add Article',
+                    click: this.addChapter.bind(this)
+                }));
+                this.menu.append(new gui.MenuItem({
+                    type: 'separator'
+                }));
+            }
+            this.menu.append(new gui.MenuItem({
+                label: 'Rename',
+                click: this.changeTitle.bind(this)
+            }));
+            this.menu.append(new gui.MenuItem({
+                label: 'Delete',
+                click: this.removeChapter.bind(this)
+            }));
         },
 
         render: function() {
@@ -130,8 +149,14 @@ define([
                     that.summary.save();
                     removeArticle();
                 });
-        }
+        },
 
+        contextMenu: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(e);
+            this.menu.popup(e.originalEvent.x, e.originalEvent.y);
+        }
     });
 
     var ArticlesView = hr.List.extend({

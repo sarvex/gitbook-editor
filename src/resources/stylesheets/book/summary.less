@@ -69,7 +69,7 @@
         .article {
             margin: 0px;
             padding: 0px;
-            
+
             position: relative;
             cursor: pointer;
 
@@ -115,35 +115,12 @@
                 border-left: 4px solid transparent;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
+                .user-select(none);
 
                 &:hover {
                     background: rgba(196, 205, 212, 0.2);
                     border-top-color: rgba(196, 205, 212, 0.4);
                     border-bottom-color: rgba(196, 205, 212, 0.4);
-                }
-            }
-
-            .chapter-actions {
-                position:absolute;
-
-                right: 6px;
-                top: 0px;
-                height: 36px;
-                z-index: 1;
-
-                line-height: 36px;
-                .opacity(0);
-                .transition(opacity 100ms ease);
-
-                .action {
-                    color: @summary-color;
-                    .opacity(0.6);
-                    margin: 0px 2px;
-
-                    &:hover {
-                        text-decoration: none;
-                        .opacity(1);
-                    }
                 }
             }
 
