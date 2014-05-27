@@ -101,9 +101,7 @@ define([
             })
             .then(function() {
                 server.open();
-            }, function(err) {
-                dialogs.alert("Error starting preview server:", err.message || err);
-            });
+            }, dialogs.error);
         },
 
         // Open a specific article
