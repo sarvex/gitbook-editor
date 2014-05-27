@@ -1,6 +1,8 @@
 var path = require("path");
 var _ = require("lodash");
 
+var pkg = require("./package.json");
+
 module.exports = function (grunt) {
     // Path to the client src
     var srcPath = path.resolve(__dirname, "src");
@@ -11,12 +13,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-node-webkit-builder');
+    grunt.loadNpmTasks('grunt-github-releaser');
 
-    var NW_VERSION = "0.9.2";
+    var NW_VERSION = "0.8.5";
 
     // Init GRUNT configuraton
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: pkg,
         hr: {
             app: {
                 // Base directory for the application
@@ -101,7 +104,7 @@ module.exports = function (grunt) {
         },
         clean: {
             build: ['build/'],
-            releases: ['appbuilds/releases']
+            releases: ['appbuilds/releases/']
         },
         exec: {
             build_mac_release: {
@@ -166,6 +169,29 @@ module.exports = function (grunt) {
                 src: './build/static/images/icons/128.png',
                 dest: './appbuilds/releases/GitBook/linux64/GitBook/icon.png'
             },
+        },
+        "github-release": {
+            options: {
+                repository: 'GitbookIO/editor',
+                auth: {
+                    user: process.env.GH_USERNAME,
+                    password: process.env.GH_PASSWORD
+                },
+                release: {
+                    tag_name: pkg.version,
+                    name: pkg.version,
+                    draft: true,
+                    prerelease: false
+                }
+            },
+            files: {
+                src: [
+                    "./appbuilds/releases/gitbook-linux32.tar.gz",
+                    "./appbuilds/releases/gitbook-linux64.tar.gz",
+                    "./appbuilds/releases/gitbook-mac.dmg",
+                    "./appbuilds/releases/gitbook-win.zip"
+                ],
+            },
         }
     });
 
@@ -202,6 +228,10 @@ module.exports = function (grunt) {
         'build-linux64',
         'build-mac',
         'build-win'
+    ]);
+    grunt.registerTask('publish', [
+        'build-apps',
+        'github-release'
     ]);
 
     grunt.registerTask('default', [
