@@ -37,8 +37,8 @@ define([
             return client.login(auth.username, auth.password);
         })
         .then(function() {
-            settings.set("username", client.config.auth.username);
-            settings.set("token", client.config.auth.password);
+            settings.set("username", client.config.auth.username, { silent: true });
+            settings.set("token", client.config.auth.password, { silent: true });
             settings.setStateToStorage();
         })
         .then(function() {
