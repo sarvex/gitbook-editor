@@ -91,6 +91,12 @@ require([
                 type: 'separator'
             }));
             bookMenu.append(new gui.MenuItem({
+                label: 'Add Chapter',
+                click: function () {
+                    that.book.summary.addChapter();
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
                 label: 'Save all',
                 click: function () {
                     that.book.saveAll();

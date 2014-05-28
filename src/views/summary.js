@@ -7,11 +7,13 @@ define([
     "text!resources/templates/summary.html"
 ], function(hr, Article, dnd, dialogs, ArticlesView, templateFile) {
     var normalizePath = node.require("normall").filename;
+    var gui = node.require('nw.gui');
+
     var Summary = hr.View.extend({
         className: "summary",
         template: templateFile,
         events: {
-            "click .add-chapter": "addChapter",
+            "contextmenu": "contextMenu",
             "click .open-readme": "openReadme"
         },
 
@@ -22,6 +24,12 @@ define([
             this.drag = new dnd.DraggableType();
 
             this.articles = new ArticlesView({}, this);
+
+            this.menu = new gui.Menu();
+            this.menu.append(new gui.MenuItem({
+                label: 'Add Chapter',
+                click: this.addChapter.bind(this)
+            }));
 
             this.load();
         },
@@ -112,6 +120,12 @@ define([
             });
 
             return article;
+        },
+
+        contextMenu: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.menu.popup(e.originalEvent.x, e.originalEvent.y);
         }
     });
 
