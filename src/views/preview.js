@@ -7,6 +7,7 @@ define([
     "text!resources/templates/preview.html"
 ], function(hr, _, Q, $, server, templateFile) {
     var path = node.require("path");
+    var url = node.require("url");
     var parse = node.require("gitbook").parse;
 
     var Preview = hr.View.extend({
@@ -37,6 +38,19 @@ define([
                 autoScroll: this.autoScroll,
                 sections: this.sections
             };
+        },
+
+        finish: function() {
+            var currentFile = "index.html";
+            if (this.book.currentArticle) currentFile = this.book.currentArticle.get("path");
+            var current = "file://"+path.resolve(this.book.model.root(), currentFile);
+
+            // Fix image url
+            this.$(".content img").each(function() {
+                $(this).attr("src", url.resolve(current, $(this).attr("src")));
+            });
+
+            return Preview.__super__.finish.apply(this, arguments);
         },
 
         parseArticle: function(article, content) {
