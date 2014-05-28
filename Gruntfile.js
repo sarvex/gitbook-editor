@@ -82,7 +82,7 @@ module.exports = function (grunt) {
         },
         nodewebkit: {
             options: {
-                app_name: "GitBook",
+                app_name: "GitBook Editor",
                 build_dir: './appbuilds',
                 mac: true,
                 win: true,

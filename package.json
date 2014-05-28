@@ -1,5 +1,5 @@
 {
-    "name": "editor",
+    "name": "gitbook-editor",
     "version": "0.2.2",
     "description": "Editor for writing GitBook",
     "main": "build/index.html",
