@@ -7,7 +7,7 @@ define([
     "text!resources/templates/summary.html"
 ], function(hr, Article, dnd, dialogs, ArticlesView, templateFile) {
     var normalizePath = node.require("normall").filename;
-    var gui = node.require('nw.gui');
+    var gui = node.gui;
 
     var Summary = hr.View.extend({
         className: "summary",

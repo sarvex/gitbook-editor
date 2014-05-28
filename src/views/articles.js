@@ -8,7 +8,7 @@ define([
 ], function(hr, dnd, dialogs, Articles, templateFile) {
     var normalizePath = node.require("normall").filename;
     var dirname = node.require("path").dirname;
-    var gui = node.require('nw.gui');
+    var gui = node.gui;
 
     var ArticleItem = hr.List.Item.extend({
         className: "article",
