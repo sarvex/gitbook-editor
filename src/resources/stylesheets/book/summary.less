@@ -1,11 +1,11 @@
 .book .summary {
     position: absolute;
     top: 0px;
-    right: -4px;
+    right: 0px;
     left: 0px;
     bottom: 0px;
-
-    box-shadow: -1px 0px 5px rgba(196, 205, 212, 0.8) inset;
+    background: #f8f8f8;
+    border-right: 1px solid #e8e8e8;
 
     h1 {
         margin: 10px;
@@ -14,15 +14,9 @@
         text-align: center;
     }
 
-    hr {
-        border-color: rgba(196, 205, 212, 1);
-        margin: 0px;
-        box-shadow: 0px -1px #fff;
-    }
-
     .inner {
         position: absolute;
-        top: 38px;
+        top: 0px;
         bottom: 0px;
         right: 0px;
         left: 0px;
@@ -75,9 +69,7 @@
 
             &.active {
                 > .chapter-title, > .chapter-title:hover {
-                    background: rgba(196, 205, 212, 0.35);
-                    border-top-color: rgba(196, 205, 212, 1);
-                    border-bottom-color: rgba(196, 205, 212, 1);
+                    color: @brand-primary;
                 }
             }
 
@@ -118,9 +110,11 @@
                 .user-select(none);
 
                 &:hover {
-                    background: rgba(196, 205, 212, 0.2);
-                    border-top-color: rgba(196, 205, 212, 0.4);
-                    border-bottom-color: rgba(196, 205, 212, 0.4);
+                    color: lighten(@brand-primary, 25%);
+                }
+
+                b {
+                    font-weight: normal;
                 }
             }
 

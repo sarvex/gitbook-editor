@@ -80,7 +80,12 @@ define([
         finish: function() {
             this.articles.appendTo(this.$(".chapter-articles"));
 
-            this.$("> .chapter-title").css("paddingLeft", (4+(this.model.level())*8)+"px");
+            var pd = 10;
+            if (this.model.level() > 1) {
+                pd = (this.model.level() - 1) * 28;
+            }
+
+            this.$("> .chapter-title").css("paddingLeft", pd+"px");
             this.$("> .chapter-title").click(this.open.bind(this));
 
             return ArticleItem.__super__.finish.apply(this, arguments);
