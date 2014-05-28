@@ -26,7 +26,7 @@ module.exports = function (grunt) {
                 "base": srcPath,
 
                 // Application name
-                "name": "Codebox",
+                "name": "GitBook",
 
                 // Mode debug
                 "debug": true,
@@ -82,7 +82,7 @@ module.exports = function (grunt) {
         },
         nodewebkit: {
             options: {
-                app_name: "GitBook Editor",
+                app_name: "GitBook",
                 build_dir: './appbuilds',
                 mac: true,
                 win: true,
