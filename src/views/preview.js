@@ -30,6 +30,14 @@ define([
             this.listenTo(this.book, "article:open", this.onArticleChange);
             this.listenTo(this.book, "article:write", _.debounce(this.onArticleChange, 150));
 
+            this.listenTo(this, "render", _.bind(function() {
+                if (!this.autoScroll) {
+                    return;
+                }
+                
+                var editor = this.parent.editor;
+                this.scrollTop(editor.scrollTop() / editor.$(".content").height() * 100);
+            }, this));
             this.listenTo(server, "state", this.onServerUpdate);
         },
 
