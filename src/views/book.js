@@ -120,7 +120,14 @@ define([
                 }
                 path = path.join("/") + ".md";
                 return path;
-            }
+            };
+
+            var updateArticlePath = function(path) {
+                if (!that.model.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
+                path = that.model.contentVirtualPath(path);
+                article.set("path", normalize(path));
+                return Q();
+            };
 
             var doOpen = function() {
                 that.currentArticle = article;
@@ -140,27 +147,17 @@ define([
                         return Q();
                     }else{
                         return dialogs.saveAs(article.get("title")+".md", that.model.root())
-                        .then(function(path) {
-                            if (!that.model.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
-                            path = that.model.virtualPath(path);
-                            article.set("path", normalize(path));
-                            return Q();
-                        });
+                        .then(updateArticlePath);
                     }
 
                 })
                 // Check if it's going to overwrite anything
                 .then(function overwriteDetection(){
-                    return that.model.exists(article.get("path"))
+                    return that.model.contentExists(article.get("path"))
                     .then(function(exists){
                         if (exists){
                             return dialogs.saveAs("File name should be unique.", that.model.root())
-                            .then(function(path) {
-                                if (!that.model.isValidPath(path)) return Q.reject(new Error("Invalid path for saving this article, need to be on the book repository."));
-                                path = that.model.virtualPath(path);
-                                article.set("path",normalize(path));
-                                return overwriteDetection();
-                            });
+                            .then(updateArticlePath);
                         }else{
                             return Q();
                         }
@@ -189,7 +186,7 @@ define([
             if (!path) {
                 return doSaveAndOpen();
             } else {
-                return that.model.exists(path)
+                return that.model.contentExists(path)
                 .then(function(exists) {
                     if (exists) {
                         return doOpen();
@@ -278,7 +275,7 @@ define([
 
             if (this.articles[path]) return Q(this.articles[path].content);
 
-            return this.model.read(path)
+            return this.model.contentRead(path)
             .then(function(content) {
                 that.articles[path] = {
                     content: content,
@@ -315,9 +312,9 @@ define([
             ));
 
             // Try to create the directory
-            return that.model.mkdir(dirname(path))
+            return that.model.contentMkdir(dirname(path))
             .then( function(){
-                return that.model.write(path, content)
+                return that.model.contentWrite(path, content)
             })
             .then(function() {
                 that.articles[path].saved = true;

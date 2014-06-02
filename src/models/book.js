@@ -5,10 +5,16 @@ define([
 ], function(hr, Q, _) {
     var fs = node.require("fs");
     var path = node.require("path");
+    var parse = node.require("gitbook").parse;
 
     var Book = hr.Model.extend({
         defaults: {
-            base: ""
+            base: "",
+            lang: {
+                title: "Default",
+                path: "./",
+                lang: "default"
+            }
         },
 
         isValidPath: function(_path) {
@@ -17,8 +23,14 @@ define([
         virtualPath: function(_path) {
             return path.relative(this.get("base"), _path);
         },
+        contentVirtualPath: function(_path) {
+            return path.relative(path.join(this.get("base"), this.get("lang.path", "./")), _path);
+        },
         realPath: function(_path) {
             return path.join(this.get("base"), _path);
+        },
+        contentPath: function(_path) {
+            return path.join(this.get("lang.path", "./"), _path);
         },
 
         root: function() {
@@ -98,6 +110,7 @@ define([
                 return Q.nfcall(fs.rmdir, that.realPath(_path));
             });
         },
+
         /*
          * Read a file by its path
          *
@@ -124,6 +137,7 @@ define([
 
             return Q.nfcall(fs.writeFile, _path, content);
         },
+
         /*
          * Unlink a file by its path
          *
@@ -168,12 +182,17 @@ define([
                 if (!exists) {
                     return Q.reject(new Error("Invalid GitBook: need README.md"));
                 }
-                return that.exists("SUMMARY.md")
-                .then(function(exists) {
-                    if (!exists) {
-                        return Q.reject(new Error("Invalid GitBook: need SUMMARY.md"));
-                    }
-                });
+                return that.langs();
+            })
+            .then(function(langs) {
+                console.log(langs);
+                that.set("lang", _.first(langs));
+                return that.contentExists("SUMMARY.md")
+            })
+            .then(function(exists) {
+                if (!exists) {
+                    return Q.reject(new Error("Invalid GitBook: need SUMMARY.md"));
+                }
             });
         },
 
@@ -182,7 +201,52 @@ define([
          */
         title: function() {
             return path.basename(this.root());
-        }
+        },
+
+        /*
+         * Get langs index
+         */
+        langs: function() {
+            var that = this;
+
+            return that.exists("LANGS.md")
+            .then(function(e) {
+                if (!e) return [
+                    {
+                        title: "Default",
+                        path: "./",
+                        lang: "default"
+                    }
+                ];
+
+                return that.read("LANGS.md")
+                .then(function(content) {
+                    return parse.langs(content)
+                }).get("list");
+            });
+        },
+
+        contentReaddir: function(_path) {
+            return this.readdir(this.contentPath(_path));
+        },
+        contentMkdir: function(_path) {
+            return this.mkdir(this.contentPath(_path));
+        },
+        contentRmdir: function(_path) {
+            return this.rmdir(this.contentPath(_path));
+        },
+        contentRead: function(_path) {
+            return this.read(this.contentPath(_path));
+        },
+        contentWrite: function(_path, content) {
+            return this.write(this.contentPath(_path), content);
+        },
+        contentUnlink: function(_path) {
+            return this.unlink(this.contentPath(_path));
+        },
+        contentExists: function(_path) {
+            return this.exists(this.contentPath(_path));
+        },
     });
 
     return Book;
