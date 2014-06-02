@@ -36,14 +36,17 @@ require([
             Application.__super__.initialize.apply(this, arguments);
 
             var that = this;
+            this.menu = new gui.Menu({ type: 'menubar' });
+            this.langsMenu = new gui.MenuItem({
+                label: 'Languages',
+                submenu: new gui.Menu()
+            });
 
             this.setBook(new BookView({
                 base: defaultBook
-            }));
+            }, this));
 
             this.openPath(this.getLatestBook(), { failDialog: false });
-
-            var menu = new gui.Menu({ type: 'menubar' });
 
             var fileMenu = new node.gui.Menu();
             fileMenu.append(new gui.MenuItem({
@@ -95,6 +98,13 @@ require([
                 click: function () {
                     that.book.summary.addChapter();
                 }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            bookMenu.append(this.langsMenu);
+            bookMenu.append(new gui.MenuItem({
+                type: 'separator'
             }));
             bookMenu.append(new gui.MenuItem({
                 label: 'Save all',
@@ -191,33 +201,33 @@ require([
             // Get reference to App's menubar
             // if we set this later menu entries are out of order
             if(process.platform === 'darwin') {
-                gui.Window.get().menu = menu;
+                gui.Window.get().menu = this.menu;
             }
 
-            menu.insert(new gui.MenuItem({
+            this.menu.insert(new gui.MenuItem({
                 label: 'File',
                 submenu: fileMenu
             }), process.platform === 'darwin' ? 1 : 0);
-            menu.append(new gui.MenuItem({
+            this.menu.append(new gui.MenuItem({
                 label: 'Book',
                 submenu: bookMenu
             }));
-            menu.append(new gui.MenuItem({
+            this.menu.append(new gui.MenuItem({
                 label: 'Preferences',
                 submenu: preferencesMenu
             }));
-            menu.append(new gui.MenuItem({
+            this.menu.append(new gui.MenuItem({
                 label: 'Develop',
                 submenu: devMenu
             }));
-            menu.append(new gui.MenuItem({
+            this.menu.append(new gui.MenuItem({
                 label: 'Help',
                 submenu: helpMenu
             }));
 
             // Set the window's menu
             if(process.platform !== 'darwin') {
-                gui.Window.get().menu = menu;
+                gui.Window.get().menu = this.menu;
             }
 
             // Save before quitting
@@ -272,7 +282,7 @@ require([
                 // Change current book
                 that.setBook(new BookView({
                     model: book
-                }));
+                }, that));
 
                 // Use as latest book
                 if (options.setLatest) that.setLatestBook(_path);

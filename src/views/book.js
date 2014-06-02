@@ -15,6 +15,7 @@ define([
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
+    var gui = node.gui;
 
     var BookView = hr.View.extend({
         className: "book",
@@ -54,7 +55,37 @@ define([
             this.preview.update();
             this.grid.addView(this.preview);
 
+            // Languages menu
+            this.model.on("change:langs", this.updateLanguagesMenu, this);
+            this.model.on("change:lang", function() {
+                this.summary.load();
+                this.openReadme();
+            }, this);
+            this.model.on("set:lang", this.updateLanguagesMenu, this);
+            this.updateLanguagesMenu();
+
             this.openReadme();
+        },
+
+        // Update languages menu
+        updateLanguagesMenu: function() {
+            var that = this;
+            var submenu = new gui.Menu();
+            var currentLang = this.model.get("lang");
+
+            _.chain(this.model.get("langs"))
+            .map(function(lang) {
+                return new gui.MenuItem({
+                    label: lang.title,
+                    type: "checkbox",
+                    checked: currentLang.lang == lang.lang,
+                    click: function () {
+                        that.model.set("lang", lang);
+                    }
+                });
+            })
+            .each(submenu.append.bind(submenu));
+            this.parent.langsMenu.submenu = submenu;
         },
 
         // Build the book (website)
@@ -146,7 +177,7 @@ define([
                         article.set("path", normalize(path));
                         return Q();
                     }else{
-                        return dialogs.saveAs(article.get("title")+".md", that.model.root())
+                        return dialogs.saveAs(article.get("title")+".md", that.model.contentRoot())
                         .then(updateArticlePath);
                     }
 

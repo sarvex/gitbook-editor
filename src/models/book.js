@@ -14,7 +14,8 @@ define([
                 title: "Default",
                 path: "./",
                 lang: "default"
-            }
+            },
+            langs: []
         },
 
         isValidPath: function(_path) {
@@ -32,9 +33,11 @@ define([
         contentPath: function(_path) {
             return path.join(this.get("lang.path", "./"), _path);
         },
-
         root: function() {
             return this.realPath("/");
+        },
+        contentRoot: function() {
+            return this.realPath(this.get("lang.path", "./"));
         },
 
         /*
@@ -185,7 +188,6 @@ define([
                 return that.langs();
             })
             .then(function(langs) {
-                console.log(langs);
                 that.set("lang", _.first(langs));
                 return that.contentExists("SUMMARY.md")
             })
@@ -223,6 +225,10 @@ define([
                 .then(function(content) {
                     return parse.langs(content)
                 }).get("list");
+            })
+            .then(function(langs) {
+                that.set("langs", langs);
+                return langs;
             });
         },
 
