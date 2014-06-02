@@ -143,7 +143,7 @@ define([
             });
 
             this.editor.renderer.scrollBarV.element.addEventListener("scroll",  _.throttle(function(e) {
-                var h = $(this.editor.renderer.scrollBarV.element).scrollTop();
+                var h = this.scrollTop();
                 var th = this.$(".content").height();
                 if (this.parent.preview.autoScroll) this.parent.preview.scrollTop((h*100)/th);
             }, 50).bind(this));
@@ -156,6 +156,10 @@ define([
             this.listenTo(this.book, "article:open", this.onArticleChange);
             this.listenTo(this.book, "article:state", this.onArticleState);
             this.listenTo(this.book, "article:save", this.onArticleSave);
+        },
+
+        scrollTop: function() {
+            return $(this.editor.renderer.scrollBarV.element).scrollTop();
         },
 
         finish: function() {
