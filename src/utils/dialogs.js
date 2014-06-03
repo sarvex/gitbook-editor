@@ -38,10 +38,14 @@ define([
          *
          * @param {object} fields map of fields (standard with settings fields)
          */
-        fields: function(title, fields, values, options) {
+        fields: function(title, sections, values, options) {
+            if (!_.isArray(sections)) sections = [sections];
+
+            var fields = _.chain(sections).merge().value();
+
             return Dialogs.open(null, _.defaults(options || {}, {
                 "title": title,
-                "fields": fields,
+                "sections": sections,
                 "values": values || {},
                 "dialog": "fields",
                 "autoFocus": true,

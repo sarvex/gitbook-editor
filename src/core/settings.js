@@ -18,32 +18,36 @@ define([
         },
         dialog: function() {
             var that = this;
-            return dialogs.fields("Advanced Settings", {
-                autoFileManagement: {
-                    label: "Auto file management",
-                    type: "checkbox"
+            return dialogs.fields("Advanced Settings", [
+                {
+                    autoFileManagement: {
+                        label: "Auto file management",
+                        type: "checkbox"
+                    },
+                    normalizeWhitespace: {
+                        label: "Normalize whitespace",
+                        type: "checkbox"
+                    },
+                    normalizeEof: {
+                        label: "Normalize end-of-line",
+                        type: "checkbox"
+                    }
                 },
-                normalizeWhitespace: {
-                    label: "Normalize whitespace",
-                    type: "checkbox"
-                },
-                normalizeEof: {
-                    label: "Normalize end-of-line",
-                    type: "checkbox"
-                },
-                username: {
-                    label: "Username",
-                    type: "text"
-                },
-                token: {
-                    label: "Token",
-                    type: "text"
-                },
-                host: {
-                    label: "Host",
-                    type: "text"
+                {
+                    username: {
+                        label: "Username",
+                        type: "text"
+                    },
+                    token: {
+                        label: "Token",
+                        type: "text"
+                    },
+                    host: {
+                        label: "Host",
+                        type: "text"
+                    }
                 }
-            }, that.toJSON())
+            ], that.toJSON())
             .then(function(values) {
                 that.set(values);
                 that.setStateToStorage();
