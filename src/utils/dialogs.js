@@ -41,7 +41,7 @@ define([
         fields: function(title, sections, values, options) {
             if (!_.isArray(sections)) sections = [sections];
 
-            var fields = _.chain(sections).merge().value();
+            var fields = _.reduce(sections, function(prev, value) { return _.merge(prev, value); }, {});
 
             return Dialogs.open(null, _.defaults(options || {}, {
                 "title": title,
@@ -62,7 +62,7 @@ define([
                         'action': function(el)  { return null; }
                     };
 
-                    _.each(that.options.fields, function(field, key) {
+                    _.each(fields, function(field, key) {
                         var v = selectors[field.type](that.$("*[name='"+ key+"']"));
                         if (v !== null) data[key] = v;
                     });
