@@ -101,15 +101,15 @@ define([
         buildBookFile: function(format, params) {
             var that = this;
 
-            var filename = format == "pdf" ? "book.pdf" : "book.epub";
+            var filename = "book."+format;
 
             dialogs.saveAs(filename)
             .then(function(_path) {
                 return generate.file(_.extend(params || {}, {
-                    extension: "pdf",
+                    extension: format,
                     input: that.model.root(),
                     output: _path,
-                    generator: format
+                    generator: "ebook"
                 }))
                 .then(_.constant(_path));
             })

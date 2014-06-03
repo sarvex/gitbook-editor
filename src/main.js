@@ -158,9 +158,15 @@ require([
                 }
             }));
             bookMenu.append(new gui.MenuItem({
-                label: 'Build eBook As...',
+                label: 'Build eBook (EPUB) As...',
                 click: function () {
-                    that.book.buildBookFile("ebook");
+                    that.book.buildBookFile("epub");
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                label: 'Build eBook (MOBI) As...',
+                click: function () {
+                    that.book.buildBookFile("mobi");
                 }
             }));
 
