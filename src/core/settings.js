@@ -8,6 +8,7 @@ define([
             autoFileManagement: true,
             normalizeWhitespace: true,
             normalizeEof: true,
+            wordWrap: "free",
             host: "https://www.gitbook.io"
         },
         getStateFromStorage: function (){
@@ -24,6 +25,8 @@ define([
                         label: "Auto file management",
                         type: "checkbox"
                     },
+                },
+                {
                     normalizeWhitespace: {
                         label: "Normalize whitespace",
                         type: "checkbox"
@@ -31,6 +34,16 @@ define([
                     normalizeEof: {
                         label: "Normalize end-of-line",
                         type: "checkbox"
+                    },
+                    wordWrap: {
+                        label: "Soft Wrap",
+                        type: "select",
+                        options: {
+                            "free": "Free",
+                            "off": "Off",
+                            "80": "80 chars",
+                            "40": "40 chars"
+                        }
                     }
                 },
                 {

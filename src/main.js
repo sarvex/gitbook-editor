@@ -245,7 +245,7 @@ require([
                 }
             });
 
-            settings.on("change:username", this.updateAccountMenu, this);
+            this.listenTo(settings, "change:username", this.updateAccountMenu);
 
             this.checkUpdate(false);
         },

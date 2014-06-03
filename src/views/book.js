@@ -56,12 +56,12 @@ define([
             this.grid.addView(this.preview);
 
             // Languages menu
-            this.model.on("change:langs", this.updateLanguagesMenu, this);
-            this.model.on("change:lang", function() {
+            this.listenTo(this.model, "change:langs", this.updateLanguagesMenu);
+            this.listenTo(this.model, "change:lang", function() {
                 this.summary.load();
                 this.openReadme();
-            }, this);
-            this.model.on("set:lang", this.updateLanguagesMenu, this);
+            });
+            this.listenTo(this.model, "set:lang", this.updateLanguagesMenu);
             this.updateLanguagesMenu();
 
             this.openReadme();

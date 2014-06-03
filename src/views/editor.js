@@ -2,9 +2,10 @@ define([
     "hr/hr",
     "hr/dom",
     "ace",
+    "core/settings",
     "utils/dialogs",
     "text!resources/templates/editor.html"
-], function(hr, $, ace, dialogs, templateFile) {
+], function(hr, $, ace, settings, dialogs, templateFile) {
     var aceconfig = ace.require("ace/config");
     aceconfig.set("basePath", "static/ace");
 
@@ -156,6 +157,21 @@ define([
             this.listenTo(this.book, "article:open", this.onArticleChange);
             this.listenTo(this.book, "article:state", this.onArticleState);
             this.listenTo(this.book, "article:save", this.onArticleSave);
+            this.listenTo(settings, "change:wordWrap", this.updateEditorOptions);
+
+            this.updateEditorOptions();
+        },
+
+        updateEditorOptions: function() {
+            var wordWrap = settings.get("wordWrap");
+
+            if (wordWrap == "off") {
+                this.editor.session.setUseWrapMode(false);
+            } else {
+                wordWrap = wordWrap == "free" ? null : Number(wordWrap);
+                this.editor.session.setUseWrapMode(true);
+                this.editor.session.setWrapLimitRange(wordWrap, wordWrap);
+            }
         },
 
         scrollTop: function() {
