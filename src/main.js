@@ -181,9 +181,15 @@ require([
 
             var helpMenu = new node.gui.Menu();
             helpMenu.append(new gui.MenuItem({
-                label: 'GitHub',
+                label: 'Official Website',
                 click: function () {
-                    gui.Shell.openExternal('https://github.com/GitbookIO/gitbook');
+                    gui.Shell.openExternal('https://www.gitbook.io');
+                }
+            }));
+            helpMenu.append(new gui.MenuItem({
+                label: 'Documentation',
+                click: function () {
+                    gui.Shell.openExternal('http://help.gitbook.io');
                 }
             }));
             helpMenu.append(new gui.MenuItem({
