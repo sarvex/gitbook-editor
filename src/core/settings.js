@@ -6,6 +6,8 @@ define([
     var SettingsModel = hr.Model.extend({
         defaults: {
             autoFileManagement: true,
+            normalizeWhitespace: true,
+            normalizeEof: true,
             host: "https://www.gitbook.io"
         },
         getStateFromStorage: function (){
@@ -19,6 +21,14 @@ define([
             return dialogs.fields("Advanced Settings", {
                 autoFileManagement: {
                     label: "Auto file management",
+                    type: "checkbox"
+                },
+                normalizeWhitespace: {
+                    label: "Normalize whitespace",
+                    type: "checkbox"
+                },
+                normalizeEof: {
+                    label: "Normalize end-of-line",
                     type: "checkbox"
                 },
                 username: {

@@ -337,10 +337,9 @@ define([
             if (!this.articles[path]) return Q.reject(new Error("No content to save for this article"));
 
             // Normalize content before saving
-            var content = normalize.eof(
-            normalize.whitespace(
-                this.articles[path].content
-            ));
+            var content = this.articles[path].content;
+            if (settings.get("normalizeEof")) content = normalize.eof(content);
+            if (settings.get("normalizeWhitespace")) content = normalize.whitespace(content);
 
             // Try to create the directory
             return that.model.contentMkdir(dirname(path))
