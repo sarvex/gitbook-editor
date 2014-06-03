@@ -4,6 +4,7 @@ define([
     var request = node.require("request");
     var semver = node.require("semver");
     var pkg = node.require("../package.json");
+    var gitbookPkg = node.require("gitbook/package.json");
 
     var isAvailable = function() {
         var d = Q.defer();
@@ -25,6 +26,10 @@ define([
     };
 
     return {
-        isAvailable: isAvailable
+        isAvailable: isAvailable,
+        version: pkg.version,
+        gitbook: {
+            version: gitbookPkg.version
+        }
     };
 });

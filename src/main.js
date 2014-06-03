@@ -333,7 +333,7 @@ require([
             .then(function(version) {
                 dialogs.alert('Update', "An update is available ("+version+"), download it at http://www.gitbook.io");
             }, function() {
-                if (signalNo) dialogs.alert('Update', "No update available. Check back soon!");
+                if (signalNo) dialogs.alert('Check back soon!', "No update available. Using version version "+update.version+" and GitBook version "+update.gitbook.version+".");
             });
         },
 
