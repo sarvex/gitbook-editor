@@ -232,7 +232,7 @@ define([
 
         // Open the help about markdown
         doOpenHelp: function() {
-            node.gui.Shell.openExternal("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet");
+            node.gui.Shell.openExternal("https://www.gitbook.io/book/gitbookio/markdown");
         }
     });
 
