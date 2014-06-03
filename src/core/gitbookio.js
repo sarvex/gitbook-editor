@@ -28,6 +28,7 @@ define([
             .then(function() {
                 settings.set("username", null);
                 settings.set("token", null);
+                settings.setStateToStorage();
             });
         }
 
