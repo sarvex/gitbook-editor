@@ -23,6 +23,14 @@ define([
 
     /* Dialog to connect an account */
     var connectAccount = function() {
+        if (settings.get("username") && settings.get("token")) {
+            return dialogs.confirm("Disconnect your account", "Do you really want to unlink this computer with your GitBook account?")
+            .then(function() {
+                settings.set("username", null);
+                settings.set("token", null);
+            });
+        }
+
         return dialogs.fields("Connect your GitBook.io account", {
             username: {
                 label: "Username or Email",
@@ -42,7 +50,9 @@ define([
             settings.setStateToStorage();
         })
         .then(function() {
-            dialogs.alert("Account connected", "You're account is now connected to this computer.");
+            dialogs.alert("Account connected",
+                "Your GitBook account is now connected to this computer. "
+                + "You can disconnect it by clicking on your username on the 'Preference' menu.");
         }, dialogs.error)
     };
 

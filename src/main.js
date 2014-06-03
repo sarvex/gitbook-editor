@@ -85,7 +85,16 @@ require([
 
             var bookMenu = new node.gui.Menu();
             bookMenu.append(new gui.MenuItem({
-                label: 'Publish',
+                label: 'Save all',
+                click: function () {
+                    that.book.saveAll();
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            bookMenu.append(new gui.MenuItem({
+                label: 'Publish As...',
                 click: function () {
                     gitbookIo.publishBook(that.book.model);
                 }
@@ -105,12 +114,6 @@ require([
             bookMenu.append(this.langsMenu);
             bookMenu.append(new gui.MenuItem({
                 type: 'separator'
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Save all',
-                click: function () {
-                    that.book.saveAll();
-                }
             }));
             bookMenu.append(new gui.MenuItem({
                 label: 'Edit Configuration',
@@ -185,16 +188,21 @@ require([
             }));
 
             var preferencesMenu = new node.gui.Menu();
+            this.accountMenuItem = new gui.MenuItem({
+                label: "",
+                click: function () {
+                    gitbookIo.connectAccount();
+                }
+            });
+            this.updateAccountMenu();
+            preferencesMenu.append(this.accountMenuItem);
+            preferencesMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
             preferencesMenu.append(new gui.MenuItem({
                 label: 'Advanced Settings',
                 click: function () {
                     settings.dialog();
-                }
-            }));
-            preferencesMenu.append(new gui.MenuItem({
-                label: 'Connect Account',
-                click: function () {
-                    gitbookIo.connectAccount();
                 }
             }));
 
@@ -236,6 +244,8 @@ require([
                     this.close(true);
                 }
             });
+
+            settings.on("change:username", this.updateAccountMenu, this);
 
             this.checkUpdate(false);
         },
@@ -325,6 +335,11 @@ require([
             }, function() {
                 if (signalNo) dialogs.alert('Update', "No update available. Check back soon!");
             });
+        },
+
+        // Update account menu
+        updateAccountMenu: function() {
+            this.accountMenuItem.label = settings.get("username") ? settings.get("username") : 'Connect Account';
         }
     });
 
