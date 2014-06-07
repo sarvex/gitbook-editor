@@ -161,7 +161,7 @@ define([
             $f.appendTo($("body"));
             $f.hide();
 
-            $f.prop(props);
+            $f.prop(props || {});
 
             // Create file element for selection
             $f.one("change", function(e) {

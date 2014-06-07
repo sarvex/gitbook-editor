@@ -109,6 +109,12 @@ require([
                 }
             }));
             bookMenu.append(new gui.MenuItem({
+                label: 'Set Cover Picture',
+                click: function () {
+                    that.book.setCover();
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
                 type: 'separator'
             }));
             bookMenu.append(this.langsMenu);

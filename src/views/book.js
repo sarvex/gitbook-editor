@@ -3,6 +3,7 @@ define([
     "hr/promise",
     "utils/normalize",
     "utils/dialogs",
+    "utils/normalize",
     "models/article",
     "models/book",
     "core/server",
@@ -11,7 +12,7 @@ define([
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, dialogs, Article, Book, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, dialogs, normalize, Article, Book, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -133,6 +134,52 @@ define([
             .then(function() {
                 server.open();
             }, dialogs.error);
+        },
+
+        // Ask user to set a cover picture
+        setCover: function() {
+            var that = this;
+
+            return dialogs.file()
+            .then(function(coverFile) {
+                var d = Q.defer();
+
+                var canvas = $("<canvas>")[0];
+                canvas.width = 1800;
+                canvas.height = 2360;
+
+                var ctx = canvas.getContext("2d");
+                var img = $("<img>", {
+                    src: "file://"+coverFile,
+                });
+                img = img[0];
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0, 1800, 2360);
+                    var imgBig = canvas.toDataURL("image/jpeg");
+
+                    canvas.width = 200;
+                    canvas.height = 262;
+                    ctx.drawImage(img, 0, 0, 200, 262);
+                    var imgSmall = canvas.toDataURL("image/jpeg");
+
+                    d.resolve({
+                        big: imgBig,
+                        small: imgSmall
+                    });
+                };
+                img.onerror = function(err) {
+                    d.reject(err);
+                };
+
+                return d.promise;
+            })
+            .then(function(img) {
+                return Q.all([
+                    that.model.write("cover.jpg", normalize.dataTobuffer(img.big)),
+                    that.model.write("cover_small.jpg", normalize.dataTobuffer(img.small))
+                ]);
+            })
+            .fail(dialogs.alert);
         },
 
         // Open a specific article
