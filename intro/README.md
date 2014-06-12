@@ -4,7 +4,7 @@ Here is what you need to know.
 
 1. This application is open source, you can contribute to it on [GitHub](https://github.com/GitbookIO/editor).
 
-2. **Open a book** or create a fresh new using the `File` menu.
+2. **Open a book** or create a fresh new one using the `File` menu.
 
 3. Edit chapter content in the left panel and see the preview in the right one.
 
