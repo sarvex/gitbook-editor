@@ -1,6 +1,6 @@
-# Welcome in GitBook Editor!
+# Welcome to GitBook Editor!
 
-Here is what you need to know.
+Here's what you need to know:
 
 1. This application is open source, you can contribute to it on [GitHub](https://github.com/GitbookIO/editor).
 
@@ -10,18 +10,17 @@ Here is what you need to know.
 
 4. Edit a chapter title by double-clicking it on the sidebar.
 
-5. Edit the summary order by drag-and-drop the chapters.
+5. Edit the summary order by drag-and-dropping the chapters.
 
-6. Test the website using "Book" > "Preview Website".
+6. Test the website using `Book` > `Preview Website` menu.
 
 7. When you're ready, publish it using your [gitbook.io](https://www.gitbook.io) account.
 
-8. Or you can build as a website, pdf or ebook; and upload this to your own server.
+8. Or you can build it as a website, PDF or ebook; and upload it to your own server.
 
-9. We want your feedback! If you have anything positive or negative to say click
-   on the `Send Feedback` button on the `Help` menu.
+9. We need your feedback! If there's anything, whether positive or negative, please share it with us using `Help` > `Send Feedback` menu.
 
-10. Here is where you can get more help with this application
+10. You can get more help with this application by
 
-   * The [GitBook docs](https://github.com/GitbookIO/gitbook) contain Guides on how to write books using GitBook.
-   * Post issues on [GitHub](https://github.com/FriendCode/codebox/issues).
+   * reading the [GitBook docs](https://github.com/GitbookIO/gitbook), which contain guides on how to write books using GitBook, and
+   * posting issues on [GitHub](https://github.com/FriendCode/codebox/issues).
