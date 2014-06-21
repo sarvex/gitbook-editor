@@ -158,12 +158,14 @@ define([
             this.listenTo(this.book, "article:state", this.onArticleState);
             this.listenTo(this.book, "article:save", this.onArticleSave);
             this.listenTo(settings, "change:wordWrap", this.updateEditorOptions);
+            this.listenTo(settings, "change:editorFontSize", this.updateEditorOptions);
 
             this.updateEditorOptions();
         },
 
         updateEditorOptions: function() {
             var wordWrap = settings.get("wordWrap");
+            var editorFontSize = settings.get("editorFontSize");
 
             if (wordWrap == "off") {
                 this.editor.session.setUseWrapMode(false);
@@ -172,6 +174,8 @@ define([
                 this.editor.session.setUseWrapMode(true);
                 this.editor.session.setWrapLimitRange(wordWrap, wordWrap);
             }
+
+            this.editor.setFontSize(editorFontSize);
         },
 
         scrollTop: function() {
