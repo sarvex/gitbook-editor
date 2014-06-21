@@ -9,6 +9,7 @@ define([
             normalizeWhitespace: true,
             normalizeEof: true,
             wordWrap: "free",
+            editorFontSize: "100%",
             host: "https://www.gitbook.io"
         },
         getStateFromStorage: function (){
@@ -43,6 +44,18 @@ define([
                             "off": "Off",
                             "80": "80 chars",
                             "40": "40 chars"
+                        }
+                    }
+                },
+                {
+                    editorFontSize: {
+                        label: "Editor font size",
+                        type: "select",
+                        options: {
+                            "75%": "Small",
+                            "100%": "Normal",
+                            "150%": "Large",
+                            "200%": "Larger"
                         }
                     }
                 },
