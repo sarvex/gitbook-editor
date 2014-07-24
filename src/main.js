@@ -42,6 +42,11 @@ require([
                 submenu: new gui.Menu()
             });
 
+            this.recentBooksMenu = new gui.MenuItem({
+                label: 'Open Recent',
+                submenu: new gui.Menu()
+            });
+
             this.setBook(new BookView({
                 base: defaultBook
             }, this));
@@ -56,11 +61,12 @@ require([
                 }
             }));
             fileMenu.append(new gui.MenuItem({
-                label: 'Open Book',
+                label: 'Open...',
                 click: function () {
                     that.openFolderSelection();
                 }
             }));
+            fileMenu.append(this.recentBooksMenu);
             fileMenu.append(new gui.MenuItem({
                 label: 'Open Introduction Book',
                 click: function () {
@@ -291,13 +297,36 @@ require([
             hr.Storage.set('latestBook', _path);
         },
 
+        addRecentBook: function(_path) {
+            var books = hr.Storage.get('latestBooks') || [];
+            books.unshift(_path);
+            books = _.unique(books);
+            books = books.slice(0, 8);
+            hr.Storage.set('latestBooks', books);
+
+            var submenu = new gui.Menu();
+
+            _.chain(books)
+            .map(function(bookPath) {
+                return new gui.MenuItem({
+                    label: bookPath,
+                    click: function () {
+                        openPath(bookPath)
+                    }
+                });
+            })
+            .each(submenu.append.bind(submenu));
+            this.recentBooksMenu.submenu = submenu;
+        },
+
         // Open a book at a specific path
         openPath: function(_path, options) {
             analytic.track("open");
 
             options = _.defaults(options || {}, {
                 failDialog: true,
-                setLatest: true
+                setLatest: true,
+                addLatests: true
             });
 
             var that = this;
@@ -314,6 +343,7 @@ require([
 
                 // Use as latest book
                 if (options.setLatest) that.setLatestBook(_path);
+                if (options.addLatests) that.addRecentBook(_path);
             }, function(err) {
                 if (!options.failDialog) return Q.reject(err);
                 return dialogs.error(err);
