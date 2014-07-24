@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     var srcPath = path.resolve(__dirname, "src");
 
     // Load grunt modules
-    grunt.loadNpmTasks('hr.js');
+    grunt.loadNpmTasks('grunt-hr-builder');
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -22,6 +22,8 @@ module.exports = function (grunt) {
         pkg: pkg,
         hr: {
             app: {
+                "source": path.resolve(__dirname, "node_modules/happyrhino"),
+
                 // Base directory for the application
                 "base": srcPath,
 
