@@ -1,8 +1,9 @@
 define([
     "hr/utils",
     "core/settings",
-    "utils/dialogs"
-], function(_, settings, dialogs) {
+    "utils/dialogs",
+    "utils/analytic"
+], function(_, settings, dialogs, analytic) {
     var GitBook = node.require("gitbook-api");
     var client = new GitBook();
     var gui = node.gui;
@@ -26,6 +27,7 @@ define([
         if (settings.get("username") && settings.get("token")) {
             return dialogs.confirm("Disconnect your account", "Do you really want to unlink this computer with your GitBook account?")
             .then(function() {
+                analytic.track("account.disconnect");
                 settings.set("username", null);
                 settings.set("token", null);
                 settings.setStateToStorage();
@@ -43,6 +45,7 @@ define([
             }
         }, {})
         .then(function(auth) {
+            analytic.track("account.connect");
             return client.login(auth.username, auth.password);
         })
         .then(function() {
@@ -61,7 +64,6 @@ define([
     var publishBook = function(toPublish) {
         var books, book;
 
-        console.log(client.config.auth)
         if (!client.config.auth || !client.config.auth.username || !client.config.auth.password) {
             return connectAccount()
             .then(function() {
@@ -99,6 +101,7 @@ define([
             });
             if (!build.version) throw "Need a version";
 
+            analytic.track("publish");
             return book.publishFolder(build.version, toPublish.root());
         })
         .then(function() {
