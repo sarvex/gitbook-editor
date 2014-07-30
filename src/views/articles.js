@@ -7,7 +7,7 @@ define([
     "utils/dblclick"
 ], function(hr, dnd, dialogs, Articles, templateFile) {
     var normalizePath = node.require("normall").filename;
-    var dirname = node.require("path").dirname;
+    var path = node.require("path");
     var gui = node.gui;
 
     var ArticleItem = hr.List.Item.extend({
@@ -121,11 +121,11 @@ define([
             }
             dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
             .then(function(title) {
-                var dir = dirname(that.model.get('path')),
+                var dir = path.dirname(that.model.get('path')),
                     _title = normalizePath(title),
                     article = {
                         title: title,
-                        path: dir+"/"+_title
+                        path: path.join(dir, _title)
                     };
                 that.model.articles.add(article);
                 that.summary.save();
@@ -136,13 +136,13 @@ define([
             var that = this;
 
             var removeArticle = function () {
-                var path = that.model.get("path"),
-                names = path.split("/");
+                var articlepath = that.model.get("path"),
+                names = articlepath.split("/");
                 // to do change to path.filename
                 if (names[names.length - 1] === "README.md"){
-                    return that.editor.model.rmdir(dirname(path));
+                    return that.editor.model.rmdir(path.dirname(articlepath));
                 }
-                return that.editor.model.unlink(path);
+                return that.editor.model.unlink(articlepath);
             };
             var hasChildren = that.model.articles.models.length !== 0;
             dialogs.confirm("Remove entry", "Do you really want to remove this" +
