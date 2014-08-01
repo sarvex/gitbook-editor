@@ -1,9 +1,10 @@
 define([
     "hr/utils",
     "core/settings",
+    "utils/loading",
     "utils/dialogs",
     "utils/analytic"
-], function(_, settings, dialogs, analytic) {
+], function(_, settings, loading, dialogs, analytic) {
     var GitBook = node.require("gitbook-api");
     var client = new GitBook();
     var gui = node.gui;
@@ -46,7 +47,7 @@ define([
         }, {})
         .then(function(auth) {
             analytic.track("account.connect");
-            return client.login(auth.username, auth.password);
+            return loading.show(client.login(auth.username, auth.password), "Connecting to your account ...");
         })
         .then(function() {
             settings.set("username", client.config.auth.username, { silent: true });
@@ -71,7 +72,7 @@ define([
             });
         }
 
-        return client.books()
+        return loading.show(client.books(), "Listing books ...")
         .then(function(_books) {
             books = _books;
 
@@ -102,7 +103,7 @@ define([
             if (!build.version) throw "Need a version";
 
             analytic.track("publish");
-            return book.publishFolder(build.version, toPublish.root());
+            return loading.show(book.publishFolder(build.version, toPublish.root()), "Publishing new version ...");
         })
         .then(function() {
             var link = client.config.host+"/book/"+book.id+"/activity";
