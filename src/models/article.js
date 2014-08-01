@@ -1,6 +1,8 @@
 define([
     "hr/hr"
 ], function(hr) {
+    var path = node.require("path");
+
     var Article = hr.Model.extend({
         defaults: {
             title: null,
@@ -27,6 +29,11 @@ define([
 
         level: function() {
             return this.get("level").split(".").length;
+        },
+
+        isIntroduction: function() {
+            var _path = this.get("path");
+            return path.dirname(_path) == "." && path.basename(_path) == "README.md";
         }
     });
 

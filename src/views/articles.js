@@ -30,6 +30,8 @@ define([
                 view: this,
                 dragType: this.summary.drag,
                 handler: function(article) {
+                    if (that.model.isIntroduction()) return;
+
                     var i = that.collection.indexOf(that.model);
                     var ib = that.collection.indexOf(article);
 
@@ -48,7 +50,7 @@ define([
                 view: this,
                 data: this.model,
                 start: function() {
-                    return !that.$el.hasClass("mode-edit");
+                    return !that.$el.hasClass("mode-edit") && !that.model.isIntroduction();
                 }
             });
 
