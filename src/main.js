@@ -4,6 +4,7 @@ require([
     "hr/promise",
     "hr/hr",
     "hr/args",
+    "utils/loading",
     "utils/dialogs",
     "utils/analytic",
     "core/settings",
@@ -11,7 +12,7 @@ require([
     "core/update",
     "models/book",
     "views/book"
-], function(_, $, Q, hr, args, dialogs, analytic, settings, gitbookIo, update, Book, BookView) {
+], function(_, $, Q, hr, args, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -36,6 +37,11 @@ require([
             Application.__super__.initialize.apply(this, arguments);
 
             var that = this;
+
+            // Loading bar
+            loading.appendTo(this);
+
+            // Setup menu
             this.menu = new gui.Menu({ type: 'menubar' });
             this.langsMenu = new gui.MenuItem({
                 label: 'Languages',
