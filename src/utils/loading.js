@@ -15,6 +15,11 @@ define([
             });
             this.$message.appendTo(this.$el);
 
+            this.$icon = $("<i>", {
+                'class': "icon fa fa-refresh fa-spin"
+            });
+            this.$icon.appendTo(this.$el);
+
             this.listenTo(this.model, "change", this.update);
         },
         render: function() {
