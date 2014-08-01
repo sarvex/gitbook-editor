@@ -383,7 +383,7 @@ require([
 
         // Check update
         checkUpdate: function(signalNo) {
-            update.isAvailable()
+            loading.show(update.isAvailable(), "Checking for update ...")
             .then(function(version) {
                 dialogs.alert('Update', "An update is available ("+version+"), download it at http://www.gitbook.io");
             }, function() {
