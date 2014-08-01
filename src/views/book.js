@@ -2,6 +2,7 @@ define([
     "hr/hr",
     "hr/promise",
     "utils/normalize",
+    "utils/loading",
     "utils/dialogs",
     "utils/normalize",
     "models/article",
@@ -12,7 +13,7 @@ define([
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, dialogs, normalize, Article, Book, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, loading, dialogs, normalize, Article, Book, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -93,9 +94,11 @@ define([
         buildBook: function(params, options) {
             var that = this;
 
-            return generate.folder(_.extend(params || {}, {
+            var p = generate.folder(_.extend(params || {}, {
                 input: this.model.root()
             }));
+
+            return loading.show(p, "Building website ...");
         },
 
         // Generate a file (pdf or ebook)
@@ -106,12 +109,14 @@ define([
 
             dialogs.saveAs(filename)
             .then(function(_path) {
-                return generate.file(_.extend(params || {}, {
+                var p = generate.file(_.extend(params || {}, {
                     extension: format,
                     input: that.model.root(),
                     output: _path,
                     generator: "ebook"
                 }))
+
+                return loading.show(p, "Building ebook ("+format+") ...")
                 .then(_.constant(_path));
             })
             .then(function(_path) {
