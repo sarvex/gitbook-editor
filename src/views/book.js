@@ -131,7 +131,7 @@ define([
 
             return server.stop()
             .then(function() {
-                return that.buildBook();
+                return loading.show(that.buildBook(), "Preparing website for preview ...");
             })
             .then(function(options) {
                 return server.start(options.output)
