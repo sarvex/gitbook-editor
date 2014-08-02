@@ -304,6 +304,7 @@ require([
         },
 
         addRecentBook: function(_path) {
+            var that = this;
             var books = hr.Storage.get('latestBooks') || [];
             books.unshift(_path);
             books = _.unique(books);
@@ -317,7 +318,7 @@ require([
                 return new gui.MenuItem({
                     label: bookPath,
                     click: function () {
-                        openPath(bookPath)
+                        that.openPath(bookPath)
                     }
                 });
             })
@@ -340,7 +341,7 @@ require([
                 base: _path
             });
 
-            return book.valid()
+            return loading.show(book.valid()
             .then(function() {
                 // Change current book
                 that.setBook(new BookView({
@@ -353,7 +354,7 @@ require([
             }, function(err) {
                 if (!options.failDialog) return Q.reject(err);
                 return dialogs.error(err);
-            });
+            }), "Opening book '"+_path+"'");
         },
 
         // Click to select a new local folder
