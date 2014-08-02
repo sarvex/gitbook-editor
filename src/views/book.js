@@ -60,13 +60,22 @@ define([
             // Languages menu
             this.listenTo(this.model, "change:langs", this.updateLanguagesMenu);
             this.listenTo(this.model, "change:lang", function() {
-                this.summary.load();
-                this.openReadme();
+                return loading.show(this.updateContent(), "Switching to language '"+this.model.get("lang.lang")+"' ...");
             });
             this.listenTo(this.model, "set:lang", this.updateLanguagesMenu);
             this.updateLanguagesMenu();
 
-            this.openReadme();
+            loading.show(this.updateContent(), "Loading book content ...");
+        },
+
+        // Update all content
+        updateContent: function() {
+            var that = this;
+
+            return this.summary.load()
+            .then(function() {
+                return that.openReadme();
+            });
         },
 
         // Update languages menu
@@ -282,10 +291,7 @@ define([
 
         // Open readme
         openReadme: function() {
-            return this.openArticle(new Article({}, {
-                title: "Introduction",
-                path: "README.md"
-            }));
+            return this.openArticle(this.summary.getIntroduction());
         },
 
         // Get unsaved article

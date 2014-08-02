@@ -40,7 +40,11 @@ define([
             this.model.set("content", msg);
 
             p.then(function() {
-                return Q.delay(300);
+                return Q.delay(800);
+            })
+            .fail(function(e) {
+                console.error("laoding error", msg, e);
+                return Q.reject(e);
             })
             .fin(function() {
                 that.toggle(false);

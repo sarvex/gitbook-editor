@@ -52,6 +52,16 @@ define([
             content = content+bl;
 
             return content;
+        },
+
+
+        /*
+         * Get readme
+         */
+        getIntroduction: function() {
+            return this.find(function(article) {
+                return article.isIntroduction();
+            });
         }
     });
 

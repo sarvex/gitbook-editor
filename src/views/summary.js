@@ -13,8 +13,7 @@ define([
         className: "summary",
         template: templateFile,
         events: {
-            "contextmenu": "contextMenu",
-            "click .open-readme": "openReadme"
+            "contextmenu": "contextMenu"
         },
 
         initialize: function() {
@@ -30,8 +29,6 @@ define([
                 label: 'Add Chapter',
                 click: this.addChapter.bind(this)
             }));
-
-            this.load();
         },
 
         finish: function() {
@@ -45,7 +42,7 @@ define([
         load: function() {
             var that = this;
 
-            this.parent.model.contentRead("SUMMARY.md")
+            return this.parent.model.contentRead("SUMMARY.md")
             .then(function(content) {
                 that.articles.collection.parseSummary(content);
             }, function(err) {
@@ -85,14 +82,6 @@ define([
         },
 
         /*
-         * Open README.md introduction
-         */
-        openReadme: function(e) {
-            if (e) e.preventDefault();
-            this.parent.openReadme();
-        },
-
-        /*
          * Get article by its path
          */
         getArticle: function(_path, collection) {
@@ -100,10 +89,7 @@ define([
             collection = collection || this.articles.collection;
 
             if (_path == "README.md") {
-                return new Article({}, {
-                    title: "Introduction",
-                    path: "README.md"
-                });
+                return collection.getIntroduction();
             }
 
             // Search in this collection
@@ -120,6 +106,13 @@ define([
             });
 
             return article;
+        },
+
+        /*
+         *  Return introduction
+         */
+        getIntroduction: function() {
+            return this.getArticle("README.md");
         },
 
         contextMenu: function(e) {
