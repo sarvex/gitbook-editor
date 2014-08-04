@@ -40,7 +40,7 @@
         "grunt-node-webkit-builder": "0.1.19",
         "grunt-github-releaser": "0.1.16",
         "grunt-hr-builder": "1.1.0",
-        "happyrhino": "1.0.4"
+        "happyrhino": "1.0.5"
     },
     "peerDependencies": {
         "grunt": "~0.4.1"
