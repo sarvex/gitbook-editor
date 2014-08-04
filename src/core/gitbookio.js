@@ -3,8 +3,9 @@ define([
     "core/settings",
     "utils/loading",
     "utils/dialogs",
-    "utils/analytic"
-], function(_, settings, loading, dialogs, analytic) {
+    "utils/analytic",
+    "text!resources/templates/dialogs/login.html"
+], function(_, settings, loading, dialogs, analytic, templateLogin) {
     var GitBook = node.require("gitbook-api");
     var client = new GitBook();
     var gui = node.gui;
@@ -35,16 +36,15 @@ define([
             });
         }
 
-        return dialogs.fields("Connect your GitBook.io account", {
-            username: {
-                label: "Username or Email",
-                type: "text"
-            },
-            password: {
-                label: "Password",
-                type: "password"
+        return dialogs.open(null, {
+            "dialog": "login",
+            "valueSelector": function(diag) {
+                return {
+                    username: diag.$(".login-username").val(),
+                    password: diag.$(".login-password").val()
+                }
             }
-        }, {})
+        })
         .then(function(auth) {
             analytic.track("account.connect");
             return loading.show(client.login(auth.username, auth.password), "Connecting to your account ...");

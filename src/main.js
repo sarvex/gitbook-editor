@@ -31,7 +31,9 @@ require([
         name: "GitBook Editor",
         metas: {},
         links: {},
-        events: {},
+        events: {
+            "click a[target='_blank']": "openInBrowser"
+        },
 
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
@@ -395,6 +397,13 @@ require([
         // Update account menu
         updateAccountMenu: function() {
             this.accountMenuItem.label = settings.get("username") ? settings.get("username") : 'Connect Account';
+        },
+
+        // Open link in browser
+        openInBrowser: function(e) {
+            e.preventDefault();
+
+            gui.Shell.openExternal($(e.currentTarget).attr("href"));
         }
     });
 
