@@ -388,7 +388,10 @@ require([
         checkUpdate: function(signalNo) {
             loading.show(update.isAvailable(), "Checking for update ...")
             .then(function(version) {
-                dialogs.alert('Update', "An update is available ("+version+"), download it at http://www.gitbook.io");
+                return dialogs.confirm('Update', "An update is available ("+version+"), Do you want to download it now?")
+                .then(function() {
+                    gui.Shell.openExternal("https://www.gitbook.io/editor/download?version="+version);
+                });
             }, function() {
                 if (signalNo) dialogs.alert('Check back soon!', "No update available. Using version version "+update.version+" and GitBook version "+update.gitbook.version+".");
             });
