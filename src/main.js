@@ -46,6 +46,8 @@ require([
 
             // Intro
             this.intro = new IntroView({}, this);
+            this.intro.appendTo(this);
+            this.intro.update();
 
             // Setup menu
             this.menu = new gui.Menu({ type: 'menubar' });
@@ -298,8 +300,6 @@ require([
             this.book = book;
             this.book.update();
             this.book.appendTo(this);
-
-            this.intro.appendTo(this);
 
             this.title(this.book.model.title());
         },
