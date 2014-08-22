@@ -11,8 +11,9 @@ require([
     "core/gitbookio",
     "core/update",
     "models/book",
-    "views/book"
-], function(_, $, Q, hr, args, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView) {
+    "views/book",
+    "views/intro"
+], function(_, $, Q, hr, args, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView, IntroView) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -42,6 +43,9 @@ require([
 
             // Loading bar
             loading.appendTo(this);
+
+            // Intro
+            this.intro = new IntroView({}, this);
 
             // Setup menu
             this.menu = new gui.Menu({ type: 'menubar' });
@@ -294,6 +298,9 @@ require([
             this.book = book;
             this.book.update();
             this.book.appendTo(this);
+
+            this.intro.appendTo(this);
+
             this.title(this.book.model.title());
         },
 
