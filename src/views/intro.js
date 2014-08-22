@@ -15,6 +15,11 @@ define([
         initialize: function() {
             Intro.__super__.initialize.apply(this, arguments);
         },
+
+        // Toggle visibility of introduction
+        toggle: function(st) {
+            this.$el.toggle(st);
+        }
     });
 
     return Intro;
