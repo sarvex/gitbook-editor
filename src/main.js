@@ -18,7 +18,6 @@ require([
     var wrench = node.require("wrench");
     var gui = node.gui;
     var __dirname = node.require("../src/dirname");
-    var defaultBook = path.join(__dirname, "../templates/base");
 
     // Configure hr
     hr.configure(args);
