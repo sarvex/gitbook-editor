@@ -3,3 +3,5 @@ node_modules
 /build
 /appbuilds
 intro/_book
+src/vendors
+_book

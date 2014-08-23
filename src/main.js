@@ -11,13 +11,14 @@ require([
     "core/gitbookio",
     "core/update",
     "models/book",
-    "views/book"
-], function(_, $, Q, hr, args, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView) {
+    "views/book",
+    "views/intro"
+], function(_, $, Q, hr, args, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView, IntroView) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
     var __dirname = node.require("../src/dirname");
-    var defaultBook = path.join(__dirname, "../intro");
+    var defaultBook = path.join(__dirname, "../templates/base");
 
     // Configure hr
     hr.configure(args);
@@ -43,8 +44,15 @@ require([
             // Loading bar
             loading.appendTo(this);
 
+            // Intro
+            this.intro = new IntroView({}, this);
+            this.intro.appendTo(this);
+            this.intro.update();
+
             // Setup menu
             this.menu = new gui.Menu({ type: 'menubar' });
+            if(process.platform == 'darwin') this.menu.createMacBuiltin("GitBook Editor");
+
             this.langsMenu = new gui.MenuItem({
                 label: 'Languages',
                 submenu: new gui.Menu()
@@ -55,17 +63,14 @@ require([
                 submenu: new gui.Menu()
             });
 
-            this.setBook(new BookView({
-                base: defaultBook
-            }, this));
-
-            this.openPath(this.getLatestBook(), { failDialog: false });
+            var latest = this.getLatestBook();
+            if (latest) this.openPath(latest, { failDialog: false });
 
             var fileMenu = new node.gui.Menu();
             fileMenu.append(new gui.MenuItem({
                 label: 'New Book',
                 click: function () {
-                    that.openNewBook();
+                    that.setBook(null);
                 }
             }));
             fileMenu.append(new gui.MenuItem({
@@ -75,12 +80,6 @@ require([
                 }
             }));
             fileMenu.append(this.recentBooksMenu);
-            fileMenu.append(new gui.MenuItem({
-                label: 'Open Introduction Book',
-                click: function () {
-                    that.openPath(defaultBook);
-                }
-            }));
             fileMenu.append(new gui.MenuItem({
                 type: 'separator'
             }));
@@ -190,15 +189,6 @@ require([
                 }
             }));
 
-            var devMenu = new node.gui.Menu();
-            devMenu.append(new gui.MenuItem({
-                label: 'Open Tools',
-                click: function () {
-                    var win = gui.Window.get();
-                    win.showDevTools();
-                }
-            }));
-
             var helpMenu = new node.gui.Menu();
             helpMenu.append(new gui.MenuItem({
                 label: 'Official Website',
@@ -238,27 +228,21 @@ require([
                 }
             }));
 
-            // Get reference to App's menubar
-            // if we set this later menu entries are out of order
-            if(process.platform === 'darwin') {
-                gui.Window.get().menu = this.menu;
-            }
-
             this.menu.insert(new gui.MenuItem({
                 label: 'File',
                 submenu: fileMenu
             }), process.platform === 'darwin' ? 1 : 0);
-            this.menu.append(new gui.MenuItem({
+
+            this.bookMenuItem = new gui.MenuItem({
                 label: 'Book',
-                submenu: bookMenu
-            }));
+                submenu: bookMenu,
+                enabled: false
+            });
+
+            this.menu.append(this.bookMenuItem);
             this.menu.append(new gui.MenuItem({
                 label: 'Preferences',
                 submenu: preferencesMenu
-            }));
-            this.menu.append(new gui.MenuItem({
-                label: 'Develop',
-                submenu: devMenu
             }));
             this.menu.append(new gui.MenuItem({
                 label: 'Help',
@@ -266,12 +250,11 @@ require([
             }));
 
             // Set the window's menu
-            if(process.platform !== 'darwin') {
-                gui.Window.get().menu = this.menu;
-            }
+            gui.Window.get().menu = this.menu;
 
             // Save before quitting
             gui.Window.get().on("close", function() {
+                if (!that.book) return this.close(true);
                 if (that.book.getUnsavedArticles().length == 0 || confirm("There is unsaved changes, do you really want to quit without saving?")) {
                     this.close(true);
                 }
@@ -287,24 +270,36 @@ require([
             return this.ready();
         },
 
+        // Define the current book view
         setBook: function(book) {
             if (this.book) {
                 this.book.remove();
             }
+
+
             this.book = book;
-            this.book.update();
-            this.book.appendTo(this);
-            this.title(this.book.model.title());
+            this.bookMenuItem.enabled = (this.book != null);
+
+            if (this.book) {
+                this.book.update();
+                this.book.appendTo(this);
+                this.title(this.book.model.title());
+            } else {
+                this.title("");
+            }
         },
 
+        // Return path to last book opened
         getLatestBook: function() {
-            return hr.Storage.get('latestBook') || defaultBook;
+            return hr.Storage.get('latestBook');
         },
 
+        // Define last book opened
         setLatestBook: function(_path) {
             hr.Storage.set('latestBook', _path);
         },
 
+        // Add book to recent book
         addRecentBook: function(_path) {
             var that = this;
             var books = hr.Storage.get('latestBooks') || [];
@@ -370,13 +365,14 @@ require([
         },
 
         // Create a new book and open it
-        openNewBook: function() {
+        openNewBook: function(template) {
             var that = this;
+            template = template || "base";
 
-            dialogs.folder()
+            dialogs.saveFolder()
             .then(function(_path) {
                 if (confirm("Do you really want to erase "+_path+" content and create a new book in it?")) {
-                    Q.nfcall(wrench.copyDirRecursive, path.join(__dirname, "../example"), _path, {forceDelete: true})
+                    Q.nfcall(wrench.copyDirRecursive, path.join(__dirname, "../templates/"+template), _path, {forceDelete: true})
                     .then(function() {
                         that.openPath(_path);
                     });

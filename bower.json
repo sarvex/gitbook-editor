@@ -1,0 +1,9 @@
+{
+    "name": "Editor",
+    "dependencies": {
+        "bootstrap": "3.0.0",
+        "octicons": "2.0.2",
+        "fontawesome": "4.1.0",
+        "ace-builds": "v1.1.6"
+    }
+}

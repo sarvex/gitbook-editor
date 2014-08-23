@@ -14,13 +14,21 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-node-webkit-builder');
     grunt.loadNpmTasks('grunt-github-releaser');
+    grunt.loadNpmTasks("grunt-bower-install-simple");
 
-    var NW_VERSION = "0.8.5";
+    var NW_VERSION = "0.10.2";
 
     // Init GRUNT configuraton
     grunt.initConfig({
         pkg: pkg,
-        hr: {
+        "bower-install-simple": {
+            options: {
+                color:       true,
+                production:  false,
+                directory:   "src/vendors"
+            }
+        },
+        'hr': {
             app: {
                 "source": path.resolve(__dirname, "node_modules/happyrhino"),
 
@@ -44,8 +52,10 @@ module.exports = function (grunt) {
 
                 // Static files mappage
                 "static": {
-                    "ace": path.resolve(srcPath, "vendors", "ace"),
+                    "ace": path.resolve(srcPath, "vendors/ace-builds/src"),
                     "fonts": path.resolve(srcPath, "resources", "fonts"),
+                    "fonts/octicons": path.resolve(srcPath, "vendors/octicons/octicons"),
+                    "fonts/fontawesome": path.resolve(srcPath, "vendors/fontawesome/fonts"),
                     "images": path.resolve(srcPath, "resources", "images")
                 },
 
@@ -54,24 +64,25 @@ module.exports = function (grunt) {
 
                 // Modules paths
                 'paths': {
-                    "ace": "vendors/ace/ace"
+                    "ace": "vendors/ace-builds/src/ace",
+                    "bootstrap": "vendors/bootstrap/js"
                 },
                 "shim": {
                     "main": {
                         deps: [
                             'hr/dom',
-                            'vendors/bootstrap/carousel',
-                            'vendors/bootstrap/dropdown',
-                            'vendors/bootstrap/button',
-                            'vendors/bootstrap/modal',
-                            'vendors/bootstrap/affix',
-                            'vendors/bootstrap/alert',
-                            'vendors/bootstrap/collapse',
-                            'vendors/bootstrap/tooltip',
-                            'vendors/bootstrap/popover',
-                            'vendors/bootstrap/scrollspy',
-                            'vendors/bootstrap/tab',
-                            'vendors/bootstrap/transition'
+                            'bootstrap/carousel',
+                            'bootstrap/dropdown',
+                            'bootstrap/button',
+                            'bootstrap/modal',
+                            'bootstrap/affix',
+                            'bootstrap/alert',
+                            'bootstrap/collapse',
+                            'bootstrap/tooltip',
+                            'bootstrap/popover',
+                            'bootstrap/scrollspy',
+                            'bootstrap/tab',
+                            'bootstrap/transition'
                         ]
                     },
                     "ace": {
@@ -199,6 +210,7 @@ module.exports = function (grunt) {
 
     // Build
     grunt.registerTask('build', [
+        'bower-install-simple',
         'hr:app'
     ]);
 

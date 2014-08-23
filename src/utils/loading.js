@@ -16,7 +16,7 @@ define([
             this.$message.appendTo(this.$el);
 
             this.$icon = $("<i>", {
-                'class': "icon fa fa-refresh fa-spin"
+                'class': "icon fa fa-circle-o-notch fa-spin"
             });
             this.$icon.appendTo(this.$el);
 
