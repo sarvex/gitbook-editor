@@ -18,7 +18,7 @@ require([
     var wrench = node.require("wrench");
     var gui = node.gui;
     var __dirname = node.require("../src/dirname");
-    var defaultBook = path.join(__dirname, "../intro");
+    var defaultBook = path.join(__dirname, "../templates/base");
 
     // Configure hr
     hr.configure(args);
@@ -51,6 +51,8 @@ require([
 
             // Setup menu
             this.menu = new gui.Menu({ type: 'menubar' });
+            if(process.platform == 'darwin') this.menu.createMacBuiltin("GitBook Editor");
+
             this.langsMenu = new gui.MenuItem({
                 label: 'Languages',
                 submenu: new gui.Menu()
@@ -61,11 +63,8 @@ require([
                 submenu: new gui.Menu()
             });
 
-            this.setBook(new BookView({
-                base: defaultBook
-            }, this));
-
-            this.openPath(this.getLatestBook(), { failDialog: false });
+            var latest = this.getLatestBook();
+            if (latest) this.openPath(latest, { failDialog: false });
 
             var fileMenu = new node.gui.Menu();
             fileMenu.append(new gui.MenuItem({
@@ -196,15 +195,6 @@ require([
                 }
             }));
 
-            var devMenu = new node.gui.Menu();
-            devMenu.append(new gui.MenuItem({
-                label: 'Open Tools',
-                click: function () {
-                    var win = gui.Window.get();
-                    win.showDevTools();
-                }
-            }));
-
             var helpMenu = new node.gui.Menu();
             helpMenu.append(new gui.MenuItem({
                 label: 'Official Website',
@@ -244,27 +234,21 @@ require([
                 }
             }));
 
-            // Get reference to App's menubar
-            // if we set this later menu entries are out of order
-            if(process.platform === 'darwin') {
-                gui.Window.get().menu = this.menu;
-            }
-
             this.menu.insert(new gui.MenuItem({
                 label: 'File',
                 submenu: fileMenu
             }), process.platform === 'darwin' ? 1 : 0);
-            this.menu.append(new gui.MenuItem({
+
+            this.bookMenuItem = new gui.MenuItem({
                 label: 'Book',
-                submenu: bookMenu
-            }));
+                submenu: bookMenu,
+                enabled: false
+            });
+
+            this.menu.append(this.bookMenuItem);
             this.menu.append(new gui.MenuItem({
                 label: 'Preferences',
                 submenu: preferencesMenu
-            }));
-            this.menu.append(new gui.MenuItem({
-                label: 'Develop',
-                submenu: devMenu
             }));
             this.menu.append(new gui.MenuItem({
                 label: 'Help',
@@ -272,12 +256,11 @@ require([
             }));
 
             // Set the window's menu
-            if(process.platform !== 'darwin') {
-                gui.Window.get().menu = this.menu;
-            }
+            gui.Window.get().menu = this.menu;
 
             // Save before quitting
             gui.Window.get().on("close", function() {
+                if (!that.book) return this.close(true);
                 if (that.book.getUnsavedArticles().length == 0 || confirm("There is unsaved changes, do you really want to quit without saving?")) {
                     this.close(true);
                 }
@@ -298,16 +281,23 @@ require([
             if (this.book) {
                 this.book.remove();
             }
-            this.book = book;
-            this.book.update();
-            this.book.appendTo(this);
 
-            this.title(this.book.model.title());
+
+            this.book = book;
+            this.bookMenuItem.enabled = (this.book != null);
+
+            if (this.book) {
+                this.book.update();
+                this.book.appendTo(this);
+                this.title(this.book.model.title());
+            } else {
+                this.title("");
+            }
         },
 
         // Return path to last book opened
         getLatestBook: function() {
-            return hr.Storage.get('latestBook') || defaultBook;
+            return hr.Storage.get('latestBook');
         },
 
         // Define last book opened
@@ -385,7 +375,7 @@ require([
             var that = this;
             template = template || "base";
 
-            dialogs.folder()
+            dialogs.saveFolder()
             .then(function(_path) {
                 if (confirm("Do you really want to erase "+_path+" content and create a new book in it?")) {
                     Q.nfcall(wrench.copyDirRecursive, path.join(__dirname, "../templates/"+template), _path, {forceDelete: true})

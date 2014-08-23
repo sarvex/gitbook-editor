@@ -33,16 +33,16 @@ Download are available on the [Releases page](https://github.com/GitbookIO/edito
 
 ### How to test it for development?
 
+`nw` is an alias for node-webkit (version > 0.10.0).
 
 ```
 $ npm install .
 $ grunt build
-$ nw ./
+$ nw ./ --remote-debugging-port=9222
 ```
 
 ### How to build releases?
 
 ```
 $ grunt build-apps
-$ nw ./
 ```

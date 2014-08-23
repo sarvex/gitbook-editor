@@ -202,6 +202,15 @@ define([
         },
 
         /**
+         * Save as (folder)
+         */
+        saveFolder: function() {
+            return Dialogs.file({
+                nwdirectory: true
+            });
+        },
+
+        /**
          * Show an error message
          */
         error: function(err) {
