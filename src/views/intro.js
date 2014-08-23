@@ -10,7 +10,8 @@ define([
         template: templateFile,
         events: {
             "click .action-open": "doOpen",
-            "click .action-quit": "doQuit"
+            "click .action-quit": "doQuit",
+            "click .sample[data-sample]": "doOpenSample"
         },
 
         initialize: function() {
@@ -34,6 +35,12 @@ define([
             if (e) e.preventDefault();
 
             node.gui.Window.get().close();
+        },
+
+        // Open sample
+        doOpenSample: function(e) {
+            var template = $(e.currentTarget).data("sample");
+            this.parent.openNewBook(template);
         }
     });
 

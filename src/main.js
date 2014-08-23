@@ -293,6 +293,7 @@ require([
             return this.ready();
         },
 
+        // Define the current book view
         setBook: function(book) {
             if (this.book) {
                 this.book.remove();
@@ -304,14 +305,17 @@ require([
             this.title(this.book.model.title());
         },
 
+        // Return path to last book opened
         getLatestBook: function() {
             return hr.Storage.get('latestBook') || defaultBook;
         },
 
+        // Define last book opened
         setLatestBook: function(_path) {
             hr.Storage.set('latestBook', _path);
         },
 
+        // Add book to recent book
         addRecentBook: function(_path) {
             var that = this;
             var books = hr.Storage.get('latestBooks') || [];
@@ -377,13 +381,14 @@ require([
         },
 
         // Create a new book and open it
-        openNewBook: function() {
+        openNewBook: function(template) {
             var that = this;
+            template = template || "base";
 
             dialogs.folder()
             .then(function(_path) {
                 if (confirm("Do you really want to erase "+_path+" content and create a new book in it?")) {
-                    Q.nfcall(wrench.copyDirRecursive, path.join(__dirname, "../example"), _path, {forceDelete: true})
+                    Q.nfcall(wrench.copyDirRecursive, path.join(__dirname, "../templates/"+template), _path, {forceDelete: true})
                     .then(function() {
                         that.openPath(_path);
                     });
