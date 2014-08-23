@@ -70,7 +70,7 @@ require([
             fileMenu.append(new gui.MenuItem({
                 label: 'New Book',
                 click: function () {
-                    that.openNewBook();
+                    that.setBook(null);
                 }
             }));
             fileMenu.append(new gui.MenuItem({
@@ -80,12 +80,6 @@ require([
                 }
             }));
             fileMenu.append(this.recentBooksMenu);
-            fileMenu.append(new gui.MenuItem({
-                label: 'Open Introduction Book',
-                click: function () {
-                    that.openPath(defaultBook);
-                }
-            }));
             fileMenu.append(new gui.MenuItem({
                 type: 'separator'
             }));
