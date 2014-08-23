@@ -52,7 +52,7 @@ module.exports = function (grunt) {
 
                 // Static files mappage
                 "static": {
-                    "ace": path.resolve(srcPath, "vendors", "ace"),
+                    "ace": path.resolve(srcPath, "vendors/ace-builds/src"),
                     "fonts": path.resolve(srcPath, "resources", "fonts"),
                     "fonts/octicons": path.resolve(srcPath, "vendors/octicons/octicons"),
                     "fonts/fontawesome": path.resolve(srcPath, "vendors/fontawesome/fonts"),
