@@ -43,7 +43,7 @@ define([
                 return Q.delay(800);
             })
             .fail(function(e) {
-                console.error("laoding error", msg, e);
+                console.error("loading error", msg, e);
                 return Q.reject(e);
             })
             .fin(function() {
