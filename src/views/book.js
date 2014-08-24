@@ -89,13 +89,17 @@ define([
 
         // Update glossary menu
         updateGlossaryMenu: function() {
+            var that = this;
             var submenu = new gui.Menu();
 
             submenu.append(new gui.MenuItem({
-                label: 'add new entry',
+                label: 'Add new entry',
                 click: function () {
-                    // todo: add new term
+                    that.addGlossaryTerm();
                 }
+            }));
+            submenu.append(new gui.MenuItem({
+                type: 'separator'
             }));
 
             _.chain(this.glossary.models)
@@ -475,6 +479,32 @@ define([
                 var content = that.glossary.toMarkdown();
                 return that.model.contentWrite("GLOSSARY.md", content)
             });
+        },
+
+        // Add term in glossary
+        addGlossaryTerm: function(name) {
+            var that = this;
+            name = name || "";
+
+            return dialogs.fields("New Glossary Entry", {
+                name: {
+                    label: "Name",
+                    type: "text"
+                },
+                description: {
+                    label: "Description",
+                    type: "textarea"
+                }
+            }, { name: name })
+            .then(function(entry) {
+                that.glossary.add(entry);
+
+                return that.saveGlossary();
+            })
+            .then(function() {
+                return that.loadGlossary();
+            })
+            .fail(dialogs.error);
         },
 
         // Update article state
