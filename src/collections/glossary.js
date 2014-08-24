@@ -29,7 +29,7 @@ define([
             var bl = "\n";
 
             return this.map(function(entry) {
-                return "## "+entry.name+bl+bl+entry.description;
+                return "## "+entry.get("name")+bl+bl+entry.get("description");
             }).join(bl+bl);
         }
     });
