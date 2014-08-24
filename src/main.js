@@ -52,11 +52,19 @@ require([
             this.menu = new gui.Menu({ type: 'menubar' });
             if(process.platform == 'darwin') this.menu.createMacBuiltin("GitBook Editor");
 
+            // Menu for book languages
             this.langsMenu = new gui.MenuItem({
                 label: 'Languages',
                 submenu: new gui.Menu()
             });
 
+            // Menu for glossary
+            this.glossaryMenu = new gui.MenuItem({
+                label: 'Glossary',
+                submenu: new gui.Menu()
+            });
+
+            // Menu for recent books
             this.recentBooksMenu = new gui.MenuItem({
                 label: 'Open Recent',
                 submenu: new gui.Menu()
@@ -130,6 +138,10 @@ require([
                 type: 'separator'
             }));
             bookMenu.append(this.langsMenu);
+            bookMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            bookMenu.append(this.glossaryMenu);
             bookMenu.append(new gui.MenuItem({
                 type: 'separator'
             }));

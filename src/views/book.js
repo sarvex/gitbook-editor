@@ -7,13 +7,14 @@ define([
     "utils/normalize",
     "models/article",
     "models/book",
+    "collections/glossary",
     "core/server",
     "core/settings",
     "views/grid",
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, loading, dialogs, normalize, Article, Book, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, loading, dialogs, normalize, Article, Book, Glossary, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -37,6 +38,11 @@ define([
             this.articles = {};
             this.currentArticle = null;
 
+            // Glossary
+            this.glossary = new Glossary();
+            this.listenTo(this.glossary, this.updateGlossaryMenu);
+
+            // Main grid
             this.grid = new Grid({
                 columns: 3
             }, this);
@@ -74,8 +80,35 @@ define([
 
             return this.summary.load()
             .then(function() {
+                return that.loadGlossary();
+            })
+            .then(function() {
                 return that.openReadme();
             });
+        },
+
+        // Update glossary menu
+        updateGlossaryMenu: function() {
+            var submenu = new gui.Menu();
+
+            submenu.append(new gui.MenuItem({
+                label: 'add new entry',
+                click: function () {
+                    // todo: add new term
+                }
+            }));
+
+            _.chain(this.glossary.models)
+            .map(function(entry) {
+                return new gui.MenuItem({
+                    label: entry.get("name"),
+                    click: function () {
+                        // todo: edit this term
+                    }
+                });
+            })
+            .each(submenu.append.bind(submenu));
+            this.parent.glossaryMenu.submenu = submenu;
         },
 
         // Update languages menu
@@ -417,6 +450,30 @@ define([
                         that.refreshPreviewServer();
                     });
                 }
+            });
+        },
+
+        // Load glossary
+        loadGlossary: function() {
+            var that = this;
+
+            return this.model.contentRead("GLOSSARY.md")
+            .fail(function() {
+                return "";
+            })
+            .then(function(content) {
+                that.glossary.parseGlossary(content);
+            });
+        },
+
+        // Save glossary
+        saveGlossary: function() {
+            var that = this;
+
+            return Q()
+            .then(function() {
+                var content = that.glossary.toMarkdown();
+                return that.model.contentWrite("GLOSSARY.md", content)
             });
         },
 
