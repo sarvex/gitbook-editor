@@ -95,7 +95,7 @@ define([
             submenu.append(new gui.MenuItem({
                 label: 'Add new entry',
                 click: function () {
-                    that.addGlossaryTerm();
+                    that.editGlossaryTerm();
                 }
             }));
             submenu.append(new gui.MenuItem({
@@ -107,7 +107,7 @@ define([
                 return new gui.MenuItem({
                     label: entry.get("name"),
                     click: function () {
-                        // todo: edit this term
+                        that.editGlossaryTerm(entry.get("name"));
                     }
                 });
             })
@@ -482,11 +482,19 @@ define([
         },
 
         // Add term in glossary
-        addGlossaryTerm: function(name) {
+        editGlossaryTerm: function(name, description) {
             var that = this;
             name = name || "";
+            description = description || "";
 
-            return dialogs.fields("New Glossary Entry", {
+            // Serach if entry already exists
+            var entry = this.glossary.getByName(name);
+            if (entry) {
+                name = entry.get("name");
+                description = entry.get("description")
+            }
+
+            return dialogs.fields("Glossary Entry", {
                 name: {
                     label: "Name",
                     type: "text"
@@ -495,9 +503,16 @@ define([
                     label: "Description",
                     type: "textarea"
                 }
-            }, { name: name })
-            .then(function(entry) {
-                that.glossary.add(entry);
+            }, {
+                'name': name,
+                'description': description
+            })
+            .then(function(_entry) {
+                if (entry) {
+                    entry.set(_entry);
+                } else {
+                    that.glossary.add(_entry);
+                }
 
                 return that.saveGlossary();
             })

@@ -31,6 +31,14 @@ define([
             return this.map(function(entry) {
                 return "## "+entry.get("name")+bl+bl+entry.get("description");
             }).join(bl+bl);
+        },
+
+        /*
+         *  Return an entry by its name
+         */
+        getByName: function(name) {
+            var id = parseGlossary.entryId(name);
+            return this.get(id);
         }
     });
 
