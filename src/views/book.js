@@ -487,14 +487,7 @@ define([
             name = name || "";
             description = description || "";
 
-            // Serach if entry already exists
-            var entry = this.glossary.getByName(name);
-            if (entry) {
-                name = entry.get("name");
-                description = entry.get("description")
-            }
-
-            return dialogs.fields("Glossary Entry", {
+            var fields = {
                 name: {
                     label: "Name",
                     type: "text"
@@ -503,17 +496,37 @@ define([
                     label: "Description",
                     type: "textarea"
                 }
-            }, {
+            };
+
+            // Search if entry already exists
+            var entry = this.glossary.getByName(name);
+            if (entry) {
+                name = entry.get("name");
+                description = entry.get("description");
+
+                fields["delete"] = {
+                    label: "Delete",
+                    type: "checkbox"
+                };
+            }
+
+
+            return dialogs.fields("Glossary Entry", fields, {
                 'name': name,
                 'description': description
             })
             .then(function(_entry) {
+                if (_entry.delete) {
+                    return entry.destroy();
+                }
+
                 if (entry) {
                     entry.set(_entry);
                 } else {
                     that.glossary.add(_entry);
                 }
-
+            })
+            .then(function() {
                 return that.saveGlossary();
             })
             .then(function() {
