@@ -40,7 +40,7 @@ define([
 
             // Glossary
             this.glossary = new Glossary();
-            this.listenTo(this.glossary, this.updateGlossaryMenu);
+            this.listenTo(this.glossary, "add remove change reset", this.updateGlossaryMenu);
 
             // Main grid
             this.grid = new Grid({
