@@ -125,7 +125,8 @@ define([
             this.editor.setTheme({
                 'isDark': false,
                 'cssClass': "ace-tm",
-                'cssText': ""
+                'cssText': "",
+                'padding': 10
             });
             this.editor.getSession().setMode("ace/mode/markdown");
             this.editor.setOption("showGutter", false);
