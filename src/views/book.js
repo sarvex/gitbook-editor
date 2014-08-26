@@ -63,6 +63,9 @@ define([
             this.preview.update();
             this.grid.addView(this.preview);
 
+            // Autosave
+            this.listenTo(this, "article:write", _.debounce(this.autoSave, 500));
+
             // Languages menu
             this.listenTo(this.model, "change:langs", this.updateLanguagesMenu);
             this.listenTo(this.model, "change:lang", function() {
@@ -348,9 +351,15 @@ define([
         saveAll: function() {
             _.each(this.getUnsavedArticles(), function(_article) {
                 var article = this.summary.getArticle(_article.path);
-                console.log(_article.path, article);
                 if (article) this.saveArticle(article);
             }, this);
+        },
+
+        // Autosave (if enabled) current file
+        autoSave: function(article) {
+            if (!settings.get("autoSave")) return;
+
+            this.saveArticle(article || this.currentArticle);
         },
 
         // Open edit book.json dialog
