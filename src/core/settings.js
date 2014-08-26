@@ -5,6 +5,7 @@ define([
     var key = "GitBookEditorSettings";
     var SettingsModel = hr.Model.extend({
         defaults: {
+            autoSave: true,
             autoFileManagement: true,
             normalizeWhitespace: true,
             normalizeEof: true,
@@ -24,6 +25,10 @@ define([
                 {
                     autoFileManagement: {
                         label: "Auto file management",
+                        type: "checkbox"
+                    },
+                    autoSave: {
+                        label: "Auto save file",
                         type: "checkbox"
                     },
                 },
