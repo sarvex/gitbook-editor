@@ -159,10 +159,17 @@ define([
             this.listenTo(this.book, "article:open", this.onArticleChange);
             this.listenTo(this.book, "article:state", this.onArticleState);
             this.listenTo(this.book, "article:save", this.onArticleSave);
+            this.listenTo(settings, "change:autoSave", this.update);
             this.listenTo(settings, "change:wordWrap", this.updateEditorOptions);
             this.listenTo(settings, "change:editorFontSize", this.updateEditorOptions);
 
             this.updateEditorOptions();
+        },
+
+        templateContext: function() {
+            return {
+                autosave: settings.get("autoSave")
+            }
         },
 
         updateEditorOptions: function() {
@@ -182,6 +189,11 @@ define([
 
         scrollTop: function() {
             return $(this.editor.renderer.scrollBarV.element).scrollTop();
+        },
+
+        render: function() {
+            this.$editor.detach();
+            return Editor.__super__.render.apply(this, arguments);
         },
 
         finish: function() {
