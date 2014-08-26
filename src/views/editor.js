@@ -44,6 +44,7 @@ define([
         template: templateFile,
         events: {
             "click .action-save": "doSave",
+            "click .action-glossary-edit": "glossaryEdit",
             "click .action-text-bold": textAction("**", "**"),
             "click .action-text-italic": textAction("*", "*"),
             "click .action-text-strikethrough": textAction("~~", "~~"),
@@ -124,7 +125,8 @@ define([
             this.editor.setTheme({
                 'isDark': false,
                 'cssClass': "ace-tm",
-                'cssText': ""
+                'cssText': "",
+                'padding': 10
             });
             this.editor.getSession().setMode("ace/mode/markdown");
             this.editor.setOption("showGutter", false);
@@ -185,6 +187,15 @@ define([
         finish: function() {
             this.$editor.appendTo(this.$(".content"));
             return Editor.__super__.finish.apply(this, arguments);
+        },
+
+        glossaryEdit: function(e) {
+            if (this.editor.selection.isEmpty()) {
+                this.book.editGlossaryTerm();
+            } else {
+                var c = this.editor.session.getTextRange(this.editor.getSelectionRange());
+                this.book.editGlossaryTerm(c);
+            }
         },
 
         // When the user opens another article

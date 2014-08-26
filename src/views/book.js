@@ -7,13 +7,14 @@ define([
     "utils/normalize",
     "models/article",
     "models/book",
+    "collections/glossary",
     "core/server",
     "core/settings",
     "views/grid",
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, loading, dialogs, normalize, Article, Book, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, loading, dialogs, normalize, Article, Book, Glossary, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -37,6 +38,11 @@ define([
             this.articles = {};
             this.currentArticle = null;
 
+            // Glossary
+            this.glossary = new Glossary();
+            this.listenTo(this.glossary, "add remove change reset", this.updateGlossaryMenu);
+
+            // Main grid
             this.grid = new Grid({
                 columns: 3
             }, this);
@@ -74,8 +80,39 @@ define([
 
             return this.summary.load()
             .then(function() {
+                return that.loadGlossary();
+            })
+            .then(function() {
                 return that.openReadme();
             });
+        },
+
+        // Update glossary menu
+        updateGlossaryMenu: function() {
+            var that = this;
+            var submenu = new gui.Menu();
+
+            submenu.append(new gui.MenuItem({
+                label: 'Add new entry',
+                click: function () {
+                    that.editGlossaryTerm();
+                }
+            }));
+            submenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+
+            _.chain(this.glossary.models)
+            .map(function(entry) {
+                return new gui.MenuItem({
+                    label: entry.get("name"),
+                    click: function () {
+                        that.editGlossaryTerm(entry.get("name"));
+                    }
+                });
+            })
+            .each(submenu.append.bind(submenu));
+            this.parent.glossaryMenu.submenu = submenu;
         },
 
         // Update languages menu
@@ -418,6 +455,84 @@ define([
                     });
                 }
             });
+        },
+
+        // Load glossary
+        loadGlossary: function() {
+            var that = this;
+
+            return this.model.contentRead("GLOSSARY.md")
+            .fail(function() {
+                return "";
+            })
+            .then(function(content) {
+                that.glossary.parseGlossary(content);
+            });
+        },
+
+        // Save glossary
+        saveGlossary: function() {
+            var that = this;
+
+            return Q()
+            .then(function() {
+                var content = that.glossary.toMarkdown();
+                return that.model.contentWrite("GLOSSARY.md", content)
+            });
+        },
+
+        // Add term in glossary
+        editGlossaryTerm: function(name, description) {
+            var that = this;
+            name = name || "";
+            description = description || "";
+
+            var fields = {
+                name: {
+                    label: "Name",
+                    type: "text"
+                },
+                description: {
+                    label: "Description",
+                    type: "textarea"
+                }
+            };
+
+            // Search if entry already exists
+            var entry = this.glossary.getByName(name);
+            if (entry) {
+                name = entry.get("name");
+                description = entry.get("description");
+
+                fields["delete"] = {
+                    label: "Delete",
+                    type: "checkbox"
+                };
+            }
+
+
+            return dialogs.fields("Glossary Entry", fields, {
+                'name': name,
+                'description': description
+            })
+            .then(function(_entry) {
+                if (_entry.delete) {
+                    return entry.destroy();
+                }
+
+                if (entry) {
+                    entry.set(_entry);
+                } else {
+                    that.glossary.add(_entry);
+                }
+            })
+            .then(function() {
+                return that.saveGlossary();
+            })
+            .then(function() {
+                return that.loadGlossary();
+            })
+            .fail(dialogs.error);
         },
 
         // Update article state
