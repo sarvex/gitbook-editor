@@ -88,7 +88,9 @@ define([
                         type: "text"
                     }
                 }
-            ], that.toJSON())
+            ], that.toJSON(), {
+                className: "large"
+            })
             .then(function(values) {
                 that.set(values);
                 that.setStateToStorage();
