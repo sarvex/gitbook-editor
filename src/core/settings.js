@@ -5,10 +5,12 @@ define([
     var key = "GitBookEditorSettings";
     var SettingsModel = hr.Model.extend({
         defaults: {
+            autoSave: true,
             autoFileManagement: true,
             normalizeWhitespace: true,
             normalizeEof: true,
             wordWrap: "free",
+            keyboardHandler: "textinput",
             editorFontSize: "100%",
             host: "https://www.gitbook.io"
         },
@@ -26,6 +28,10 @@ define([
                         label: "Auto file management",
                         type: "checkbox"
                     },
+                    autoSave: {
+                        label: "Auto save file",
+                        type: "checkbox"
+                    },
                 },
                 {
                     normalizeWhitespace: {
@@ -35,6 +41,15 @@ define([
                     normalizeEof: {
                         label: "Normalize end-of-line",
                         type: "checkbox"
+                    },
+                    keyboardHandler: {
+                        label: "Keyboard",
+                        type: "select",
+                        options: {
+                            "textinput": "Default",
+                            "vim": "Vim",
+                            "emacs": "Emacs"
+                        }
                     },
                     wordWrap: {
                         label: "Soft Wrap",
