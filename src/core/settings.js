@@ -10,6 +10,7 @@ define([
             normalizeWhitespace: true,
             normalizeEof: true,
             wordWrap: "free",
+            keyboardHandler: "textinput",
             editorFontSize: "100%",
             host: "https://www.gitbook.io"
         },
@@ -40,6 +41,15 @@ define([
                     normalizeEof: {
                         label: "Normalize end-of-line",
                         type: "checkbox"
+                    },
+                    keyboardHandler: {
+                        label: "Keyboard",
+                        type: "select",
+                        options: {
+                            "textinput": "Default",
+                            "vim": "Vim",
+                            "emacs": "Emacs"
+                        }
                     },
                     wordWrap: {
                         label: "Soft Wrap",

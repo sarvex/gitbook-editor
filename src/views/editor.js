@@ -160,6 +160,7 @@ define([
             this.listenTo(this.book, "article:state", this.onArticleState);
             this.listenTo(this.book, "article:save", this.onArticleSave);
             this.listenTo(settings, "change:autoSave", this.update);
+            this.listenTo(settings, "change:keyboardHandler", this.updateEditorOptions);
             this.listenTo(settings, "change:wordWrap", this.updateEditorOptions);
             this.listenTo(settings, "change:editorFontSize", this.updateEditorOptions);
 
@@ -184,6 +185,7 @@ define([
                 this.editor.session.setWrapLimitRange(wordWrap, wordWrap);
             }
 
+            this.editor.setKeyboardHandler("ace/keyboard/"+settings.get("keyboardHandler"));
             this.editor.setFontSize(editorFontSize);
         },
 
