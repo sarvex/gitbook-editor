@@ -4,6 +4,8 @@ define([
     "hr/hr",
     "views/dialog"
 ], function (Q, $, hr, DialogView) {
+    var fs = node.require("fs");
+
     var Dialogs = {
         /**
          * Open a dialog from a specific view class with some configuration
@@ -207,6 +209,17 @@ define([
         saveFolder: function() {
             return Dialogs.file({
                 nwdirectory: true
+            })
+            .then(function(_path) {
+                return [_path, Q.nfcall(fs.readdir, _path)];
+            })
+            .spread(function(_path, files) {
+                if (files.length > 0) {
+                    return Dialogs.alert("Invalid folder", "Please select an empty folder.")
+                    .then(Dialogs.saveFolder, Dialogs.saveFolder);
+                }
+
+                return _path;
             });
         },
 

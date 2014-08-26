@@ -166,18 +166,14 @@ require([
             bookMenu.append(new gui.MenuItem({
                 label: 'Build Website As...',
                 click: function () {
-                    dialogs.folder()
+                    dialogs.saveFolder()
                     .then(function(_path) {
-                        _path = path.join(_path, "book");
-
-                        if (confirm("Book website will be build into "+_path+"?")) {
-                            that.book.buildBook({
-                                output: _path
-                            })
-                            .then(function(options) {
-                                node.gui.Shell.showItemInFolder(path.join(_path, "index.html"));
-                            });
-                        }
+                        that.book.buildBook({
+                            output: _path
+                        })
+                        .then(function(options) {
+                            node.gui.Shell.showItemInFolder(path.join(_path, "index.html"));
+                        });
                     });
                 }
             }));
@@ -382,13 +378,12 @@ require([
 
             dialogs.saveFolder()
             .then(function(_path) {
-                if (confirm("Do you really want to erase "+_path+" content and create a new book in it?")) {
-                    Q.nfcall(wrench.copyDirRecursive, path.join(__dirname, "../templates/"+template), _path, {forceDelete: true})
-                    .then(function() {
-                        that.openPath(_path);
-                    });
-                }
-            });
+                Q.nfcall(wrench.copyDirRecursive, path.join(__dirname, "../templates/"+template), _path, {forceDelete: true})
+                .then(function() {
+                    that.openPath(_path);
+                });
+            })
+            .fail(dialogs.error);
         },
 
         // Check update
