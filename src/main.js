@@ -106,6 +106,8 @@ require([
             var bookMenu = new node.gui.Menu();
             bookMenu.append(new gui.MenuItem({
                 label: 'Save all',
+                key: "s",
+                modifiers: process.platform === 'darwin' ? "cmd+shift" : "ctrl+shift",
                 click: function () {
                     that.book.saveAll();
                 }
@@ -115,6 +117,8 @@ require([
             }));
             bookMenu.append(new gui.MenuItem({
                 label: 'Publish As...',
+                key: "p",
+                modifiers: process.platform === 'darwin' ? "cmd" : "ctrl",
                 click: function () {
                     gitbookIo.publishBook(that.book.model);
                 }
