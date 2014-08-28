@@ -248,8 +248,17 @@ define([
             var x = Math.min(pos.column, Math.max(lines[y].length, 0));
 
             this.ignoreChange = true;
+
+            // We are doing the same as editor.session.setValue without reseting the undomanager
             this.editor.session.doc.setValue(content);
             this.editor.moveCursorTo(y, x);
+            this.editor.session.$resetRowCache(0);
+            this.editor.session.$deltas = [];
+            this.editor.session.$deltasDoc = [];
+            this.editor.session.$deltasFold = [];
+            this.editor.session.setUndoManager(this.editor.session.$undoManager);
+
+
             this.ignoreChange = false;
         },
 
