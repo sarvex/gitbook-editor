@@ -76,12 +76,16 @@ require([
             var fileMenu = new node.gui.Menu();
             fileMenu.append(new gui.MenuItem({
                 label: 'New Book',
+                key: "n",
+                modifiers: process.platform === 'darwin' ? "cmd" : "ctrl",
                 click: function () {
                     that.setBook(null);
                 }
             }));
             fileMenu.append(new gui.MenuItem({
                 label: 'Open...',
+                key: "o",
+                modifiers: process.platform === 'darwin' ? "cmd" : "ctrl",
                 click: function () {
                     that.openFolderSelection();
                 }
@@ -97,7 +101,9 @@ require([
                 }
             }));
             fileMenu.append(new gui.MenuItem({
-                label: 'Close',
+                label: 'Quit',
+                key: "q",
+                modifiers: process.platform === 'darwin' ? "cmd" : "ctrl",
                 click: function () {
                     gui.Window.get().close();
                 }
@@ -128,6 +134,8 @@ require([
             }));
             bookMenu.append(new gui.MenuItem({
                 label: 'Add Chapter',
+                key: "t",
+                modifiers: process.platform === 'darwin' ? "cmd" : "ctrl",
                 click: function () {
                     that.book.summary.addChapter();
                 }
@@ -234,6 +242,8 @@ require([
             }));
             preferencesMenu.append(new gui.MenuItem({
                 label: 'Advanced Settings',
+                key: ",",
+                modifiers: process.platform === 'darwin' ? "cmd" : "ctrl",
                 click: function () {
                     settings.dialog();
                 }
