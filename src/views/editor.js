@@ -248,7 +248,7 @@ define([
             var x = Math.min(pos.column, Math.max(lines[y].length, 0));
 
             this.ignoreChange = true;
-            this.editor.session.setValue(content, 1);
+            this.editor.session.doc.setValue(content);
             this.editor.moveCursorTo(y, x);
             this.ignoreChange = false;
         },
