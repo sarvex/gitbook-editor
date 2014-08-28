@@ -109,6 +109,7 @@ module.exports = function (grunt) {
             src: [
                 "./**/*",
                 "!./src/**",
+                "./src/dirname.js",
                 "!./appbuilds/**",
                 "!./node_modules/hr.js/**",
                 "!./node_modules/grunt-*/**",
