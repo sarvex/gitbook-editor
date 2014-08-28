@@ -222,7 +222,7 @@ define([
                 that.onArticleState(article, state.saved);
 
                 that.ignoreChange = true;
-                that.editor.setValue(content);
+                that.editor.session.setValue(content);
                 that.editor.gotoLine(0);
                 that.ignoreChange = false;
             }, dialogs.error);
@@ -248,7 +248,7 @@ define([
             var x = Math.min(pos.column, Math.max(lines[y].length, 0));
 
             this.ignoreChange = true;
-            this.editor.setValue(content, 1);
+            this.editor.session.setValue(content, 1);
             this.editor.moveCursorTo(y, x);
             this.ignoreChange = false;
         },
