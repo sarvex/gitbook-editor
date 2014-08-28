@@ -95,19 +95,20 @@ module.exports = function (grunt) {
         },
         nodewebkit: {
             options: {
-                app_name: "GitBook",
-                build_dir: './appbuilds',
-                mac: true,
-                win: true,
-                linux32: true,
-                linux64: true,
-                mac_icns: "./build/static/images/icons/512.icns",
-                credits: "./src/credits.html",
+                appName: "GitBook",
+                appVersion: pkg.version,
+                buildDir: './appbuilds/releases',
+                cacheDir: './appbuilds/cache',
+                platforms: ['win', 'osx', 'linux32', 'linux64'],
+                macIcns: "./build/static/images/icons/512.icns",
+                macCredits: "./src/credits.html",
+                winIco: "./build/static/images/icons/512.ico",
                 version: NW_VERSION,
                 zip: false
             },
             src: [
                 "./**/*",
+                "!./src/**",
                 "!./appbuilds/**",
                 "!./node_modules/hr.js/**",
                 "!./node_modules/grunt-*/**",
