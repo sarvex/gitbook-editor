@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SOURCE=appbuilds/releases/GitBook/mac/
+SOURCE=appbuilds/releases/GitBook/osx/
 TITLE=GitBook
 OUTPUT=appbuilds/releases/gitbook-mac.dmg
 

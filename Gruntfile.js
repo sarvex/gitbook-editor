@@ -152,37 +152,37 @@ module.exports = function (grunt) {
             linux32Installer: {
                 cwd: './',
                 src: 'scripts/install_linux.sh',
-                dest: './appbuilds/releases/GitBook/linux32/GitBook/install.sh'
+                dest: './appbuilds/releases/GitBook/linux32/install.sh'
             },
             // Entry point for linux
             linux32Start: {
                 cwd: './',
                 src: 'scripts/linux_start.sh',
-                dest: './appbuilds/releases/GitBook/linux32/GitBook/start.sh'
+                dest: './appbuilds/releases/GitBook/linux32/start.sh'
             },
             // Icon for linux
             linux32Icon: {
                 cwd: './',
                 src: './build/static/images/icons/128.png',
-                dest: './appbuilds/releases/GitBook/linux32/GitBook/icon.png'
+                dest: './appbuilds/releases/GitBook/linux32/icon.png'
             },
             // Installer for linux
             linux64Installer: {
                 cwd: './',
                 src: 'scripts/install_linux.sh',
-                dest: './appbuilds/releases/GitBook/linux64/GitBook/install.sh'
+                dest: './appbuilds/releases/GitBook/linux64/install.sh'
             },
             // Entry point for linux
             linux64Start: {
                 cwd: './',
                 src: 'scripts/linux_start.sh',
-                dest: './appbuilds/releases/GitBook/linux64/GitBook/start.sh'
+                dest: './appbuilds/releases/GitBook/linux64/start.sh'
             },
             // Icon for linux
             linux64Icon: {
                 cwd: './',
                 src: './build/static/images/icons/128.png',
-                dest: './appbuilds/releases/GitBook/linux64/GitBook/icon.png'
+                dest: './appbuilds/releases/GitBook/linux64/icon.png'
             },
         },
         "github-release": {
