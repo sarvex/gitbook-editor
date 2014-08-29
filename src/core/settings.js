@@ -8,6 +8,7 @@ define([
             autoSave: true,
             autoFileManagement: true,
             normalizeWhitespace: true,
+            restartPreviewOnSave: true,
             normalizeEof: true,
             wordWrap: "free",
             keyboardHandler: "textinput",
@@ -72,6 +73,12 @@ define([
                             "150%": "Large",
                             "200%": "Larger"
                         }
+                    }
+                },
+                {
+                    restartPreviewOnSave: {
+                        label: "Restart preview website on save",
+                        type: "checkbox"
                     }
                 },
                 {

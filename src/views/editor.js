@@ -237,6 +237,8 @@ define([
 
         // Update editor if article has been normalized
         onArticleSave: function(article, content) {
+            if (article.get("path") != this.book.currentArticle.get("path")) return;
+
             var pos = this.editor.getCursorPosition();
 
             // We need to have line to calculate new positions

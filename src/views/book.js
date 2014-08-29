@@ -64,7 +64,7 @@ define([
             this.grid.addView(this.preview);
 
             // Autosave
-            this.listenTo(this, "article:write", _.debounce(this.autoSave, 500));
+            this.listenTo(this, "article:write", _.debounce(this.autoSave, 1000));
 
             // Languages menu
             this.listenTo(this.model, "change:langs", this.updateLanguagesMenu);
@@ -174,9 +174,8 @@ define([
         },
 
         // Refresh preview
-        refreshPreviewServer: function() {
+        refreshPreviewServer: function(open) {
             var that = this;
-            console.log("start server on ", this.model.root());
 
             return server.stop()
             .then(function() {
@@ -186,7 +185,7 @@ define([
                 return server.start(options.output)
             })
             .then(function() {
-                server.open();
+                if (open != false) server.open();
             }, dialogs.error);
         },
 
@@ -315,18 +314,22 @@ define([
                 });
             };
 
-            if (!path) {
-                return doSaveAndOpen();
-            } else {
-                return that.model.contentExists(path)
-                .then(function(exists) {
-                    if (exists) {
-                        return doOpen();
-                    } else {
-                        return doSaveAndOpen();
-                    }
-                });
-            }
+            return this.autoSave()
+            .fail(_.constant(Q()))
+            .then(function() {
+                if (!path) {
+                    return doSaveAndOpen();
+                } else {
+                    return that.model.contentExists(path)
+                    .then(function(exists) {
+                        if (exists) {
+                            return doOpen();
+                        } else {
+                            return doSaveAndOpen();
+                        }
+                    });
+                }
+            });
         },
 
         // Open readme
@@ -357,9 +360,10 @@ define([
 
         // Autosave (if enabled) current file
         autoSave: function(article) {
-            if (!settings.get("autoSave")) return;
+            article = article || this.currentArticle;
+            if (!settings.get("autoSave") || !article) return Q();
 
-            this.saveArticle(article || this.currentArticle);
+            return this.saveArticle(article);
         },
 
         // Open edit book.json dialog
@@ -457,11 +461,8 @@ define([
                 // Update code views
                 that.trigger("article:save", article, content);
 
-                if (server.isRunning()) {
-                    dialogs.confirm("Restart Preview Server", "Do you want to restart the preview server to access your last changes?")
-                    .then(function() {
-                        that.refreshPreviewServer();
-                    });
+                if (server.isRunning() && settings.get("restartPreviewOnSave")) {
+                    that.refreshPreviewServer(false);
                 }
             });
         },
