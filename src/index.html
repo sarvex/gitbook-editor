@@ -9,6 +9,11 @@
     </head>
     <body></body>
     <script>
+        // Patch up node-webkit's broken nextTick
+        process.nextTick = function(f) {
+            setTimeout(f, 0);
+        }
+
         window.node = {
             require: window.require,
             gui: window.require('nw.gui')
