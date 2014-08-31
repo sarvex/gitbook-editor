@@ -51,7 +51,7 @@ define([
             // Summary
             this.summary = new Summary({}, this);
             this.summary.update();
-            this.grid.addView(this.summary, {width: 20});
+            this.grid.addView(this.summary, {width: 18});
 
             // Editor
             this.editor = new Editor({}, this);
