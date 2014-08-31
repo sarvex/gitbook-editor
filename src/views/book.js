@@ -74,6 +74,7 @@ define([
             });
             this.listenTo(this.model, "set:lang", this.updateLanguagesMenu);
             this.updateLanguagesMenu();
+            this.updatePluginsMenu();
 
             loading.show(this.updateContent(), "Loading book content ...");
         },
@@ -97,7 +98,7 @@ define([
             var submenu = new gui.Menu();
 
             submenu.append(new gui.MenuItem({
-                label: 'Add new entry',
+                label: 'New Entry',
                 click: function () {
                     that.editGlossaryTerm();
                 }
@@ -117,6 +118,24 @@ define([
             })
             .each(submenu.append.bind(submenu));
             this.parent.glossaryMenu.submenu = submenu;
+        },
+
+        // Update plugins menu
+        updatePluginsMenu: function() {
+            var that = this;
+            var submenu = new gui.Menu();
+
+            submenu.append(new gui.MenuItem({
+                label: 'New Plugin',
+                click: function () {
+
+                }
+            }));
+            submenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+
+            this.parent.pluginsMenu.submenu = submenu;
         },
 
         // Update languages menu
