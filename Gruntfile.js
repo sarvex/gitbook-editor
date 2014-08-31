@@ -53,6 +53,7 @@ module.exports = function (grunt) {
                 // Static files mappage
                 "static": {
                     "ace": path.resolve(srcPath, "vendors/ace-builds/src"),
+                    "mathjax": path.resolve(srcPath, "vendors/MathJax"),
                     "fonts": path.resolve(srcPath, "resources", "fonts"),
                     "fonts/octicons": path.resolve(srcPath, "vendors/octicons/octicons"),
                     "fonts/fontawesome": path.resolve(srcPath, "vendors/fontawesome/fonts"),
@@ -119,7 +120,8 @@ module.exports = function (grunt) {
         },
         clean: {
             build: ['build/'],
-            releases: ['appbuilds/releases/']
+            releases: ['appbuilds/releases/'],
+            mathjax: ['src/vendors/MathJax']
         },
         exec: {
             build_mac_release: {

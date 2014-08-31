@@ -4,6 +4,7 @@
         "bootstrap": "3.0.0",
         "octicons": "2.0.2",
         "fontawesome": "4.1.0",
-        "ace-builds": "v1.1.6"
+        "ace-builds": "v1.1.6",
+        "MathJax": "2.4.0"
     }
 }
