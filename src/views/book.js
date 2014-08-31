@@ -158,6 +158,10 @@ define([
                     click: function() {
                         dialogs.json(plugin.get("config"), {
                             title: "Configuration for '"+_.escape(plugin.get("name"))+"' plugin"
+                        })
+                        .then(function(config) {
+                            plugin.set("config");
+                            return that.plugins.toFs(that.model).fail(dialogs.error);
                         });
                     }
                 }));
@@ -165,7 +169,9 @@ define([
                 actions.append(new gui.MenuItem({
                     label: "Remove",
                     click: function() {
+                        plugin.destroy();
 
+                        that.plugins.toFs(that.model).fail(dialogs.error);
                     }
                 }));
 
