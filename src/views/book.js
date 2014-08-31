@@ -142,7 +142,8 @@ define([
             submenu.append(new gui.MenuItem({
                 label: 'Install Plugins',
                 click: function () {
-
+                    loading.show(that.model.installDependencies(), "Installing Dependencies ...")
+                    .fail(dialogs.error);
                 }
             }));
             submenu.append(new gui.MenuItem({
