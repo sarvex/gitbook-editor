@@ -144,6 +144,17 @@ define([
                 }.bind(this),
                 readOnly: false
             });
+            this.editor.commands.addCommands([{
+                name: "showSettingsMenu",
+                bindKey: {
+                    win: "Ctrl-Shift-P",
+                    mac: "Command-Shift-P"
+                },
+                exec: function(editor, line) {
+                    return false;
+                },
+                readOnly: true
+            }]);
 
             this.editor.renderer.scrollBarV.element.addEventListener("scroll",  _.throttle(function(e) {
                 var h = this.scrollTop();
