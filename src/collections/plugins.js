@@ -4,6 +4,10 @@ define([
     "hr/utils",
     "models/plugin"
 ], function(hr, Q, _, PluginEntry) {
+    var DEFAULT_PLUGINS = [
+        "exercises", "quizzes", "mathjax"
+    ];
+
     var Plugins = hr.Collection.extend({
         model: PluginEntry,
 
@@ -35,10 +39,13 @@ define([
          */
         toFs: function(book) {
             var that = this;
+            var plugins = that.pluck("name");
 
             return book.readConfig()
+
+            // Update book.json
             .then(function(config) {
-                config.plugins = that.pluck("name");
+                config.plugins = plugins;
                 config.pluginsConfig = _.chain(that.models)
                 .map(function(plugin) {
                     var pConfig = plugin.get("config");
@@ -49,6 +56,32 @@ define([
                 .value();
 
                 return book.writeConfig(config);
+            })
+
+            // Update package.json
+            .then(function() {
+                return book.read("package.json")
+                .fail(function() {
+                    return "{}";
+                })
+                .then(JSON.parse);
+            })
+            .then(function(packageJson) {
+                // Generate if non existant package.json
+                packageJson.name = packageJson.name || "book";
+                packageJson.version = packageJson.version || "0.0.0";
+                packageJson.dependencies = packageJson.dependencies || {};
+
+                // Don't add default plugins to package.json
+                plugins = _.without.apply([plugins].concat(DEFAULT_PLUGINS));
+                if (plugins.length == 0) return;
+
+                _.each(function(plugins, plugin) {
+                    plugin = "gitbook-plugin-"+plugin;
+                    packageJson.dependencies[plugin] = packageJson.dependencies[plugin] || "*";
+                });
+
+                return book.write("package.json", JSON.stringify(packageJson, null, 4));
             });
         }
     });
