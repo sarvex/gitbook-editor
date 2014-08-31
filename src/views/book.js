@@ -92,7 +92,7 @@ define([
                 return that.loadGlossary();
             })
             .then(function() {
-                return that.plugins.parsePlugins(that.model);
+                return that.loadPlugins();
             })
             .then(function() {
                 return that.openReadme();
@@ -160,8 +160,8 @@ define([
                             title: "Configuration for '"+_.escape(plugin.get("name"))+"' plugin"
                         })
                         .then(function(config) {
-                            plugin.set("config");
-                            return that.plugins.toFs(that.model).fail(dialogs.error);
+                            plugin.set("config", config);
+                            return that.savePlugins();
                         });
                     }
                 }));
@@ -171,7 +171,7 @@ define([
                     click: function() {
                         plugin.destroy();
 
-                        that.plugins.toFs(that.model).fail(dialogs.error);
+                        that.savePlugins();
                     }
                 }));
 
@@ -445,6 +445,9 @@ define([
             })
             .then(function(content) {
                 return that.model.writeConfig(content).fail(dialogs.error);
+            })
+            .then(function() {
+                return that.loadPlugins();
             });
         },
 
@@ -532,6 +535,17 @@ define([
                 var content = that.glossary.toMarkdown();
                 return that.model.contentWrite("GLOSSARY.md", content)
             });
+        },
+
+        // Load plugins
+        loadPlugins: function() {
+            return this.plugins.parsePlugins(this.model);
+        },
+
+        // Save plugins
+        savePlugins: function() {
+            return this.plugins.toFs(this.model)
+            .fail(dialogs.error)
         },
 
         // Add term in glossary
