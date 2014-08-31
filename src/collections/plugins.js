@@ -73,10 +73,10 @@ define([
                 packageJson.dependencies = packageJson.dependencies || {};
 
                 // Don't add default plugins to package.json
-                plugins = _.without.apply([plugins].concat(DEFAULT_PLUGINS));
+                plugins = _.without.apply(null, [plugins].concat(DEFAULT_PLUGINS));
                 if (plugins.length == 0) return;
 
-                _.each(function(plugins, plugin) {
+                _.each(plugins, function(plugin) {
                     plugin = "gitbook-plugin-"+plugin;
                     packageJson.dependencies[plugin] = packageJson.dependencies[plugin] || "*";
                 });

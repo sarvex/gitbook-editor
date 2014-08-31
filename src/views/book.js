@@ -136,7 +136,7 @@ define([
             submenu.append(new gui.MenuItem({
                 label: 'New Plugin',
                 click: function () {
-
+                    that.addPlugin();
                 }
             }));
             submenu.append(new gui.MenuItem({
@@ -546,6 +546,21 @@ define([
         savePlugins: function() {
             return this.plugins.toFs(this.model)
             .fail(dialogs.error)
+        },
+
+        // Add plugins
+        addPlugin: function() {
+            var that = this;
+
+            return dialogs.prompt("New Plugin", "Enter the name of the plugin to be added.")
+            .then(function(plugin) {
+                if (that.plugins.get(plugin)) return;
+
+                that.plugins.add({
+                    name: plugin
+                });
+                return that.savePlugins();
+            })
         },
 
         // Add term in glossary
