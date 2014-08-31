@@ -406,34 +406,16 @@ define([
 
         // Open edit book.json dialog
         editConfig: function() {
-            var that = this, content = "{}";
-
-            var showDialog = function() {
-                return dialogs.fields("Edit Book Configuration (book.json)", {
-                    content: {
-                        type: "textarea",
-                        rows: 8
-                    }
-                }, {
-                    content: content
-                }, {keyboardEnter: false})
-                .then(function(values) {
-                    content = values.content;
-                    return JSON.parse(content);
-                })
-                .fail(function(err) {
-                    return dialogs.confirm("Would you like to correct the error?", "Your book.json is not a valid json file: "+err.message)
-                    .then(showDialog);
-                });
-            };
+            var that = this;
 
             return this.model.readConfig()
-            .then(function(_content) {
-                content = JSON.stringify(_content, null, 4);
+            .then(function(content) {
+                return dialogs.json(content, {
+                    title: "Edit Book Configuration (book.json)"
+                })
             })
-            .then(showDialog, showDialog)
-            .then(function(_content) {
-                return that.model.writeConfig(_content).fail(dialogs.error);
+            .then(function(content) {
+                return that.model.writeConfig(content).fail(dialogs.error);
             });
         },
 
