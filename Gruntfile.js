@@ -121,7 +121,25 @@ module.exports = function (grunt) {
         clean: {
             build: ['build/'],
             releases: ['appbuilds/releases/'],
-            mathjax: ['src/vendors/MathJax']
+            mathjax: [
+                'src/vendors/MathJax/docs',
+                'src/vendors/MathJax/test',
+                'src/vendors/MathJax/unpacked',
+                'src/vendors/MathJax/.gitignore',
+                'src/vendors/MathJax/bower.json',
+                'src/vendors/MathJax/localization',
+                'src/vendors/MathJax/fonts',
+                'src/vendors/MathJax/images',
+                'src/vendors/MathJax/jax/output/NativeMML',
+                'src/vendors/MathJax/jax/output/HTML-CSS',
+                'src/vendors/MathJax/jax/output/SVG/fonts/Asana-Math',
+                'src/vendors/MathJax/jax/output/SVG/fonts/Gyre-Pagella',
+                'src/vendors/MathJax/jax/output/SVG/fonts/Gyre-Termes',
+                'src/vendors/MathJax/jax/output/SVG/fonts/Latin-Modern',
+                'src/vendors/MathJax/jax/output/SVG/fonts/Neo-Euler',
+                'src/vendors/MathJax/jax/output/SVG/fonts/STIX-Web',
+                'src/vendors/MathJax/*.md'
+            ]
         },
         exec: {
             build_mac_release: {
@@ -215,6 +233,7 @@ module.exports = function (grunt) {
     // Build
     grunt.registerTask('build', [
         'bower-install-simple',
+        'clean:mathjax',
         'hr:app'
     ]);
 
