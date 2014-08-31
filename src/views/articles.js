@@ -67,10 +67,13 @@ define([
                 label: 'Rename',
                 click: this.changeTitle.bind(this)
             }));
-            this.menu.append(new gui.MenuItem({
-                label: 'Delete',
-                click: this.removeChapter.bind(this)
-            }));
+
+            if (!this.model.isIntroduction()) {
+                this.menu.append(new gui.MenuItem({
+                    label: 'Delete',
+                    click: this.removeChapter.bind(this)
+                }));
+            }
         },
 
         render: function() {
@@ -136,6 +139,7 @@ define([
 
         removeChapter: function() {
             var that = this;
+            if (this.model.isIntroduction()) return;
 
             var removeArticle = function () {
                 var articlepath = that.model.get("path"),
