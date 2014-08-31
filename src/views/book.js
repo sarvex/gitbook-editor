@@ -140,16 +140,39 @@ define([
                 }
             }));
             submenu.append(new gui.MenuItem({
+                label: 'Install Plugins',
+                click: function () {
+
+                }
+            }));
+            submenu.append(new gui.MenuItem({
                 type: 'separator'
             }));
 
              _.chain(this.plugins.models)
             .map(function(plugin) {
-                return new gui.MenuItem({
-                    label: plugin.get("name"),
-                    click: function () {
+                var actions = new gui.Menu();
+
+                actions.append(new gui.MenuItem({
+                    label: "Edit Configuration",
+                    click: function() {
+                        dialogs.json(plugin.get("config"), {
+                            title: "Configuration for '"+_.escape(plugin.get("name"))+"' plugin"
+                        });
+                    }
+                }));
+
+                actions.append(new gui.MenuItem({
+                    label: "Remove",
+                    click: function() {
 
                     }
+                }));
+
+
+                return new gui.MenuItem({
+                    label: plugin.get("name"),
+                    submenu: actions
                 });
             })
             .each(submenu.append.bind(submenu));
