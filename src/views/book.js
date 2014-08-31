@@ -390,10 +390,6 @@ define([
         editConfig: function() {
             var that = this, content = "{}";
 
-            var normalizeContent = function(_content) {
-                return JSON.stringify(JSON.parse(_content), null, 4);
-            };
-
             var showDialog = function() {
                 return dialogs.fields("Edit Book Configuration (book.json)", {
                     content: {
@@ -405,7 +401,7 @@ define([
                 }, {keyboardEnter: false})
                 .then(function(values) {
                     content = values.content;
-                    content = normalizeContent(content);
+                    return JSON.parse(content);
                 })
                 .fail(function(err) {
                     return dialogs.confirm("Would you like to correct the error?", "Your book.json is not a valid json file: "+err.message)
@@ -413,17 +409,13 @@ define([
                 });
             };
 
-            return this.model.read("book.json")
-            .fail(function() {
-                return "{}";
-            })
+            return this.model.readConfig()
             .then(function(_content) {
-                content = _content;
-                content = normalizeContent(content);
+                content = JSON.stringify(_content, null, 4);
             })
             .then(showDialog, showDialog)
-            .then(function() {
-                return that.model.write("book.json", content).fail(dialogs.error);
+            .then(function(_content) {
+                return that.model.writeConfig(_content).fail(dialogs.error);
             });
         },
 

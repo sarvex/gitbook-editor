@@ -253,6 +253,31 @@ define([
         contentExists: function(_path) {
             return this.exists(this.contentPath(_path));
         },
+
+        /*
+         *  Read book.json
+         */
+        readConfig: function() {
+            return this.read("book.json")
+            .fail(function() {
+                return "{}"
+            })
+            .then(function(content) {
+                return JSON.parse(content);
+            });
+        },
+
+        /*
+         *  Write book.json
+         */
+        writeConfig: function(config) {
+            var that = this;
+
+            return Q()
+            .then(function() {
+                return that.write("book.json", JSON.stringify(config, null, 4));
+            });
+        },
     });
 
     return Book;
