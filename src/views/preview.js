@@ -12,6 +12,8 @@ define([
 
     // Configure mathjax
     MathJax.Hub.Config({
+        messageStyle: "none",
+        skipStartupTypeset: true,
         tex2jax: {
             processEscapes: true
         }
@@ -66,7 +68,7 @@ define([
             });
 
             // Render math expression
-            MathJax.Hub.Typeset();
+            MathJax.Hub.Typeset(this.el);
 
             return Preview.__super__.finish.apply(this, arguments);
         },
