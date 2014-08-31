@@ -1,7 +1,7 @@
 define([
     "hr/hr"
 ], function(hr) {
-    var Plugin = hr.Model.extend({
+    var PluginEntry = hr.Model.extend({
         idAttribute: "name",
         defaults: {
             name: null,
@@ -9,5 +9,5 @@ define([
         }
     });
 
-    return Plugin;
+    return PluginEntry;
 });

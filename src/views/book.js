@@ -9,13 +9,14 @@ define([
     "models/article",
     "models/book",
     "collections/glossary",
+    "collections/plugins",
     "core/server",
     "core/settings",
     "views/grid",
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, loading, dialogs, normalize, analytic, Article, Book, Glossary, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, loading, dialogs, normalize, analytic, Article, Book, Glossary, Plugins, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -42,6 +43,10 @@ define([
             // Glossary
             this.glossary = new Glossary();
             this.listenTo(this.glossary, "add remove change reset", this.updateGlossaryMenu);
+
+            // Plugins
+            this.plugins = new Plugins();
+            this.listenTo(this.plugins, "add remove change reset", this.updatePluginsMenu);
 
             // Main grid
             this.grid = new Grid({
@@ -74,7 +79,6 @@ define([
             });
             this.listenTo(this.model, "set:lang", this.updateLanguagesMenu);
             this.updateLanguagesMenu();
-            this.updatePluginsMenu();
 
             loading.show(this.updateContent(), "Loading book content ...");
         },
@@ -88,8 +92,12 @@ define([
                 return that.loadGlossary();
             })
             .then(function() {
+                return that.plugins.parsePlugins(that.model);
+            })
+            .then(function() {
                 return that.openReadme();
-            });
+            })
+            .fail(dialogs.error);
         },
 
         // Update glossary menu
@@ -135,6 +143,16 @@ define([
                 type: 'separator'
             }));
 
+             _.chain(this.plugins.models)
+            .map(function(plugin) {
+                return new gui.MenuItem({
+                    label: plugin.get("name"),
+                    click: function () {
+
+                    }
+                });
+            })
+            .each(submenu.append.bind(submenu));
             this.parent.pluginsMenu.submenu = submenu;
         },
 
