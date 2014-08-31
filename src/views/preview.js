@@ -10,6 +10,15 @@ define([
     var url = node.require("url");
     var parse = node.require("gitbook").parse;
 
+    // Configure mathjax
+    MathJax.Hub.Config({
+        messageStyle: "none",
+        skipStartupTypeset: true,
+        tex2jax: {
+            processEscapes: true
+        }
+    });
+
     var Preview = hr.View.extend({
         className: "book-section preview",
         template: templateFile,
@@ -34,7 +43,7 @@ define([
                 if (!this.autoScroll) {
                     return;
                 }
-                
+
                 var editor = this.parent.editor;
                 this.scrollTop(editor.scrollTop() / editor.$(".content").height() * 100);
             }, this));
@@ -57,6 +66,9 @@ define([
             this.$(".content img").each(function() {
                 $(this).attr("src", url.resolve(current, $(this).attr("src")));
             });
+
+            // Render math expression
+            MathJax.Hub.Typeset(this.el);
 
             return Preview.__super__.finish.apply(this, arguments);
         },
