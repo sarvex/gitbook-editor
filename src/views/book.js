@@ -5,6 +5,7 @@ define([
     "utils/loading",
     "utils/dialogs",
     "utils/normalize",
+    "utils/analytic",
     "models/article",
     "models/book",
     "collections/glossary",
@@ -14,7 +15,7 @@ define([
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, loading, dialogs, normalize, Article, Book, Glossary, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, loading, dialogs, normalize, analytic, Article, Book, Glossary, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -448,6 +449,8 @@ define([
             var content = this.articles[path].content;
             if (settings.get("normalizeEof")) content = normalize.eof(content);
             if (settings.get("normalizeWhitespace")) content = normalize.whitespace(content);
+
+            analytic.track("save");
 
             // Try to create the directory
             return that.model.contentMkdir(dirname(path))
