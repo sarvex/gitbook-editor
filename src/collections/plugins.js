@@ -7,6 +7,7 @@ define([
     var DEFAULT_PLUGINS = [
         "exercises", "quizzes", "mathjax"
     ];
+    var PLUGIN_PREFIX = "gitbook-plugin-";
 
     var Plugins = hr.Collection.extend({
         model: PluginEntry,
@@ -74,11 +75,19 @@ define([
 
                 // Don't add default plugins to package.json
                 plugins = _.without.apply(null, [plugins].concat(DEFAULT_PLUGINS));
-                if (plugins.length == 0) return;
 
+                // Add plugins dependencies
                 _.each(plugins, function(plugin) {
-                    plugin = "gitbook-plugin-"+plugin;
+                    plugin = PLUGIN_PREFIX+plugin;
                     packageJson.dependencies[plugin] = packageJson.dependencies[plugin] || "*";
+                });
+
+                // Remove unused plugins dependencies
+                packageJson.dependencies = _.omit(packageJson.dependencies, function(value, name) {
+                    if (name.indexOf(PLUGIN_PREFIX) !== 0) return false;
+
+                    name = name.slice(PLUGIN_PREFIX.length);
+                    return !_.contains(plugins, name);
                 });
 
                 return book.write("package.json", JSON.stringify(packageJson, null, 4));
