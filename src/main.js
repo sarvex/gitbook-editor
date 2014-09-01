@@ -64,6 +64,12 @@ require([
                 submenu: new gui.Menu()
             });
 
+            // Menu for plugins
+            this.pluginsMenu = new gui.MenuItem({
+                label: 'Plugins',
+                submenu: new gui.Menu()
+            });
+
             // Menu for recent books
             this.recentBooksMenu = new gui.MenuItem({
                 label: 'Open Recent',
@@ -150,9 +156,7 @@ require([
                 type: 'separator'
             }));
             bookMenu.append(this.langsMenu);
-            bookMenu.append(new gui.MenuItem({
-                type: 'separator'
-            }));
+            bookMenu.append(this.pluginsMenu);
             bookMenu.append(this.glossaryMenu);
             bookMenu.append(new gui.MenuItem({
                 type: 'separator'

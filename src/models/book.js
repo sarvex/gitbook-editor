@@ -3,6 +3,7 @@ define([
     "hr/promise",
     "hr/utils"
 ], function(hr, Q, _) {
+    var npmi = node.require("npmi");
     var fs = node.require("fs");
     var path = node.require("path");
     var parse = node.require("gitbook").parse;
@@ -253,6 +254,48 @@ define([
         contentExists: function(_path) {
             return this.exists(this.contentPath(_path));
         },
+
+        /*
+         *  Read book.json
+         */
+        readConfig: function() {
+            return this.read("book.json")
+            .fail(function() {
+                return "{}"
+            })
+            .then(function(content) {
+                return JSON.parse(content);
+            });
+        },
+
+        /*
+         *  Write book.json
+         */
+        writeConfig: function(config) {
+            var that = this;
+
+            return Q()
+            .then(function() {
+                return that.write("book.json", JSON.stringify(config, null, 4));
+            });
+        },
+
+        /*
+         *  Install dependencies
+         */
+        installDependencies: function() {
+            var that = this;
+            var d = Q.defer();
+
+            npmi({
+                'path': this.root()
+            }, function(err) {
+                if (err) return d.reject(err);
+                d.resolve();
+            });
+
+            return d.promise;
+        }
     });
 
     return Book;

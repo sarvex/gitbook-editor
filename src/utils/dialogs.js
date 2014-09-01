@@ -230,6 +230,42 @@ define([
             Dialogs.alert("Error:", err.message || err);
             console.error(err.stack || err.message || err);
             return Q.reject(err);
+        },
+
+        /**
+         *  Show a dialog to edit some json
+         */
+        json: function(input, options) {
+            options = _.defaults(options || {}, {
+                title: "",
+                defaultValue: "{}"
+            })
+            var content = options.defaultValue;
+
+            var showDialog = function() {
+                return Dialogs.fields(options.title, {
+                    content: {
+                        type: "textarea",
+                        rows: 8
+                    }
+                }, {
+                    content: content
+                }, {keyboardEnter: false})
+                .then(function(values) {
+                    content = values.content;
+                    return JSON.parse(content);
+                })
+                .fail(function(err) {
+                    return dialogs.confirm("Would you like to correct the error?", "The JSON is invalid: "+err.message)
+                    .then(showDialog);
+                });
+            };
+
+            return Q(input)
+            .then(function(_content) {
+                content = JSON.stringify(_content, null, 4);
+            })
+            .then(showDialog, showDialog);
         }
     };
 

@@ -9,13 +9,14 @@ define([
     "models/article",
     "models/book",
     "collections/glossary",
+    "collections/plugins",
     "core/server",
     "core/settings",
     "views/grid",
     "views/summary",
     "views/editor",
     "views/preview"
-], function(hr, Q, normalize, loading, dialogs, normalize, analytic, Article, Book, Glossary, server, settings, Grid, Summary, Editor, Preview) {
+], function(hr, Q, normalize, loading, dialogs, normalize, analytic, Article, Book, Glossary, Plugins, server, settings, Grid, Summary, Editor, Preview) {
     var generate = node.require("gitbook").generate,
         normalizeFilename = node.require("normall").filename,
         dirname = node.require("path").dirname;
@@ -42,6 +43,10 @@ define([
             // Glossary
             this.glossary = new Glossary();
             this.listenTo(this.glossary, "add remove change reset", this.updateGlossaryMenu);
+
+            // Plugins
+            this.plugins = new Plugins();
+            this.listenTo(this.plugins, "add remove change reset", this.updatePluginsMenu);
 
             // Main grid
             this.grid = new Grid({
@@ -87,8 +92,12 @@ define([
                 return that.loadGlossary();
             })
             .then(function() {
+                return that.loadPlugins();
+            })
+            .then(function() {
                 return that.openReadme();
-            });
+            })
+            .fail(dialogs.error);
         },
 
         // Update glossary menu
@@ -97,7 +106,7 @@ define([
             var submenu = new gui.Menu();
 
             submenu.append(new gui.MenuItem({
-                label: 'Add new entry',
+                label: 'New Entry',
                 click: function () {
                     that.editGlossaryTerm();
                 }
@@ -117,6 +126,64 @@ define([
             })
             .each(submenu.append.bind(submenu));
             this.parent.glossaryMenu.submenu = submenu;
+        },
+
+        // Update plugins menu
+        updatePluginsMenu: function() {
+            var that = this;
+            var submenu = new gui.Menu();
+
+            submenu.append(new gui.MenuItem({
+                label: 'New Plugin',
+                click: function () {
+                    that.addPlugin();
+                }
+            }));
+            submenu.append(new gui.MenuItem({
+                label: 'Install Plugins',
+                click: function () {
+                    loading.show(that.model.installDependencies(), "Installing Dependencies ...")
+                    .fail(dialogs.error);
+                }
+            }));
+            submenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+
+             _.chain(this.plugins.models)
+            .map(function(plugin) {
+                var actions = new gui.Menu();
+
+                actions.append(new gui.MenuItem({
+                    label: "Edit Configuration",
+                    click: function() {
+                        dialogs.json(plugin.get("config"), {
+                            title: "Configuration for '"+_.escape(plugin.get("name"))+"' plugin"
+                        })
+                        .then(function(config) {
+                            plugin.set("config", config);
+                            return that.savePlugins();
+                        });
+                    }
+                }));
+
+                actions.append(new gui.MenuItem({
+                    label: "Remove",
+                    click: function() {
+                        plugin.destroy();
+
+                        that.savePlugins();
+                    }
+                }));
+
+
+                return new gui.MenuItem({
+                    label: plugin.get("name"),
+                    submenu: actions
+                });
+            })
+            .each(submenu.append.bind(submenu));
+            this.parent.pluginsMenu.submenu = submenu;
         },
 
         // Update languages menu
@@ -369,42 +436,19 @@ define([
 
         // Open edit book.json dialog
         editConfig: function() {
-            var that = this, content = "{}";
+            var that = this;
 
-            var normalizeContent = function(_content) {
-                return JSON.stringify(JSON.parse(_content), null, 4);
-            };
-
-            var showDialog = function() {
-                return dialogs.fields("Edit Book Configuration (book.json)", {
-                    content: {
-                        type: "textarea",
-                        rows: 8
-                    }
-                }, {
-                    content: content
-                }, {keyboardEnter: false})
-                .then(function(values) {
-                    content = values.content;
-                    content = normalizeContent(content);
+            return this.model.readConfig()
+            .then(function(content) {
+                return dialogs.json(content, {
+                    title: "Edit Book Configuration (book.json)"
                 })
-                .fail(function(err) {
-                    return dialogs.confirm("Would you like to correct the error?", "Your book.json is not a valid json file: "+err.message)
-                    .then(showDialog);
-                });
-            };
-
-            return this.model.read("book.json")
-            .fail(function() {
-                return "{}";
             })
-            .then(function(_content) {
-                content = _content;
-                content = normalizeContent(content);
+            .then(function(content) {
+                return that.model.writeConfig(content).fail(dialogs.error);
             })
-            .then(showDialog, showDialog)
             .then(function() {
-                return that.model.write("book.json", content).fail(dialogs.error);
+                return that.loadPlugins();
             });
         },
 
@@ -492,6 +536,32 @@ define([
                 var content = that.glossary.toMarkdown();
                 return that.model.contentWrite("GLOSSARY.md", content)
             });
+        },
+
+        // Load plugins
+        loadPlugins: function() {
+            return this.plugins.parsePlugins(this.model);
+        },
+
+        // Save plugins
+        savePlugins: function() {
+            return this.plugins.toFs(this.model)
+            .fail(dialogs.error)
+        },
+
+        // Add plugins
+        addPlugin: function() {
+            var that = this;
+
+            return dialogs.prompt("New Plugin", "Enter the name of the plugin to be added.")
+            .then(function(plugin) {
+                if (that.plugins.get(plugin)) return;
+
+                that.plugins.add({
+                    name: plugin
+                });
+                return that.savePlugins();
+            })
         },
 
         // Add term in glossary
