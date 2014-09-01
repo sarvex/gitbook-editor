@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-github-releaser');
     grunt.loadNpmTasks("grunt-bower-install-simple");
 
-    var NW_VERSION = "0.10.2";
+    var NW_VERSION = "0.10.3";
 
     // Init GRUNT configuraton
     grunt.initConfig({
