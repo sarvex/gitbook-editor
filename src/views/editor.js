@@ -355,20 +355,19 @@ define([
             if (article.get("path") != this.book.currentArticle.get("path")) return;
 
             var pos = this.editor.getCursorPosition();
+            var selection = this.editor.getSelectionRange();
 
             // We need to have line to calculate new positions
             // and ensure they don't "overflow"
             var lines = content.split('\n');
 
-            // Next positions
-            var y = Math.min(pos.row, lines.length-1);
-            var x = Math.min(pos.column, Math.max(lines[y].length, 0));
-
             this.ignoreChange = true;
 
             // We are doing the same as editor.session.setValue without reseting the undomanager
             this.editor.session.doc.setValue(content);
-            this.editor.moveCursorTo(y, x);
+            this.editor.moveCursorTo(pos.row, pos.column);
+            this.editor.getSession().getSelection().setSelectionAnchor(selection.start.row, selection.start.column);
+            this.editor.getSession().getSelection().selectTo(selection.end.row, selection.end.column);
             this.editor.session.$resetRowCache(0);
             this.editor.session.$deltas = [];
             this.editor.session.$deltasDoc = [];
