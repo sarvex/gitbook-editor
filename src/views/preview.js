@@ -70,6 +70,11 @@ define([
             // Render math expression
             MathJax.Hub.Typeset(this.el);
 
+            // Tooltip
+            this.$('.toolbar button').tooltip({
+                container: 'body'
+            });
+
             return Preview.__super__.finish.apply(this, arguments);
         },
 

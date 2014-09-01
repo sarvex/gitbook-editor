@@ -210,7 +210,14 @@ define([
         },
 
         finish: function() {
+            // Add ace editpr
             this.$editor.appendTo(this.$(".content"));
+
+            // Tooltip
+            this.$('.toolbar button').tooltip({
+                container: 'body'
+            });
+
             return Editor.__super__.finish.apply(this, arguments);
         },
 
