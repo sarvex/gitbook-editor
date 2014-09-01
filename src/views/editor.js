@@ -353,6 +353,7 @@ define([
         // Update editor if article has been normalized
         onArticleSave: function(article, content) {
             if (article.get("path") != this.book.currentArticle.get("path")) return;
+            if ( this.editor.session.doc.getValue() == content) return;
 
             var pos = this.editor.getCursorPosition();
             var selection = this.editor.getSelectionRange();
