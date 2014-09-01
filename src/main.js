@@ -26,6 +26,32 @@ require([
         loader: "text"
     });
 
+    hr.Template.extendContext({
+        keyboardShortcut: function(shortcut) {
+            var isMac = process.platform === 'darwin';
+
+            // Replace mod by equivalent for mac or windows
+            shortcut = shortcut.replace("ctrl", isMac ? '&#8984;' : 'ctrl');
+
+            // Replace ctrl
+            shortcut = shortcut.replace("ctrl", "⌃");
+
+            // Replace shift
+            shortcut = shortcut.replace("shift", "⇧");
+
+            if (isMac) {
+                shortcut = shortcut.replace("alt", "⌥");
+            } else {
+                shortcut = shortcut.replace("alt", "⎇");
+            }
+
+            // Replace +
+            shortcut = shortcut.replace(/\+/g, " ");
+
+            return shortcut.toUpperCase();
+        }
+    });
+
     // Define base application
     var Application = hr.Application.extend({
         name: "GitBook Editor",

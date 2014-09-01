@@ -38,24 +38,79 @@ define([
         };
     };
 
-
-    var Editor = hr.View.extend({
-        className: "book-section editor",
-        template: templateFile,
-        events: {
-            "click .action-save": "doSave",
-            "click .action-glossary-edit": "glossaryEdit",
-            "click .action-text-bold": textAction("**", "**"),
-            "click .action-text-italic": textAction("*", "*"),
-            "click .action-text-strikethrough": textAction("~~", "~~"),
-            "click .action-text-title-1": textAction("# ", "\n"),
-            "click .action-text-title-2": textAction("## ", "\n"),
-            "click .action-text-title-3": textAction("### ", "\n"),
-            "click .action-text-title-4": textAction("#### ", "\n"),
-            "click .action-text-list-ul": textAction("* ", "\n"),
-            "click .action-text-list-ol": textAction("1. ", "\n"),
-            "click .action-text-code": textAction("```\n", "```\n"),
-            "click .action-text-table": textInteractiveAction("Add a table", {
+    var ACTIONS = {
+        "bold": {
+            bindKey: {
+                win: "Ctrl-B",
+                mac: "Command-B"
+            },
+            action: textAction("**", "**")
+        },
+        "italic": {
+            bindKey: {
+                win: "Ctrl-I",
+                mac: "Command-I"
+            },
+            action: textAction("*", "*")
+        },
+        "strikethrough": {
+            bindKey: {
+                win: "Alt-Shift-5",
+                mac: "Alt-Shift-5"
+            },
+            action: textAction("~~", "~~")
+        },
+        "title-1": {
+            bindKey: {
+                win: "Ctrl-Alt-1",
+                mac: "Command-Alt-1"
+            },
+            action: textAction("# ", "\n")
+        },
+        "title-2": {
+            bindKey: {
+                win: "Ctrl-Alt-2",
+                mac: "Command-Alt-2"
+            },
+            action: textAction("## ", "\n")
+        },
+        "title-3": {
+            bindKey: {
+                win: "Ctrl-Alt-3",
+                mac: "Command-Alt-3"
+            },
+            action: textAction("### ", "\n")
+        },
+        "title-4": {
+            bindKey: {
+                win: "Ctrl-Alt-4",
+                mac: "Command-Alt-4"
+            },
+            action: textAction("#### ", "\n")
+        },
+        "list-ul": {
+            bindKey: {
+                win: "Ctrl-Alt-7",
+                mac: "Command-Alt-7"
+            },
+            action: textAction("* ", "\n")
+        },
+        "list-ol": {
+            bindKey: {
+                win: "Ctrl-Alt-8",
+                mac: "Command-Alt-8"
+            },
+            action: textAction("1. ", "\n")
+        },
+        "code": {
+            bindKey: {
+                win: "Ctrl-Alt-9",
+                mac: "Command-Alt-9"
+            },
+            action: textAction("```\n", "```\n")
+        },
+        "table": {
+            action: textInteractiveAction("Add a table", {
                 "rows": {
                     'label': "Rows",
                     'type': "number",
@@ -81,8 +136,14 @@ define([
                 }
 
                 return [after, before]
-            }),
-            "click .action-text-link": textInteractiveAction("Add a link", {
+            })
+        },
+        "link": {
+            bindKey: {
+                win: "Ctrl-K",
+                mac: "Command-K"
+            },
+            action: textInteractiveAction("Add a link", {
                 "href": {
                     'label': "Link",
                     'type': "text",
@@ -90,8 +151,10 @@ define([
                 }
             }, function(info) {
                 return ["[", "]("+info.href+")"];
-            }),
-            "click .action-text-image": textInteractiveAction("Add an image", {
+            })
+        },
+        "image": {
+            action: textInteractiveAction("Add an image", {
                 "href": {
                     'label': "Link",
                     'type': "text",
@@ -99,7 +162,30 @@ define([
                 }
             }, function(info) {
                 return ["![", "]("+info.href+")"];
-            }),
+            })
+        }
+    }
+
+
+    var Editor = hr.View.extend({
+        className: "book-section editor",
+        template: templateFile,
+        events: {
+            "click .action-save": "doSave",
+            "click .action-glossary-edit": "glossaryEdit",
+            "click .action-text-bold": ACTIONS["bold"].action,
+            "click .action-text-italic": ACTIONS["italic"].action,
+            "click .action-text-strikethrough": ACTIONS["strikethrough"].action,
+            "click .action-text-title-1": ACTIONS["title-1"].action,
+            "click .action-text-title-2": ACTIONS["title-2"].action,
+            "click .action-text-title-3": ACTIONS["title-3"].action,
+            "click .action-text-title-4": ACTIONS["title-4"].action,
+            "click .action-text-list-ul": ACTIONS["list-ul"].action,
+            "click .action-text-list-ol": ACTIONS["list-ol"].action,
+            "click .action-text-code": ACTIONS["code"].action,
+            "click .action-text-table": ACTIONS["table"].action,
+            "click .action-text-link": ACTIONS["link"].action,
+            "click .action-text-image": ACTIONS["image"].action,
             "click .action-help": "doOpenHelp"
         },
 
@@ -155,6 +241,17 @@ define([
                 },
                 readOnly: true
             }]);
+
+            _.each(ACTIONS, function(action, name) {
+                if (!action.bindKey) return;
+
+                this.editor.commands.addCommands([{
+                    name: "editor-"+name,
+                    bindKey: action.bindKey,
+                    exec: action.action.bind(this),
+                    readOnly: true
+                }]);
+            }, this);
 
             this.editor.renderer.scrollBarV.element.addEventListener("scroll",  _.throttle(function(e) {
                 var h = this.scrollTop();
