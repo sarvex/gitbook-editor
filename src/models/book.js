@@ -285,16 +285,14 @@ define([
          */
         installDependencies: function() {
             var that = this;
-            var d = Q.defer();
+            return this.exists("package.json")
+            .then(function(e) {
+                if (!e) throw "No plugins to install (package.json not found).";
 
-            npmi({
-                'path': this.root()
-            }, function(err) {
-                if (err) return d.reject(err);
-                d.resolve();
+                return Q.nfcall(npmi, {
+                    'path': that.root()
+                });
             });
-
-            return d.promise;
         }
     });
 

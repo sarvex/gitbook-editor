@@ -65,8 +65,8 @@ define([
                 .fail(function() {
                     return "{}";
                 })
-                .then(JSON.parse);
             })
+            .then(JSON.parse)
             .then(function(packageJson) {
                 // Generate if non existant package.json
                 packageJson.name = packageJson.name || "book";
