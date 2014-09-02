@@ -202,41 +202,6 @@ require([
                     that.book.refreshPreviewServer();
                 }
             }));
-            bookMenu.append(new gui.MenuItem({
-                type: 'separator'
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build Website As...',
-                click: function () {
-                    dialogs.saveFolder()
-                    .then(function(_path) {
-                        that.book.buildBook({
-                            output: _path
-                        })
-                        .then(function(options) {
-                            node.gui.Shell.showItemInFolder(path.join(_path, "index.html"));
-                        });
-                    });
-                }
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build PDF As...',
-                click: function () {
-                    that.book.buildBookFile("pdf");
-                }
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build eBook (EPUB) As...',
-                click: function () {
-                    that.book.buildBookFile("epub");
-                }
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build eBook (MOBI) As...',
-                click: function () {
-                    that.book.buildBookFile("mobi");
-                }
-            }));
 
             var helpMenu = new node.gui.Menu();
             helpMenu.append(new gui.MenuItem({
