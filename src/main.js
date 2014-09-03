@@ -4,6 +4,7 @@ require([
     "hr/promise",
     "hr/hr",
     "hr/args",
+    "utils/clipboard",
     "utils/loading",
     "utils/dialogs",
     "utils/analytic",
@@ -13,7 +14,7 @@ require([
     "models/book",
     "views/book",
     "views/intro"
-], function(_, $, Q, hr, args, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView, IntroView) {
+], function(_, $, Q, hr, args, clipboard, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView, IntroView) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -65,6 +66,8 @@ require([
             Application.__super__.initialize.apply(this, arguments);
 
             var that = this;
+
+            clipboard.init();
 
             // Loading bar
             loading.appendTo(this);
