@@ -4,6 +4,7 @@ require([
     "hr/promise",
     "hr/hr",
     "hr/args",
+    "utils/clipboard",
     "utils/loading",
     "utils/dialogs",
     "utils/analytic",
@@ -13,7 +14,7 @@ require([
     "models/book",
     "views/book",
     "views/intro"
-], function(_, $, Q, hr, args, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView, IntroView) {
+], function(_, $, Q, hr, args, clipboard, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView, IntroView) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -65,6 +66,8 @@ require([
             Application.__super__.initialize.apply(this, arguments);
 
             var that = this;
+
+            clipboard.init();
 
             // Loading bar
             loading.appendTo(this);
@@ -200,41 +203,6 @@ require([
                 label: 'Preview Website',
                 click: function () {
                     that.book.refreshPreviewServer();
-                }
-            }));
-            bookMenu.append(new gui.MenuItem({
-                type: 'separator'
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build Website As...',
-                click: function () {
-                    dialogs.saveFolder()
-                    .then(function(_path) {
-                        that.book.buildBook({
-                            output: _path
-                        })
-                        .then(function(options) {
-                            node.gui.Shell.showItemInFolder(path.join(_path, "index.html"));
-                        });
-                    });
-                }
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build PDF As...',
-                click: function () {
-                    that.book.buildBookFile("pdf");
-                }
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build eBook (EPUB) As...',
-                click: function () {
-                    that.book.buildBookFile("epub");
-                }
-            }));
-            bookMenu.append(new gui.MenuItem({
-                label: 'Build eBook (MOBI) As...',
-                click: function () {
-                    that.book.buildBookFile("mobi");
                 }
             }));
 
