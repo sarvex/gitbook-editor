@@ -154,6 +154,12 @@ require([
                 }
             }));
             bookMenu.append(new gui.MenuItem({
+                label: 'Reveal in Finder',
+                click: function () {
+                    node.gui.Shell.showItemInFolder(that.book.model.realPath("README.md"));
+                }
+            }));
+            bookMenu.append(new gui.MenuItem({
                 type: 'separator'
             }));
             bookMenu.append(new gui.MenuItem({
