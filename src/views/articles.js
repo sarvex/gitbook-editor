@@ -64,7 +64,7 @@ define([
                 type: 'separator'
             }));
             this.menu.append(new gui.MenuItem({
-                label: 'Rename',
+                label: 'Rename...',
                 click: this.changeTitle.bind(this)
             }));
 
@@ -74,6 +74,13 @@ define([
                     click: this.removeChapter.bind(this)
                 }));
             }
+
+            this.menu.append(new gui.MenuItem({
+                label: 'Reveal in Finder',
+                click: function () {
+                    node.gui.Shell.showItemInFolder(that.editor.model.realPath(that.model.get("path")));
+                }
+            }));
         },
 
         render: function() {
