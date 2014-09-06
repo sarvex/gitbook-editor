@@ -6,7 +6,7 @@ This application is a simple editor for writing books. It's available for Window
 
 ### How to install it?
 
-Download are available on the [Releases page](https://github.com/GitbookIO/editor/releases).
+Download it from [gitbook.io](https://www.gitbook.io/editor/download).
 
 #### How to install it on Mac:
 
@@ -39,10 +39,4 @@ Download are available on the [Releases page](https://github.com/GitbookIO/edito
 $ npm install .
 $ grunt build
 $ nw ./ --remote-debugging-port=9222
-```
-
-### How to build releases?
-
-```
-$ grunt build-apps
 ```
