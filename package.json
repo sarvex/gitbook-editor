@@ -1,6 +1,6 @@
 {
     "name": "gitbook-editor",
-    "version": "0.4.0",
+    "version": "1.0.0",
     "description": "Editor for writing GitBook",
     "main": "build/index.html",
     "window": {
