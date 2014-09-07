@@ -11,13 +11,19 @@ define([
     var gui = node.gui;
 
     var setConfig = function() {
-        client.config = {
+        var config = {
             host: settings.get("host") || "https://www.gitbook.io",
-            auth: {
-                username: settings.get("username"),
-                password: settings.get("token")
-            }
+            auth: null
         };
+
+        if (settings.get("username") && settings.get("token")) {
+            config.auth = {
+                username: settings.get("username") || "",
+                password: settings.get("token") || ""
+            };
+        }
+
+        client.config = config;
         client.updateConfig();
     };
 
