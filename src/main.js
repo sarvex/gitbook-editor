@@ -11,10 +11,11 @@ require([
     "core/settings",
     "core/gitbookio",
     "core/update",
+    "core/server",
     "models/book",
     "views/book",
     "views/intro"
-], function(_, $, Q, hr, args, clipboard, loading, dialogs, analytic, settings, gitbookIo, update, Book, BookView, IntroView) {
+], function(_, $, Q, hr, args, clipboard, loading, dialogs, analytic, settings, gitbookIo, update, server, Book, BookView, IntroView) {
     var path = node.require("path");
     var wrench = node.require("wrench");
     var gui = node.gui;
@@ -345,11 +346,13 @@ require([
                 this.book.remove();
             }
 
+            // Stop server anyway
+            server.stop();
 
+            // Define new book
             this.book = book;
             this.bookMenuItem.enabled = (this.book != null);
             this.viewMenuItem.enabled = (this.book != null);
-
             if (this.book) {
                 this.book.update();
                 this.book.appendTo(this);
