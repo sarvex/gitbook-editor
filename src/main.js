@@ -154,7 +154,7 @@ require([
                 }
             }));
             bookMenu.append(new gui.MenuItem({
-                label: 'Reveal in Finder',
+                label: 'Show in Folder',
                 click: function () {
                     node.gui.Shell.showItemInFolder(that.book.model.realPath("README.md"));
                 }

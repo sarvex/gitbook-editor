@@ -76,7 +76,7 @@ define([
             }
 
             this.menu.append(new gui.MenuItem({
-                label: 'Reveal in Finder',
+                label: 'Show in Folder',
                 click: function () {
                     node.gui.Shell.showItemInFolder(that.editor.model.realPath(that.model.get("path")));
                 }
