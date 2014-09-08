@@ -11,6 +11,10 @@ define([
     var gui = node.gui;
 
     var setConfig = function() {
+        // Update analytic settings
+        analytic.setDistinctId(settings.get("username"));
+
+        // update api settings
         var config = {
             host: settings.get("host") || "https://www.gitbook.io",
             auth: null
@@ -52,13 +56,14 @@ define([
             }
         })
         .then(function(auth) {
-            analytic.track("account.connect");
             return loading.show(client.login(auth.username, auth.password), "Connecting to your account ...");
         })
-        .then(function() {
-            settings.set("username", client.config.auth.username, { silent: true });
+        .then(function(account) {
             settings.set("token", client.config.auth.password, { silent: true });
+            settings.set("username", client.config.auth.username);
             settings.setStateToStorage();
+
+            analytic.track("account.connect");
         })
         .then(function() {
             dialogs.alert("Account connected",
