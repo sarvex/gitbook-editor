@@ -484,15 +484,20 @@ define([
         },
 
         // Save an article
-        saveArticle: function(article) {
+        saveArticle: function(article, options) {
+            options = _.defaults(options || {}, {
+                cursor: this.editor.getCursor()
+            });
+
+
             var that = this;
             var path = article.get("path");
             if (!this.articles[path]) return Q.reject(new Error("No content to save for this article"));
 
             // Normalize content before saving
             var content = this.articles[path].content;
-            if (settings.get("normalizeEof")) content = normalize.eof(content);
-            if (settings.get("normalizeWhitespace")) content = normalize.whitespace(content);
+            if (settings.get("normalizeEof")) content = normalize.eof(content, options);
+            if (settings.get("normalizeWhitespace")) content = normalize.whitespace(content, options);
 
             analytic.track("save");
 

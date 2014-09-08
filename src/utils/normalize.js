@@ -1,13 +1,30 @@
-define([], function() {
+define([
+    "hr/utils"
+], function(_) {
     // Remove extra whitespace on the right of lines
-    var whitespace = function(str) {
+    var whitespace = function(str, options) {
+        options = _.defaults(options || {}, {
+            cursor: null
+        });
+
         return str.split('\n')
-        .map(function(line) { return line.trimRight(); })
+        .map(function(line, i) {
+            if (options.cursor
+            && options.cursor.row == i
+            && options.cursor.column == line.length) {
+                return line;
+            }
+            return line.trimRight();
+        })
         .join('\n');
     };
 
     // Ensure file is correctly termined by a newline
-    var eof = function(str) {
+    var eof = function(str, options) {
+        options = _.defaults(options || {}, {
+            cursor: null
+        });
+
         return str[str.length-1] === '\n' ? str : str + '\n';
     };
 

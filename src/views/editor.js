@@ -281,6 +281,7 @@ define([
             }
         },
 
+        // Update editor settings according to settings
         updateEditorOptions: function() {
             var wordWrap = settings.get("wordWrap");
             var editorFontSize = settings.get("editorFontSize");
@@ -297,15 +298,23 @@ define([
             this.editor.setFontSize(editorFontSize);
         },
 
+        // Scroll the editor to the top
         scrollTop: function() {
             return $(this.editor.renderer.scrollBarV.element).scrollTop();
         },
 
+        // Return current cursor position
+        getCursor: function() {
+            return this.editor.getCursorPosition();
+        },
+
+        // Start rendering
         render: function() {
             this.$editor.detach();
             return Editor.__super__.render.apply(this, arguments);
         },
 
+        // After dom rendering
         finish: function() {
             // Add ace editpr
             this.$editor.appendTo(this.$(".content"));
@@ -318,6 +327,7 @@ define([
             return Editor.__super__.finish.apply(this, arguments);
         },
 
+        // Add/edit current selected glossary term
         glossaryEdit: function(e) {
             if (this.editor.selection.isEmpty()) {
                 this.book.editGlossaryTerm();
