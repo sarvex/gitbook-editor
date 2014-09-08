@@ -265,6 +265,9 @@ define([
             })
             .then(function(content) {
                 return JSON.parse(content);
+            })
+            .fail(function(err) {
+                return Q.reject(new Error("Error parsing book configuration file (book.json): " + (err.message || err)));
             });
         },
 
