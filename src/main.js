@@ -212,6 +212,40 @@ require([
                 }
             }));
 
+            var viewActionSummary, viewActionPreview;
+            var viewMenu = new node.gui.Menu();
+            viewMenu.append(new gui.MenuItem({
+                label: 'Distraction Free Mode',
+                type: "checkbox",
+                checked: false,
+                click: function (e) {
+                    that.book.toggleSummaryPanel(!this.checked);
+                    that.book.togglePreviewPanel(!this.checked);
+
+                    viewActionSummary.checked = !this.checked;
+                    viewActionPreview.checked = !this.checked;
+                }
+            }));
+            viewMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            viewMenu.append(viewActionSummary = new gui.MenuItem({
+                label: 'Show Summary Panel',
+                type: "checkbox",
+                checked: true,
+                click: function (e) {
+                    this.checked = that.book.toggleSummaryPanel(this.checked);
+                }
+            }));
+            viewMenu.append(viewActionPreview = new gui.MenuItem({
+                label: 'Show Preview Panel',
+                type: "checkbox",
+                checked: true,
+                click: function (e) {
+                    this.checked = that.book.togglePreviewPanel(this.checked);
+                }
+            }));
+
             var helpMenu = new node.gui.Menu();
             helpMenu.append(new gui.MenuItem({
                 label: 'Official Website',
@@ -263,8 +297,16 @@ require([
                 submenu: bookMenu,
                 enabled: false
             });
-
             this.menu.append(this.bookMenuItem);
+
+            this.viewMenuItem = new gui.MenuItem({
+                label: 'View',
+                submenu: viewMenu,
+                enabled: false
+            });
+            this.menu.append(this.viewMenuItem);
+
+
             this.menu.append(new gui.MenuItem({
                 label: 'Preferences',
                 submenu: preferencesMenu
@@ -304,6 +346,7 @@ require([
 
             this.book = book;
             this.bookMenuItem.enabled = (this.book != null);
+            this.viewMenuItem.enabled = (this.book != null);
 
             if (this.book) {
                 this.book.update();

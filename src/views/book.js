@@ -645,6 +645,24 @@ define([
             this.$("*[data-article]").each(function() {
                 $(this).toggleClass(className, $(this).data("article") == article.get("path"));
             });
+        },
+
+        // Show/hide summary panel
+        toggleSummaryPanel: function(st) {
+            if (st == null) st = !this.summary._gridOptions.enabled;
+            this.summary._gridOptions.enabled = st;
+            this.grid.update();
+
+            return st;
+        },
+
+        // Show/hide preview panel
+        togglePreviewPanel: function(st) {
+            if (st == null) st = !this.preview._gridOptions.enabled;
+            this.preview._gridOptions.enabled = st;
+            this.grid.update();
+
+            return st;
         }
     });
 

@@ -10,7 +10,7 @@ define([
             columns: 0 // 0 means auto
         },
         events: {
-            
+
         },
 
         initialize: function() {
@@ -28,7 +28,8 @@ define([
         addView: function(view, options) {
             view._grid = this;
             view._gridOptions = _.defaults(options || {}, {
-                width: null
+                width: null,
+                enabled: true
             });
 
             this.views.push(view);
@@ -50,7 +51,7 @@ define([
         },
 
         /*
-         *  Change layout by defining 
+         *  Change layout by defining
          */
         setLayout: function(n) {
             this.columns = n;
@@ -61,10 +62,13 @@ define([
          *  Return current layout
          */
         getLayout: function() {
-            var layout = this.columns || Math.floor(Math.sqrt(this.views.length));
+            var nViews = _.filter(this.views, function(view) {
+                return view._gridOptions.enabled;
+            }).length;
+            var layout = this.columns || Math.floor(Math.sqrt(nViews));
 
-            var nColumns = Math.min(layout, this.views.length);
-            var nLines = Math.ceil(this.views.length/layout);
+            var nColumns = Math.min(layout, nViews);
+            var nLines = Math.ceil(nViews/layout);
 
             return {
                 'columns': nColumns,
@@ -106,6 +110,8 @@ define([
 
             _.each(this.views, function(view, i) {
                 var $section, $content, w, dw;
+
+                if (!view._gridOptions.enabled) return;
 
                 // Calcul width for this section using optional width
                 dw =  (lineW/(layout.columns - x));
