@@ -1,4 +1,6 @@
 .book .editor {
+
+
     .editor {
         position: absolute;
         top: 0px;
@@ -6,10 +8,21 @@
         bottom: 0px;
         right: 0px;
     }
-    
+
+    .toolbar-inner {
+        max-width: @editor-width;
+            width: 100%;
+            margin: 0px auto;
+    }
+
     .ace_editor {
-        /*font-family: inherit;*/
         font-size: 14px;
+
+        .ace_scroller:not(.ace_scrollbar-v):not(.ace_scrollbar-h) {
+            max-width: @editor-width;
+            width: 100%;
+            margin: 0px auto;
+        }
 
         /* Search dialog */
         .ace_search, .ace_search.right {
