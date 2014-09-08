@@ -23,10 +23,14 @@ define([
         },
 
         // Open the server if running
-        open: function() {
+        open: function(article) {
             if (!this.isRunning()) return false;
 
-            node.gui.Shell.openExternal('http://localhost:'+this.port);
+            // Open a specific article directly
+            var inPath = "";
+            if (article && !article.isIntroduction()) inPath = article.get("path").slice(0, -3)+".html";
+
+            node.gui.Shell.openExternal('http://localhost:'+this.port+"/"+inPath);
             return true;
         },
 

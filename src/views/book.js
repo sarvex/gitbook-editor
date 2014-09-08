@@ -253,7 +253,7 @@ define([
                 return server.start(options.output)
             })
             .then(function() {
-                if (open != false) server.open();
+                if (open != false) server.open(that.currentArticle);
             }, dialogs.error);
         },
 

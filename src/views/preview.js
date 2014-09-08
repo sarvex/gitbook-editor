@@ -121,6 +121,7 @@ define([
 
         // When server state change
         onServerUpdate: function(state) {
+            this.$(".server-start").tooltip('hide').attr("title", state? "Open Current Page" : "Start Preview Server").tooltip('fixTitle');
             this.$(".server-start").toggleClass("btn-success", state);
             this.$(".server-stop").toggle(state);
         },
@@ -129,7 +130,7 @@ define([
             if (e) e.preventDefault();
 
             if (server.isRunning()) {
-                server.open();
+                server.open(this.book.currentArticle);
             } else {
                 this.book.refreshPreviewServer();
             }
