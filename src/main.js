@@ -217,6 +217,8 @@ require([
             viewMenu.append(new gui.MenuItem({
                 label: 'Distraction Free Mode',
                 type: "checkbox",
+                key: "f",
+                modifiers: process.platform === 'darwin' ? "cmd+shift" : "ctrl+shift",
                 checked: false,
                 click: function (e) {
                     that.book.toggleSummaryPanel(!this.checked);
