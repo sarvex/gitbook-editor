@@ -13,6 +13,7 @@ define([
             wordWrap: "free",
             keyboardHandler: "textinput",
             editorFontSize: "100%",
+            editorLineHeight: 1.4,
             host: "https://www.gitbook.io"
         },
         getStateFromStorage: function (){
@@ -73,6 +74,13 @@ define([
                             "150%": "Large",
                             "200%": "Larger"
                         }
+                    },
+                    editorLineHeight: {
+                        label: "Line Height",
+                        help: "Default is 1.4",
+                        type: "number",
+                        min: 1,
+                        max: 3
                     }
                 },
                 {
