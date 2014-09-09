@@ -133,6 +133,8 @@ define([
             }
             dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
             .then(function(title) {
+                if (!title) throw "You need to enter a title to create a new article";
+
                 var dir = path.dirname(that.model.get('path')),
                     _title = normalizePath(title),
                     article = {
@@ -140,8 +142,9 @@ define([
                         path: path.join(dir, _title)
                     };
                 that.model.articles.add(article);
-                that.summary.save();
-            });
+                return that.summary.save();
+            })
+            .fail(dialogs.error);
         },
 
         removeChapter: function() {

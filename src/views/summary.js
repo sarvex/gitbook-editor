@@ -71,14 +71,17 @@ define([
 
             dialogs.prompt("Add New Chapter", "Enter a title for the new chapter", "Chapter")
             .then(function(title) {
+                if (!title) throw "You need to enter a title to create a new chapter";
+
                 var _title = normalizePath(title),
                     article = {
                         title: title,
                         path: _title +'/README'
                     };
                 that.articles.collection.add(article);
-                that.save();
-            });
+                return that.save();
+            })
+            .fail(dialogs.error);
         },
 
         /*
