@@ -268,7 +268,7 @@ define([
             this.listenTo(this.book, "article:state", this.onArticleState);
             this.listenTo(this.book, "article:save", this.onArticleSave);
             this.listenTo(settings, "change:autoSave", this.update);
-            this.listenTo(settings, "change:keyboardHandler change:wordWrap change:editorFontSize change:editorLineHeight", this.updateEditorOptions);
+            this.listenTo(settings, "change:keyboardHandler change:wordWrap change:editorFontSize change:editorLineHeight change:editorShowInvisibles", this.updateEditorOptions);
 
             this.updateEditorOptions();
         },
@@ -284,6 +284,7 @@ define([
             var wordWrap = settings.get("wordWrap");
             var editorFontSize = settings.get("editorFontSize");
             var editorLineHeight = settings.get("editorLineHeight");
+            var showInvisibles = settings.get("editorShowInvisibles");
 
             if (wordWrap == "off") {
                 this.editor.session.setUseWrapMode(false);
@@ -296,6 +297,7 @@ define([
             this.$editor.css("line-height", editorLineHeight);
             this.editor.setKeyboardHandler("ace/keyboard/"+settings.get("keyboardHandler"));
             this.editor.setFontSize(editorFontSize);
+            this.editor.setShowInvisibles(showInvisibles);
         },
 
         // Scroll the editor to the top

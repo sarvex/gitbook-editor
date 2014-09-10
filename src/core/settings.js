@@ -9,6 +9,7 @@ define([
             autoFileManagement: true,
             normalizeWhitespace: true,
             restartPreviewOnSave: true,
+            editorShowInvisibles: false,
             normalizeEof: true,
             wordWrap: "free",
             keyboardHandler: "textinput",
@@ -43,25 +44,6 @@ define([
                     normalizeEof: {
                         label: "Normalize end-of-line",
                         type: "checkbox"
-                    },
-                    keyboardHandler: {
-                        label: "Keyboard",
-                        type: "select",
-                        options: {
-                            "textinput": "Default",
-                            "vim": "Vim",
-                            "emacs": "Emacs"
-                        }
-                    },
-                    wordWrap: {
-                        label: "Soft Wrap",
-                        type: "select",
-                        options: {
-                            "free": "Free",
-                            "off": "Off",
-                            "80": "80 chars",
-                            "40": "40 chars"
-                        }
                     }
                 },
                 {
@@ -81,6 +63,29 @@ define([
                         type: "number",
                         min: 1,
                         max: 3
+                    },
+                    keyboardHandler: {
+                        label: "Keyboard",
+                        type: "select",
+                        options: {
+                            "textinput": "Default",
+                            "vim": "Vim",
+                            "emacs": "Emacs"
+                        }
+                    },
+                    wordWrap: {
+                        label: "Soft Wrap",
+                        type: "select",
+                        options: {
+                            "free": "Free",
+                            "off": "Off",
+                            "80": "80 chars",
+                            "40": "40 chars"
+                        }
+                    },
+                    editorShowInvisibles: {
+                        label: "Show Invisibles",
+                        type: "checkbox"
                     }
                 },
                 {
