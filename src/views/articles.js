@@ -57,7 +57,7 @@ define([
 
             this.menu = new gui.Menu();
             this.menu.append(new gui.MenuItem({
-                label: 'Add Article',
+                label: 'Add Section',
                 click: this.addChapter.bind(this)
             }));
             this.menu.append(new gui.MenuItem({
@@ -131,9 +131,9 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
             }
-            dialogs.prompt("Add New Article", "Enter a title for the new article", "Article")
+            dialogs.prompt("Add New Section", "Enter a title for the new section", "")
             .then(function(title) {
-                if (!title) throw "You need to enter a title to create a new article";
+                if (!title) throw "You need to enter a title to create a new section";
 
                 var dir = path.dirname(that.model.get('path')),
                     _title = normalizePath(title),
