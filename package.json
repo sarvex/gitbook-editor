@@ -28,7 +28,8 @@
         "request": "2.27.0",
         "normall": "0.0.2",
         "gitbook-api": "0.1.0",
-        "npmi": "0.0.12"
+        "npmi": "0.0.12",
+        "kramed": "0.4.2"
     },
     "devDependencies": {
         "lodash": "2.4.1",

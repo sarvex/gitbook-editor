@@ -137,6 +137,19 @@ require([
                 }
             }));
             fileMenu.append(new gui.MenuItem({
+                label: "What's New",
+                click: function () {
+                    update.getChangeLog()
+                    .fail(dialogs.error)
+                    .then(function(content) {
+                        return dialogs.alert("What's New", content);
+                    })
+                }
+            }));
+            fileMenu.append(new gui.MenuItem({
+                type: 'separator'
+            }));
+            fileMenu.append(new gui.MenuItem({
                 label: 'Quit',
                 key: "q",
                 modifiers: process.platform === 'darwin' ? "cmd" : "ctrl",
