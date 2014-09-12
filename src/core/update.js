@@ -15,7 +15,7 @@ define([
         return gitbookIO.api.request("get", "editor/infos")
         .then(function(infos) {
             if (semver.gt(infos.version, pkg.version)) {
-                return body.version;
+                return infos.version;
             } else {
                 return Q.reject(new Error("no updates"));
             }
