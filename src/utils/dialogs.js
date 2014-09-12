@@ -256,7 +256,7 @@ define([
                     return JSON.parse(content);
                 })
                 .fail(function(err) {
-                    return dialogs.confirm("Would you like to correct the error?", "The JSON is invalid: "+err.message)
+                    return Dialogs.confirm("Would you like to correct the error?", "The JSON is invalid: "+err.message)
                     .then(showDialog);
                 });
             };
