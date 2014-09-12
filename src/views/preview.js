@@ -16,7 +16,14 @@ define([
         skipStartupTypeset: true,
         tex2jax: {
             processEscapes: true
-        }
+        },
+        showMathMenu:false,
+        menuSettings: {
+            zoom: "none",
+            mpContext: true,
+            mpMouse: true
+        },
+        errorSettings: { message: ["[Math Processing Error]"] }
     });
 
     var Preview = hr.View.extend({
