@@ -1,6 +1,8 @@
 define([
     "hr/utils"
 ], function(_) {
+    var sanitizeHtml = node.require('sanitize-html');
+
     // Remove extra whitespace on the right of lines
     var whitespace = function(str, options) {
         options = _.defaults(options || {}, {
@@ -34,9 +36,18 @@ define([
         return new Buffer(matches[2], 'base64');
     };
 
+    // Sanitize an html string
+    var html = function(dirty) {
+        return sanitizeHtml(dirty, {
+            allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ]),
+            allowedAttributes: _.extend({}, sanitizeHtml.defaults.allowedAttributes, { img: [ "src" ]})
+        });
+    };
+
     return {
         eof: eof,
         whitespace: whitespace,
-        dataTobuffer: dataTobuffer
+        dataTobuffer: dataTobuffer,
+        html: html
     };
 });
