@@ -39,8 +39,25 @@ define([
     // Sanitize an html string
     var html = function(dirty) {
         return sanitizeHtml(dirty, {
-            allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ]),
-            allowedAttributes: _.extend({}, sanitizeHtml.defaults.allowedAttributes, { img: [ "src" ]})
+            allowedTags: [
+                'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a',
+                'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em',
+                'strike', 'code', 'hr', 'br', 'div', 'table', 'thead',
+                'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'script'
+            ],
+            allowedAttributes: {
+                a: [ 'href', 'name', 'target' ],
+                img: [ 'src' ],
+                script: [ 'type' ]
+            },
+            selfClosing: [ 'img', 'br', 'hr', 'area', 'base', 'basefont', 'input', 'link', 'meta' ],
+            allowedSchemes: [ 'http', 'https', 'ftp', 'mailto' ],
+            exclusiveFilter: function(frame) {
+                if (frame.tag !== 'script') return false;
+
+                var type = frame.attribs.type || "";
+                return (type.indexOf("math/tex") < 0);
+            }
         });
     };
 
