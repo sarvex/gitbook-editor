@@ -33,7 +33,7 @@ cp -r $SCRIPTPATH/* $GITBOOK_PATH
 echo ""
 
 # Linking libudev.so.1
-echo "Linkink libudev.so.1"
+echo "Linking libudev.so.1"
 paths=(
   "/lib/x86_64-linux-gnu/libudev.so.1" # Ubuntu, Xubuntu, Mint
   "/usr/lib64/libudev.so.1" # SUSE, Fedora
