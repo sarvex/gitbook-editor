@@ -6,7 +6,7 @@ This application is a simple editor for writing books. It's available for Window
 
 ### How to install it?
 
-Download it from [gitbook.io](https://www.gitbook.io/editor/download).
+Download it from [https://github.com/GitbookIO/editor/releases](https://github.com/GitbookIO/editor/releases).
 
 #### How to install it on Mac:
 
